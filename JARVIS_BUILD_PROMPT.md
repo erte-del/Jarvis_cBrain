@@ -329,6 +329,10 @@ Jarvis_cBrain/
    - **4d. 3D objects.** Fast view-only previews in a large right-hand panel, changes through chat, and the final file (.blend, .obj, .fbx, .stl, .gltf) built only after I approve. See section 7b.
    - **4e. More features.** Further functions to be added here as I describe them. Each one gets its own sub-step.
 5. **Voice.** STT, VAD, TTS, voice orb, sentence streaming.
+   - **5a. Voice UI.** ✅ Mic button next to Send, a voice panel above the input box with the orb (idle / listening / thinking / speaking), live captions ("You" / "Jarvis"), End voice (Esc). Typing still works in voice mode.
+   - **5b. Listening.** Browser mic → backend, end-of-speech detection (VAD), speech to text (faster-whisper), the words appear as the "You" caption, then go to Jarvis as a voice message.
+   - **5c. Speaking.** Text to speech sentence by sentence as the reply streams in; click the orb to stop.
+   - **5d. Voice flow.** Short spoken-style replies, confirmations answered by voice ("yes" / "no"), and the orb driven by the real state.
 6. **Memory.** History, remember/recall.
 7. **Polish.** Wake word, barge-in, desktop wrapper (Tauri/Electron), settings screen.
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type { ActiveTool, ChatMessage, ConnectionState, Source } from '../ws'
 import ConfirmCard from './ConfirmCard'
 import Markdown from './Markdown'
+import VoicePanel from './VoicePanel'
 
 interface ChatProps {
   messages: ChatMessage[]
@@ -12,6 +13,8 @@ interface ChatProps {
   activeTool: ActiveTool | null
   onSend: (text: string) => boolean
   onConfirm: (id: string, approved: boolean) => void
+  voiceOn: boolean
+  onVoice: (on: boolean) => void
 }
 
 /** "claude-haiku-4-5-20251001" -> "Haiku" */
@@ -137,7 +140,16 @@ function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: Chat
   )
 }
 
-export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm }: ChatProps) {
+function MicIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
+      <path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm, voiceOn, onVoice }: ChatProps) {
   const [draft, setDraft] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -170,6 +182,14 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
       submit()
     }
   }
+
+  // Esc ends voice mode.
+  useEffect(() => {
+    if (!voiceOn) return
+    const onKey = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && onVoice(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [voiceOn, onVoice])
 
   // Refocus the input when a reply finishes.
   useEffect(() => {
@@ -204,6 +224,8 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
         )}
       </div>
 
+      {voiceOn && <VoicePanel onClose={() => onVoice(false)} />}
+
       <form
         className="composer"
         onSubmit={(e) => {
@@ -226,7 +248,17 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
           rows={1}
           autoFocus
         />
-        <button type="submit" disabled={!canSend} aria-label="Send">
+        <button
+          type="button"
+          className={`mic-button${voiceOn ? ' on' : ''}`}
+          onClick={() => onVoice(!voiceOn)}
+          aria-pressed={voiceOn}
+          aria-label={voiceOn ? 'End voice mode' : 'Talk to Jarvis'}
+          title={voiceOn ? 'End voice mode (Esc)' : 'Talk to Jarvis'}
+        >
+          <MicIcon />
+        </button>
+        <button type="submit" className="send-button" disabled={!canSend} aria-label="Send">
           ↑
         </button>
       </form>

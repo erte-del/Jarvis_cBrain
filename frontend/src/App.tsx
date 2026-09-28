@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 import Canvas from './components/Canvas'
 import Chat from './components/Chat'
@@ -11,6 +12,7 @@ const CONNECTION_LABEL = {
 
 export default function App() {
   const jarvis = useJarvis()
+  const [voiceOn, setVoiceOn] = useState(false) // UI only for now (Phase 5a)
   // A 3D model is open: its panel gets most of the width (chat stays usable on the left).
   const showingModel = jarvis.canvasOpen && jarvis.cards.some((c) => c.kind === 'model3d' && c.id === jarvis.canvasTab)
 
@@ -63,6 +65,8 @@ export default function App() {
           activeTool={jarvis.activeTool}
           onSend={jarvis.sendText}
           onConfirm={jarvis.answerConfirm}
+          voiceOn={voiceOn}
+          onVoice={setVoiceOn}
         />
         {jarvis.canvasOpen && (
           <Canvas
