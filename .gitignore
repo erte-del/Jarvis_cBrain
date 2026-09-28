@@ -14,10 +14,15 @@ __pycache__/
 backend/storage/assets/*
 !backend/storage/assets/.gitkeep
 backend/storage/models/
+backend/storage/jarvis.log
+backend/storage/jarvis.pid
 
 # Node / frontend
 node_modules/
 dist/
+
+# The Mac app is built from scripts/ (scripts/make_app.sh)
+Jarvis.app/
 
 # OS / editors
 .DS_Store

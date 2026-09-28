@@ -17,6 +17,16 @@ PORT = int(os.getenv("JARVIS_PORT", "8000"))
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
 
+# How hard Claude thinks before answering: low | medium | high | xhigh | max.
+# Thinking was the biggest single use of the Pro limit, so the default is medium.
+EFFORT = os.getenv("JARVIS_EFFORT", "medium").strip().lower()
+if EFFORT not in ("low", "medium", "high", "xhigh", "max"):
+    raise SystemExit(f"JARVIS_EFFORT={EFFORT!r}: use low, medium, high, xhigh or max")
+
+# Which claude.ai connectors Jarvis loads: "all", or names like "Gmail, Canva".
+# Each connector's tool list goes into every new conversation, so fewer = cheaper.
+CONNECTORS = [c.strip().lower() for c in os.getenv("JARVIS_CONNECTORS", "all").split(",") if c.strip()]
+
 if HOST not in ("127.0.0.1", "localhost", "::1"):
     raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
 

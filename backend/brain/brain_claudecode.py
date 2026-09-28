@@ -23,7 +23,7 @@ from claude_agent_sdk import (
     UserMessage,
 )
 
-from config import STORAGE_DIR, use_pro_login
+from config import CONNECTORS, EFFORT, STORAGE_DIR, use_pro_login
 from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
@@ -35,7 +35,6 @@ log = logging.getLogger("jarvis.brain")
 # That's exactly what we want: only 'act' tools should ask you.
 warnings.filterwarnings("ignore", category=CanUseToolShadowedWarning)
 
-# Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
 # If Claude Code sends nothing for this long, give up on the turn
 # (e.g. it is silently retrying while Anthropic's servers are overloaded).
 IDLE_TIMEOUT_S = 120
@@ -45,6 +44,7 @@ TOOL_TIMEOUT_S = 600
 # claude.ai connectors connect in the background; wait this long for them at startup.
 CONNECTOR_WAIT_S = 15
 
+# Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
 BLOCKED_TOOLS = [
     "Bash", "Read", "Write", "Edit", "MultiEdit", "NotebookEdit",
     "Glob", "Grep", "Agent", "Task", "Skill",
@@ -59,11 +59,20 @@ class ClaudeCodeBrain:
         self._lock = asyncio.Lock()  # one turn at a time
         self.auth_source: str | None = None  # reported by Claude Code at startup
         self._session_id: str | None = None  # lets a restarted process resume the conversation
+        # How many tokens the conversation takes up now (from Claude's last reply).
+        # Switching models means sending all of it again, so the router uses this.
+        self.context_tokens = 0
+
+    @property
+    def model(self) -> ModelAlias:
+        """The model the conversation is on now."""
+        return self._model
 
     def _options(self) -> ClaudeAgentOptions:
         return ClaudeAgentOptions(
             system_prompt=JARVIS_SYSTEM_PROMPT,  # replaces Claude Code's coding prompt
             model=self._model,
+            effort=EFFORT,  # thinking was the biggest use of the Pro limit (see .env)
             tools=registry.builtin_tools(),  # only WebSearch / WebFetch / ToolSearch
             disallowed_tools=BLOCKED_TOOLS,  # belt and braces
             hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
@@ -112,10 +121,24 @@ class ClaudeCodeBrain:
             if (servers and not pending) or asyncio.get_running_loop().time() > deadline:
                 break
             await asyncio.sleep(0.5)
+        await self._disable_unlisted_connectors(client, servers)
         by_status: dict[str, list[str]] = {}
         for s in servers:
             by_status.setdefault(s.get("status", "?"), []).append(s["name"].removeprefix("claude.ai "))
         log.info("Connectors: %s", "; ".join(f"{k}: {', '.join(v)}" for k, v in by_status.items()) or "none")
+
+    async def _disable_unlisted_connectors(self, client: ClaudeSDKClient, servers: list) -> None:
+        """Switch off claude.ai connectors not listed in JARVIS_CONNECTORS (.env)."""
+        if "all" in CONNECTORS:
+            return
+        for server in servers:
+            name = server.get("name", "")
+            if name.startswith("claude.ai ") and name.removeprefix("claude.ai ").lower() not in CONNECTORS:
+                try:
+                    await client.toggle_mcp_server(name, False)
+                    server["status"] = "off"
+                except Exception:
+                    log.warning("Could not switch off %s", name, exc_info=True)
 
     async def start(self) -> None:
         """Start Claude Code ahead of the first message (called at server startup)."""
@@ -167,6 +190,13 @@ class ClaudeCodeBrain:
 
                     elif isinstance(msg, AssistantMessage):
                         answered_by = msg.model
+                        if msg.usage:
+                            u = msg.usage
+                            self.context_tokens = sum(
+                                int(u.get(k) or 0)
+                                for k in ("input_tokens", "cache_read_input_tokens",
+                                          "cache_creation_input_tokens", "output_tokens")
+                            )
                         if msg.error:  # reported to the UI via the ResultMessage below
                             log.warning("Claude error on %s: %s", msg.model, msg.error)
                         for block in msg.content:

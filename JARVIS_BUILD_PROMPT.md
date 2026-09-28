@@ -117,6 +117,9 @@ Use the Agent SDK model aliases `haiku`, `sonnet`, `opus`.
 2. **Rule pre-check.** Very short or chit-chat messages go to Haiku, especially in voice mode.
 3. **Default is Sonnet**, with an **`ask_expert` tool.** When Sonnet decides a task is too hard, it calls `ask_expert(task, context)`. That runs the task on Opus as a one-shot call and returns the answer to Sonnet, so most messages never touch Opus.
 4. Optional later: a Haiku "classifier" call that labels each message easy / medium / hard.
+5. **Sticky routing (saves usage).** Switching models re-sends the whole conversation to the new model, which quickly costs more than it saves. Once a conversation is past ~20K tokens, automatic picks (3 and the default) keep the current model; my own choices (picker, "use opus", "quick") still switch.
+
+**Usage settings (`.env`):** `JARVIS_EFFORT` (default `medium`) sets how much the models think before answering; thinking was the biggest single use of the Pro limit. `JARVIS_CONNECTORS` (default `all`) picks which claude.ai connectors load; each adds its tool list to every new conversation (all 8 ≈ 10K tokens, Gmail only ≈ 1K).
 
 To switch models, use the SDK client's `set_model(...)` if available, otherwise separate sessions per model. Switching models mid-conversation loses some caching, which is acceptable.
 
@@ -216,7 +219,8 @@ When I ask Jarvis to make a 3D object (or anything similar, like a model, shape,
   - `preview_3d(title, spec, model_id?)`: **read** (it only shows something). Every call makes a new version (v1, v2, …) so "go back to the previous version" works.
   - `export_3d(model_id, version, format)`: **act**, so it goes through the confirmation gate ("Build the final 'Chair' v4 as .fbx?"). The gate enforces the rule "never make the final file before I approve".
 - **Layout:** while a 3D object is open, the right-hand panel shows the 3D viewer at about 65% of the width, the chat about 35%. Other canvas cards stay reachable from a tab.
-- **Jarvis checks its own work.** After every preview, Blender renders 4 views (3/4, side, front, top) in about a second (`tools/blender_render_script.py`, also fixed) and Jarvis gets them as a picture, together with an automatic list of parts that float (don't touch anything else). It fixes clear mistakes (at most 2 rounds) before replying. I see each preview immediately; the check runs right after.
+- **Jarvis checks its own work.** After every preview, Blender renders 4 views (3/4, side, front, top) in about a second (`tools/blender_render_script.py`, also fixed) and Jarvis gets them as a picture, together with an automatic list of parts that float (don't touch anything else). It fixes clear mistakes (one extra round at most) before replying. I see each preview immediately; the check runs right after.
+- **Small changes stay small.** For edits like "make it red", Jarvis sends only the changed parts (`update_parts` / `add_parts` / `remove_parts`) instead of rewriting the whole model.
 - **Shapes for smooth objects:** `loft` (a smooth body through cross-sections along the length, each a rounded rectangle; for car bodies, hulls, cabins), rounded box corners (`round`), and `mirror` (write a symmetric part once, get both sides), which also makes specs shorter and changes faster.
 - **Conventions:** meters, Y up, ground at y = 0; vehicles and long objects point their front toward +X with width along Z.
 - **Limitation:** objects are built from simple shapes, which suits furniture, props, buildings, vehicles, stylised characters and scenes. Realistic organic shapes (a lifelike dog, a human face) are beyond this; that would need an AI 3D-generation service (paid, not local), which is out of scope for now.

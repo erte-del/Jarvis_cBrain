@@ -143,8 +143,9 @@ async def render_views(glb: bytes) -> bytes | None:
     "whenever the user asks for a 3D object, model, shape or scene. For a real, recognisable "
     "object (a specific car, plane, building, product), look at a reference photo first "
     "(image_search, ideally a side view) and match its silhouette and proportions. "
-    "For a change, call it again "
-    "with the same model_id and the FULL updated spec; each call is a new version. "
+    "Each call makes a new version. For a SMALL change to an existing model, pass model_id "
+    "with update_parts / add_parts / remove_parts instead of the whole spec (much faster); "
+    "send a full spec only for a new object or a big rebuild. "
     "This never makes the final file (that's export_3d, only after the user approves). "
     "You get back 4 rendered views and a list of any floating parts: check them and fix "
     "mistakes before replying. Keep previews fast: as few parts as show the shape, loft for "
@@ -161,24 +162,45 @@ async def render_views(glb: bytes) -> bytes | None:
                 "properties": {"parts": {"type": "array", "items": {"type": "object"}}},
                 "required": ["parts"],
             },
+            "update_parts": {
+                "type": "array",
+                "items": {"type": "object"},
+                "description": "Small change: [{name, ...only the fields to change}] for parts of the "
+                "current version, e.g. [{\"name\": \"body\", \"color\": \"red\"}]. null removes a field.",
+            },
+            "add_parts": {
+                "type": "array",
+                "items": {"type": "object"},
+                "description": "Small change: new parts to add (same format as spec parts).",
+            },
+            "remove_parts": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Small change: names of parts to delete.",
+            },
         },
-        "required": ["spec"],
     },
 )
 async def preview_3d(args: dict[str, Any]) -> dict[str, Any]:
-    spec = args.get("spec")
+    changes = {k: args.get(k) for k in ("update_parts", "add_parts", "remove_parts") if args.get(k)}
     try:
+        rec = _load(args["model_id"]) if args.get("model_id") else None
+        if args.get("spec") is not None:
+            spec = args["spec"]
+        elif changes and rec is not None:
+            spec = shapes.apply_changes(model_store.spec(rec), **changes)
+        else:
+            return _text("Preview not made: pass a full 'spec', or a model_id with "
+                         "update_parts / add_parts / remove_parts.", is_error=True)
         glb, parts, size, triangles, floating = await asyncio.to_thread(_build_preview, spec)
-    except shapes.SpecError as e:
-        return _text(f"Preview not made: {e}", is_error=True)
+    except (KeyError, shapes.SpecError) as e:
+        return _text(f"Preview not made: {str(e).strip(chr(39))}", is_error=True)
     except Exception as e:  # geometry library errors
         log.exception("3D preview failed")
         return _text(f"Preview not made (geometry error: {e}). Simplify the part that caused it.", is_error=True)
 
-    try:
-        rec = _load(args["model_id"]) if args.get("model_id") else model_store.create(str(args.get("title") or "3D object"))
-    except KeyError as e:
-        return _text(f"Preview not made: {e}", is_error=True)
+    if rec is None:
+        rec = model_store.create(str(args.get("title") or "3D object"))
     if args.get("title"):
         rec.title = str(args["title"])[:80]
     note = str(args.get("note") or ("first version" if not rec.versions else "changed"))
@@ -204,8 +226,8 @@ async def preview_3d(args: dict[str, Any]) -> dict[str, Any]:
             "the side view with it: silhouette, roofline, where the wheels and lights sit."
         )
     lines.append(
-        "If something is clearly wrong, fix it now with another preview_3d call (same model_id, full spec); "
-        "do at most 2 fix rounds, then reply. Otherwise tell the user briefly and ask what to change. "
+        "If something is clearly wrong, fix it now with ONE more preview_3d call (same model_id; "
+        "use update_parts etc. for small fixes), then reply. Mention anything still off. Otherwise tell the user briefly and ask what to change. "
         "When they say it's good, ask which file type they want "
         f"({', '.join('.' + f for f in model_store.FORMATS)}) and then call export_3d."
     )

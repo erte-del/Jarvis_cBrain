@@ -478,3 +478,38 @@ def floating_parts(scene: trimesh.Scene) -> list[tuple[str, float]]:
             gap = min(_gap(meshes[k], meshes[m]) for m in main)
             floating.append((_display_name(names[k]), round(gap, 3)))
     return floating
+
+
+# ---- Small changes ------------------------------------------------------------------
+
+def apply_changes(
+    spec: dict[str, Any],
+    update_parts: list[dict[str, Any]] | None = None,
+    add_parts: list[dict[str, Any]] | None = None,
+    remove_parts: list[str] | None = None,
+) -> dict[str, Any]:
+    """Apply a small change to a spec, so Claude doesn't have to rewrite the whole object.
+
+    update_parts: [{"name": "wheel", "color": "red", "round": null}, ...]  (null removes a field)
+    add_parts:    new parts, as in a full spec
+    remove_parts: names of parts to delete
+    """
+    parts = [dict(p) for p in spec.get("parts", [])]
+    by_name = {p.get("name"): p for p in parts}
+    missing = [n for n in (remove_parts or []) if n not in by_name]
+    missing += [u.get("name") for u in (update_parts or []) if u.get("name") not in by_name]
+    if missing:
+        raise SpecError(f"No part called {', '.join(map(repr, missing))}. The parts are: "
+                        + ", ".join(repr(p.get("name")) for p in parts))
+    for change in update_parts or []:
+        part = by_name[change["name"]]
+        for key, value in change.items():
+            if key == "name":
+                continue
+            if value is None:
+                part.pop(key, None)
+            else:
+                part[key] = value
+    parts = [p for p in parts if p.get("name") not in set(remove_parts or [])]
+    parts += [dict(p) for p in add_parts or []]
+    return {**spec, "parts": parts}

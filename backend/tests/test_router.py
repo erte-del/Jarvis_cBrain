@@ -52,6 +52,19 @@ class RouterTest(unittest.TestCase):
         ]:
             self.check(text, "sonnet")
 
+    def test_sticky_once_the_conversation_is_big(self):
+        # Fresh conversation: automatic switching is fine.
+        self.check("hi", "haiku", current="sonnet", context_tokens=16_000)
+        # Big conversation: switching would re-send it all, so stay.
+        self.check("hi", "sonnet", current="sonnet", context_tokens=60_000)
+        self.check("what's the capital of France?", "opus", current="opus", context_tokens=60_000)
+        self.check("what's the capital of France?", "haiku", current="haiku", context_tokens=60_000)
+        # Your own choices always switch.
+        self.check("use sonnet: what's the capital of France?", "sonnet", current="opus", context_tokens=60_000)
+        self.check("quick: 2+2?", "haiku", current="sonnet", context_tokens=60_000)
+        self.check("hi", "opus", override="opus", current="sonnet", context_tokens=60_000)
+        self.assertIn("stayed on", route("hi", current="sonnet", context_tokens=60_000).reason)
+
     def test_voice_short_goes_to_haiku(self):
         self.check("what time is it in Tokyo", "haiku", voice=True)
         self.check("what time is it in Tokyo", "sonnet", voice=False)

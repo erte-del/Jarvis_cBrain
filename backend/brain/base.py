@@ -61,6 +61,9 @@ BrainEvent = TextDelta | ToolStart | ToolResult | UIEvent | Done | Error
 
 
 class Brain(Protocol):
+    model: ModelAlias  # the model the conversation is on now
+    context_tokens: int  # size of the conversation so far (switching models re-sends it)
+
     async def send(
         self,
         text: str,

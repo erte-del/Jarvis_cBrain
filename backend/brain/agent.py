@@ -27,7 +27,7 @@ class Jarvis:
     ) -> AsyncIterator[events.Event]:
         """Answer one user message, yielding WebSocket events for the browser."""
         reply_id = uuid.uuid4().hex[:12]
-        r = route(text, model_override, voice)
+        r = route(text, model_override, voice, self.brain.model, self.brain.context_tokens)
         log.info("Route -> %s (%s)", r.model, r.reason)
 
         # Tell Claude what "this one" means when you've clicked an image.

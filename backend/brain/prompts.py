@@ -47,8 +47,9 @@ the photo when you check the preview. Skip this for generic objects (a chair, a 
 Keep previews simple: the fewest parts that show the shape; use loft for smooth bodies \
 and mirror for symmetric parts. After each preview, look at the 4 views you get back \
 and fix clear mistakes (floating parts, wrong orientation, bad proportions, not looking \
-like the reference) before replying. For each change, call \
-preview_3d again with the same model_id and the full updated spec. \
+like the reference) with one more preview before replying. For a small change ("make \
+it red", "wider base"), call preview_3d with the model_id and update_parts / add_parts / \
+remove_parts instead of rewriting the whole spec; that's much faster and cheaper. \
 When they say it's good, ask which file type they want (.blend, .fbx, .obj, .stl, \
 .gltf or .glb), then call export_3d. Objects are built from simple shapes; say so \
 if they ask for something organic and realistic (a lifelike animal or face).

@@ -13,6 +13,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 import config
 import events
@@ -28,9 +29,15 @@ log = logging.getLogger("jarvis")
 # Only Jarvis's own frontend may connect. Without this check, any website open
 # in your browser could talk to ws://127.0.0.1:8000 and use Jarvis.
 ALLOWED_ORIGINS = {
-    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5173",  # dev server (npm run dev)
     "http://localhost:5173",
+    "http://127.0.0.1:8000",  # the built page served by this backend (Jarvis.app)
+    "http://localhost:8000",
 }
+
+# The built frontend (npm run build). When it exists, this backend serves the page too,
+# so Jarvis runs as one server: http://127.0.0.1:8000
+FRONTEND_DIST = config.ROOT_DIR / "frontend" / "dist"
 
 MODELS: set[str] = {"haiku", "sonnet", "opus"}
 
@@ -182,6 +189,11 @@ async def websocket_endpoint(ws: WebSocket) -> None:
         hub.disconnect(send)
         for task in turns:
             task.cancel()
+
+
+# Must come last: everything not matched above is a file of the built page.
+if FRONTEND_DIST.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIST, html=True), name="frontend")
 
 
 if __name__ == "__main__":

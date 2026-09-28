@@ -75,6 +75,30 @@ class NewShapesTest(unittest.TestCase):
                 shapes.validate({"parts": [part]})
 
 
+class SmallChangesTest(unittest.TestCase):
+    def test_update_add_remove(self):
+        new = shapes.apply_changes(
+            CHAIR,
+            update_parts=[{"name": "seat", "color": "red", "position": [0, 0.5, 0]}],
+            add_parts=[{"name": "cushion", "shape": "box", "size": [0.4, 0.05, 0.4], "position": [0, 0.5, 0]}],
+            remove_parts=["leg4"],
+        )
+        names = [p["name"] for p in new["parts"]]
+        self.assertEqual(names, ["seat", "back", "leg1", "leg2", "leg3", "cushion"])
+        self.assertEqual(new["parts"][0]["color"], "red")
+        self.assertEqual(CHAIR["parts"][0]["color"], "saddlebrown")  # the original isn't touched
+        shapes.validate(new)
+
+    def test_null_removes_a_field(self):
+        spec = {"parts": [{"name": "b", "shape": "box", "size": [1, 1, 1], "round": 0.2}]}
+        self.assertNotIn("round", shapes.apply_changes(spec, update_parts=[{"name": "b", "round": None}])["parts"][0])
+
+    def test_unknown_names_list_the_real_ones(self):
+        with self.assertRaises(shapes.SpecError) as err:
+            shapes.apply_changes(CHAIR, remove_parts=["legs"])
+        self.assertIn("'leg1'", str(err.exception))
+
+
 class FloatingTest(unittest.TestCase):
     def floating(self, spec):
         return shapes.floating_parts(shapes.build_scene(shapes.validate(spec)))
@@ -160,6 +184,20 @@ class StoreTest(unittest.TestCase):
         asyncio.run(models3d.revert_3d.handler({"model_id": "mdl_001"}))
         self.assertEqual(model_store.load("mdl_001").current, 1)
         self.assertEqual(model_store.spec(rec, 1), CHAIR)
+
+    def test_small_change_makes_a_new_version(self):
+        self.preview(title="Chair")
+        result = asyncio.run(models3d.preview_3d.handler(
+            {"model_id": "mdl_001", "update_parts": [{"name": "seat", "color": "red"}], "note": "red seat"}))
+        self.assertFalse(result.get("is_error"), result)
+        rec = model_store.load("mdl_001")
+        self.assertEqual(rec.current, 2)
+        self.assertEqual(model_store.spec(rec, 2)["parts"][0]["color"], "red")
+        self.assertEqual(model_store.spec(rec, 1)["parts"][0]["color"], "saddlebrown")
+
+    def test_needs_a_spec_or_a_change(self):
+        result = asyncio.run(models3d.preview_3d.handler({"title": "Nothing"}))
+        self.assertTrue(result.get("is_error"))
 
     def test_bad_spec_makes_no_version(self):
         result = asyncio.run(models3d.preview_3d.handler({"spec": {"parts": []}}))

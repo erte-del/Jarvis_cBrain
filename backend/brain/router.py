@@ -5,6 +5,11 @@ Order of checks:
   2. Words in the message: "use opus", "think hard" -> Opus; "quick", "use haiku" -> Haiku.
   3. Small talk ("hi", "thanks", "how are you") -> Haiku. In voice mode, short messages too.
   4. Everything else -> Sonnet, which can call `ask_expert` to consult Opus.
+
+Sticky: switching models means sending the whole conversation again to the new model,
+which quickly costs more than the switch saves. So once a conversation is bigger than
+STICKY_CONTEXT_TOKENS, the automatic picks (3 and 4) keep the model it's already on.
+Your own choices (1 and 2) always switch.
 """
 
 import re
@@ -45,7 +50,18 @@ _SMALL_TALK = re.compile(
 VOICE_SHORT_WORDS = 6
 
 
-def route(text: str, override: ModelAlias | None = None, voice: bool = False) -> Route:
+# A fresh conversation is ~15K tokens (instructions + tool lists), so this allows
+# free switching for the first few messages only.
+STICKY_CONTEXT_TOKENS = 20_000
+
+
+def route(
+    text: str,
+    override: ModelAlias | None = None,
+    voice: bool = False,
+    current: ModelAlias | None = None,
+    context_tokens: int = 0,
+) -> Route:
     if override:
         return Route(override, "picked in the UI")
 
@@ -57,8 +73,12 @@ def route(text: str, override: ModelAlias | None = None, voice: bool = False) ->
         return Route("haiku", "you asked for a quick answer")
 
     if _SMALL_TALK.match(text):
-        return Route("haiku", "small talk")
-    if voice and len(text.split()) <= VOICE_SHORT_WORDS:
-        return Route("haiku", "short voice message")
+        auto = Route("haiku", "small talk")
+    elif voice and len(text.split()) <= VOICE_SHORT_WORDS:
+        auto = Route("haiku", "short voice message")
+    else:
+        auto = Route("sonnet", "default")
 
-    return Route("sonnet", "default")
+    if current and current != auto.model and context_tokens > STICKY_CONTEXT_TOKENS:
+        return Route(current, f"stayed on {current.capitalize()}: switching would re-send the conversation")
+    return auto

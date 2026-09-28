@@ -4,7 +4,13 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+
+// Flat, faceted preview shading makes each facet one flat mirror: on a glossy part a
+// whole facet facing the light turns white, which looks like a blank patch. Previews
+// keep highlights soft; the final file (smooth shading, in Blender) keeps the real gloss.
+const PREVIEW_MIN_ROUGHNESS = 0.5
 import { API_BASE, type Model3DData } from '../ws'
 
 interface Viewer {
@@ -60,11 +66,17 @@ export default function Model3DViewer({ data }: { data: Model3DData }) {
     mount.appendChild(renderer.domElement)
 
     const scene = new THREE.Scene()
-    scene.add(new THREE.HemisphereLight(0xdfe9ff, 0x2a2f3a, 1.6))
-    const key = new THREE.DirectionalLight(0xffffff, 2.2)
+    // A soft studio "room" for glossy and metal parts to reflect (without it, metal looks black).
+    const pmrem = new THREE.PMREMGenerator(renderer)
+    const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+    scene.environment = environment
+    scene.environmentIntensity = 0.6 // enough to show gloss and metal, without washing out dark colors
+    // Neutral white lights on top, so colors look like themselves.
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x30343c, 0.6))
+    const key = new THREE.DirectionalLight(0xffffff, 1.3)
     key.position.set(3, 5, 4)
     scene.add(key)
-    const rim = new THREE.DirectionalLight(0x88ccff, 0.8)
+    const rim = new THREE.DirectionalLight(0xffffff, 0.4)
     rim.position.set(-4, 2, -3)
     scene.add(rim)
 
@@ -100,6 +112,8 @@ export default function Model3DViewer({ data }: { data: Model3DData }) {
       observer.disconnect()
       controls.dispose()
       disposeObject(holder)
+      environment.dispose()
+      pmrem.dispose()
       renderer.dispose()
       mount.removeChild(renderer.domElement)
       viewerRef.current = null
@@ -119,13 +133,15 @@ export default function Model3DViewer({ data }: { data: Model3DData }) {
       (gltf) => {
         if (cancelled) return disposeObject(gltf.scene)
         const model = gltf.scene
-        // Preview look: flat, faceted shading.
+        // Preview look: flat, faceted shading with soft highlights.
         model.traverse((node) => {
           const mesh = node as THREE.Mesh
           if (mesh.isMesh) {
             const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
             materials.forEach((m) => {
-              ;(m as THREE.MeshStandardMaterial).flatShading = true
+              const standard = m as THREE.MeshStandardMaterial
+              standard.flatShading = true
+              standard.roughness = Math.max(standard.roughness, PREVIEW_MIN_ROUGHNESS)
               m.needsUpdate = true
             })
           }

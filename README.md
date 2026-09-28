@@ -24,7 +24,16 @@ Copy `.env.example` to `.env`. Never add an `ANTHROPIC_API_KEY`: Jarvis uses the
 
 ## Run
 
-In two terminals:
+**The easy way: Jarvis.app.** Build it once:
+
+    scripts/make_app.sh
+
+Then double-click `Jarvis.app` (drag it to the Dock or Applications if you like). It starts
+Jarvis and opens it in your browser at http://127.0.0.1:8000. Quit it from the Dock to stop
+Jarvis. Logs go to `backend/storage/jarvis.log`. Run `make_app.sh` again if you move the
+project folder.
+
+**For development**, in two terminals (the page reloads as you edit):
 
     cd backend && .venv/bin/python main.py      # API on http://127.0.0.1:8000
     cd frontend && npm run dev                   # UI on http://127.0.0.1:5173
