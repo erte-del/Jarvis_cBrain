@@ -1,0 +1,24 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local data
+*.db
+*.db-journal
+backend/storage/assets/*
+!backend/storage/assets/.gitkeep
+
+# Node / frontend
+node_modules/
+dist/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
