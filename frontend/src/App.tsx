@@ -54,7 +54,14 @@ export default function App() {
           onSend={jarvis.sendText}
           onConfirm={jarvis.answerConfirm}
         />
-        {jarvis.canvasOpen && <Canvas cards={jarvis.cards} onClose={jarvis.closeCard} />}
+        {jarvis.canvasOpen && (
+          <Canvas
+            cards={jarvis.cards}
+            onClose={jarvis.closeCard}
+            selectedImage={jarvis.selectedImage}
+            onSelectImage={jarvis.selectImage}
+          />
+        )}
       </main>
     </div>
   )

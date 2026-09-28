@@ -1,12 +1,15 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Text, table, email list and events cards. Later steps add images and 3D.
+// Text, table, email list, events and image cards. 3D comes in step 4d.
 
-import type { CanvasCard } from '../ws'
+import type { CanvasCard, ImageCardData, ImageSelection } from '../ws'
+import ImageViewer from './ImageViewer'
 import Markdown from './Markdown'
 
 interface CanvasProps {
   cards: CanvasCard[]
   onClose: (id: string) => void
+  selectedImage: ImageSelection | null
+  onSelectImage: (selection: ImageSelection | null) => void
 }
 
 function TableCard({ data }: { data: Record<string, unknown> }) {
@@ -75,8 +78,16 @@ function Events({ items }: { items: Item[] }) {
   )
 }
 
-function CardBody({ card }: { card: CanvasCard }) {
+function CardBody({ card, selectedImage, onSelectImage }: { card: CanvasCard } & Omit<CanvasProps, 'cards' | 'onClose'>) {
   switch (card.kind) {
+    case 'image':
+      return (
+        <ImageViewer
+          data={card.data as unknown as ImageCardData}
+          selected={selectedImage}
+          onSelect={onSelectImage}
+        />
+      )
     case 'text':
       return (
         <div className="card-text">
@@ -94,7 +105,7 @@ function CardBody({ card }: { card: CanvasCard }) {
   }
 }
 
-export default function Canvas({ cards, onClose }: CanvasProps) {
+export default function Canvas({ cards, onClose, selectedImage, onSelectImage }: CanvasProps) {
   return (
     <aside className="canvas" aria-label="Canvas">
       {cards.length === 0 ? (
@@ -109,7 +120,7 @@ export default function Canvas({ cards, onClose }: CanvasProps) {
                 ×
               </button>
             </header>
-            <CardBody card={card} />
+            <CardBody card={card} selectedImage={selectedImage} onSelectImage={onSelectImage} />
           </section>
         ))
       )}

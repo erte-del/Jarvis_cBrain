@@ -10,7 +10,8 @@ import logging
 from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse
 
 import config
 import events
@@ -19,6 +20,7 @@ from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
+from storage import image_store
 
 log = logging.getLogger("jarvis")
 
@@ -55,6 +57,18 @@ async def health() -> dict:
     return {"ok": True, "auth": brain.auth_source}
 
 
+@app.get("/assets/{image_id}/{filename}")
+async def asset(image_id: str, filename: str, download: bool = False) -> FileResponse:
+    """Image files for the canvas. Names are checked strictly, so only stored images can be read."""
+    try:
+        path = image_store.file_path(image_id, filename)
+    except KeyError:
+        raise HTTPException(404) from None
+    if download:
+        return FileResponse(path, media_type="image/jpeg", filename=f"{image_id}_{filename}")
+    return FileResponse(path, media_type="image/jpeg", headers={"Cache-Control": "max-age=31536000, immutable"})
+
+
 def make_sender(ws: WebSocket) -> hub.Sender:
     """Send JSON to one tab. The lock stops a reply and a hub event (e.g. a
     confirmation card) from being written to the socket at the same moment."""
@@ -67,12 +81,14 @@ def make_sender(ws: WebSocket) -> hub.Sender:
     return send
 
 
-async def run_turn(send: hub.Sender, text: str, model_override: ModelAlias | None) -> None:
+async def run_turn(
+    send: hub.Sender, text: str, model_override: ModelAlias | None, selected_image: dict | None
+) -> None:
     """Answer one user message and stream the reply to the browser."""
     await send(events.status("thinking"))
     try:
         # aclosing: if sending fails (browser gone), end the brain turn right away.
-        async with aclosing(jarvis.handle_text(text, model_override)) as stream:
+        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image)) as stream:
             async for ev in stream:
                 await send(ev)
     finally:
@@ -97,6 +113,7 @@ async def websocket_endpoint(ws: WebSocket) -> None:
     for request in gate.pending_requests():  # questions asked before this tab opened
         await send(request)
     model_override: ModelAlias | None = None
+    selected_image: dict | None = None  # the image you clicked on the canvas
     turns: set[asyncio.Task] = set()
 
     try:
@@ -114,13 +131,22 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                     continue
                 # Run the turn in the background so this loop keeps listening
                 # (later: confirmations, barge-in). The brain runs one turn at a time.
-                task = asyncio.create_task(run_turn(send, text, model_override))
+                task = asyncio.create_task(run_turn(send, text, model_override, selected_image))
                 turns.add(task)
                 task.add_done_callback(turns.discard)
 
             elif kind == "user.confirm":
                 if not gate.resolve(str(msg.get("id")), msg.get("approved") is True):
                     await send(events.error("That confirmation is no longer waiting."))
+
+            elif kind == "user.select_image":
+                image_id, version = msg.get("id"), msg.get("version")
+                if image_id is None:
+                    selected_image = None
+                elif image_store.IMAGE_ID.match(str(image_id)) and isinstance(version, int):
+                    selected_image = {"id": str(image_id), "version": version}
+                else:
+                    await send(events.error("Invalid image selection"))
 
             elif kind == "settings.update":
                 override = msg.get("model_override")

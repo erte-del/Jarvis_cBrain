@@ -47,7 +47,7 @@ Tests:
 - [ ] Phase 4: abilities
   - [x] 4a: confirmation gate + canvas
   - [x] 4b: Claude connectors (Gmail, Calendar, Drive, …)
-  - [ ] 4c: images (search + edit)
+  - [x] 4c: images (search + edit)
   - [ ] 4d: 3D objects
   - [ ] 4e: more features
 - [ ] Phase 5: voice

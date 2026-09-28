@@ -43,6 +43,12 @@ function toolLabel({ name, detail, label }: ActiveTool): string {
       return detail ? `Reading ${detail}…` : 'Reading a web page…'
     case 'ToolSearch':
       return 'Looking for the right tool…'
+    case 'image_search':
+      return 'Finding a photo…'
+    case 'image_edit':
+      return 'Editing the image…'
+    case 'image_undo':
+      return 'Going back a version…'
     default:
       return `${label || name}…`
   }

@@ -23,18 +23,27 @@ class Jarvis:
         text: str,
         model_override: ModelAlias | None = None,
         voice: bool = False,
+        selected_image: dict | None = None,
     ) -> AsyncIterator[events.Event]:
         """Answer one user message, yielding WebSocket events for the browser."""
         reply_id = uuid.uuid4().hex[:12]
         r = route(text, model_override, voice)
         log.info("Route -> %s (%s)", r.model, r.reason)
 
+        # Tell Claude what "this one" means when you've clicked an image.
+        prompt = text
+        if selected_image:
+            prompt = (
+                f"[On the canvas the user has selected image {selected_image['id']}, "
+                f"showing v{selected_image['version']}.]\n{text}"
+            )
+
         consulted_expert = False
         reply_text = ""
         tool_calls: dict[str, ToolStart] = {}  # tool id -> call
         looked_at: list[web.Source] = []  # pages the web tools saw
 
-        async with aclosing(self.brain.send(text, model=r.model)) as stream:
+        async with aclosing(self.brain.send(prompt, model=r.model)) as stream:
             async for ev in stream:
                 match ev:
                     case TextDelta():

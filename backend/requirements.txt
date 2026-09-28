@@ -2,3 +2,4 @@ fastapi==0.141.1
 uvicorn[standard]==0.54.0
 claude-agent-sdk==0.2.160
 python-dotenv==1.2.3
+pillow==12.3.0

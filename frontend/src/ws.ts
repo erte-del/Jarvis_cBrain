@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
+export const API_BASE = 'http://127.0.0.1:8000'
 const WS_URL = 'ws://127.0.0.1:8000/ws'
 
 export type ModelAlias = 'haiku' | 'sonnet' | 'opus'
@@ -30,6 +31,7 @@ export type ServerEvent =
 export type ClientEvent =
   | { type: 'user.text'; text: string }
   | { type: 'user.confirm'; id: string; approved: boolean }
+  | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override: ModelAlias | null }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
@@ -39,6 +41,27 @@ export interface Confirmation {
   summary: string
   details: [string, string][] // [label, value]
   status: ConfirmStatus
+}
+
+export interface ImageVersion {
+  version: number
+  note: string
+  url: string // relative to API_BASE
+  thumb_url: string
+  width: number
+  height: number
+}
+
+export interface ImageCardData {
+  image_id: string
+  current: number
+  credit: { photographer?: string; photographer_url?: string; source_url?: string; source?: string }
+  versions: ImageVersion[]
+}
+
+export interface ImageSelection {
+  id: string
+  version: number
 }
 
 export interface CanvasCard {
@@ -141,6 +164,7 @@ interface ChatState {
   modelOverride: ModelAlias | null
   cards: CanvasCard[]
   canvasOpen: boolean
+  selectedImage: ImageSelection | null
 }
 
 type Action =
@@ -151,6 +175,7 @@ type Action =
   | { kind: 'answer'; id: string; approved: boolean }
   | { kind: 'closeCard'; id: string }
   | { kind: 'toggleCanvas' }
+  | { kind: 'select'; selection: ImageSelection | null }
 
 let localId = 0
 const nextLocalId = () => `local-${++localId}`
@@ -191,8 +216,12 @@ function reducer(state: ChatState, action: Action): ChatState {
 
     case 'closeCard': {
       const cards = state.cards.filter((c) => c.id !== action.id)
-      return { ...state, cards, canvasOpen: state.canvasOpen && cards.length > 0 }
+      const selectedImage = state.selectedImage?.id === action.id ? null : state.selectedImage
+      return { ...state, cards, selectedImage, canvasOpen: state.canvasOpen && cards.length > 0 }
     }
+
+    case 'select':
+      return { ...state, selectedImage: action.selection }
 
     case 'toggleCanvas':
       return { ...state, canvasOpen: !state.canvasOpen }
@@ -267,7 +296,12 @@ function reducer(state: ChatState, action: Action): ChatState {
           const card: CanvasCard = { id: ev.id, kind: ev.kind, title: ev.title, data: ev.data }
           const i = state.cards.findIndex((c) => c.id === ev.id)
           const cards = i === -1 ? [...state.cards, card] : state.cards.map((c, j) => (j === i ? card : c))
-          return { ...state, cards, canvasOpen: true }
+          // A selected image got a new version: keep "this one" pointing at the latest.
+          let selectedImage = state.selectedImage
+          if (ev.kind === 'image' && selectedImage?.id === ev.id) {
+            selectedImage = { id: ev.id, version: (ev.data as unknown as ImageCardData).current }
+          }
+          return { ...state, cards, selectedImage, canvasOpen: true }
         }
         case 'error':
           if (ev.id) {
@@ -294,6 +328,7 @@ const initialState: ChatState = {
   modelOverride: null,
   cards: [],
   canvasOpen: false,
+  selectedImage: null,
 }
 
 export function useJarvis() {
@@ -337,7 +372,23 @@ export function useJarvis() {
   }, [])
 
   const closeCard = useCallback((id: string) => dispatch({ kind: 'closeCard', id }), [])
+  const selectImage = useCallback(
+    (selection: ImageSelection | null) => dispatch({ kind: 'select', selection }),
+    [],
+  )
+
+  // Keep the server in step with what you've selected (also after a reconnect).
+  const selectedImage = state.selectedImage
+  const connected = state.connection === 'open'
+  useEffect(() => {
+    if (!connected) return
+    socketRef.current?.send(
+      selectedImage
+        ? { type: 'user.select_image', id: selectedImage.id, version: selectedImage.version }
+        : { type: 'user.select_image', id: null },
+    )
+  }, [selectedImage, connected])
   const toggleCanvas = useCallback(() => dispatch({ kind: 'toggleCanvas' }), [])
 
-  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas }
+  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage }
 }

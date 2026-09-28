@@ -5,6 +5,7 @@ Every message is a JSON object with a "type" field.
 Client -> server:
     user.text        {text}
     user.confirm     {id, approved}       your answer to a confirm.request
+    user.select_image {id, version} | {id: null}   you clicked an image on the canvas
     settings.update  {model_override: "haiku" | "sonnet" | "opus" | null}
 
 Server -> client:
@@ -21,9 +22,10 @@ Server -> client:
     error                {message, id?}
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
-    canvas.card          {id, kind, title, data}  show (or replace) a canvas card
+    canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
+                         kind "image": data = {image_id, current, credit, versions[]}
 
-Later phases add user.audio_*, canvas images, 3D objects, ...
+Later phases add user.audio_*, 3D objects, ...
 """
 
 from typing import Any

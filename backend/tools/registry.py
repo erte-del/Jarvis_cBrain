@@ -21,6 +21,7 @@ from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 from . import connectors, web
 from .canvas import show_on_canvas
 from .expert import ask_expert
+from .images import image_edit, image_search, image_undo, image_versions
 
 SERVER_NAME = "jarvis"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
@@ -39,6 +40,11 @@ class JarvisTool:
 TOOLS: list[JarvisTool] = [
     JarvisTool(ask_expert, "read"),
     JarvisTool(show_on_canvas, "read"),
+    # Image edits only change Jarvis's own copies and can always be undone.
+    JarvisTool(image_search, "read"),
+    JarvisTool(image_edit, "read"),
+    JarvisTool(image_undo, "read"),
+    JarvisTool(image_versions, "read"),
 ]
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
