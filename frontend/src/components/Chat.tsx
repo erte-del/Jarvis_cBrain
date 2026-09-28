@@ -32,6 +32,12 @@ function ModelBadge({ model }: { model: string }) {
   )
 }
 
+const TOOL_LABELS: Record<string, string> = {
+  ask_expert: 'Consulting Opus (expert)…',
+}
+
+const toolLabel = (name: string) => TOOL_LABELS[name] ?? `Using ${name}…`
+
 function Message({ message }: { message: ChatMessage }) {
   if (message.role === 'notice') {
     return <div className="notice">{message.text}</div>
@@ -48,7 +54,7 @@ function Message({ message }: { message: ChatMessage }) {
       <div className="bubble">
         {message.text && (
           <Markdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[[remarkGfm, { singleTilde: false }]]} // "~$5" means "about $5", not strikethrough
             components={{
               a: (props) => <a {...props} target="_blank" rel="noreferrer noopener" />,
             }}
@@ -59,7 +65,17 @@ function Message({ message }: { message: ChatMessage }) {
         {!message.done && !message.error && <span className="cursor" />}
         {message.error && <div className="msg-error">{message.error}</div>}
       </div>
-      {message.model && <ModelBadge model={message.model} />}
+      {message.model && (
+        <div className="msg-meta">
+          <ModelBadge model={message.model} />
+          {message.expert && (
+            <span className="model-badge model-opus" title="Opus was consulted via ask_expert">
+              + Opus
+            </span>
+          )}
+          {message.reason && <span className="route-reason">{message.reason}</span>}
+        </div>
+      )}
     </div>
   )
 }
@@ -105,6 +121,8 @@ export default function Chat({ messages, connection, busy, activeTool, onSend }:
 
   const last = messages[messages.length - 1]
   const waitingForFirstWord = busy && (!last || last.role === 'user')
+  // A tool started after the reply already had some text (e.g. "Let me think…").
+  const toolMidReply = busy && activeTool && last?.role === 'assistant' && !last.done
 
   return (
     <div className="chat">
@@ -118,10 +136,11 @@ export default function Chat({ messages, connection, busy, activeTool, onSend }:
         {messages.map((m) => (
           <Message key={m.id} message={m} />
         ))}
+        {toolMidReply && <div className="activity">{toolLabel(activeTool)}</div>}
         {waitingForFirstWord && (
           <div className="msg msg-assistant">
             <div className="bubble typing">
-              {activeTool ? `Using ${activeTool}…` : <><span /><span /><span /></>}
+              {activeTool ? toolLabel(activeTool) : <><span /><span /><span /></>}
             </div>
           </div>
         )}

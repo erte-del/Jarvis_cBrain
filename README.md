@@ -35,10 +35,14 @@ To test the brain without the UI:
 
     cd backend && .venv/bin/python chat_cli.py
 
+Tests:
+
+    cd backend && .venv/bin/python -m unittest discover tests
+
 ## Status
 
 - [x] Phase 1: text chat on the Pro subscription
-- [ ] Phase 2: model router (Haiku / Sonnet / Opus, `ask_expert`)
+- [x] Phase 2: model router (Haiku / Sonnet / Opus, `ask_expert`)
 - [ ] Phase 3: web search
 - [ ] Phase 4: canvas and images
 - [ ] Phase 5: voice

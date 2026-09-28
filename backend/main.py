@@ -7,7 +7,6 @@ Run from the backend folder:
 import asyncio
 import json
 import logging
-import uuid
 from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
@@ -15,6 +14,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 import config
 import events
+from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 
@@ -32,6 +32,7 @@ MODELS: set[str] = {"haiku", "sonnet", "opus"}
 # One brain for the whole app: Jarvis has one user and one ongoing conversation,
 # shared by every open tab (and later by voice).
 brain = ClaudeCodeBrain()
+jarvis = Jarvis(brain)
 
 
 @asynccontextmanager
@@ -49,15 +50,14 @@ async def health() -> dict:
     return {"ok": True, "auth": brain.auth_source}
 
 
-async def run_turn(ws: WebSocket, text: str, model: ModelAlias) -> None:
-    """Send one user message to the brain and stream the reply to the browser."""
-    reply_id = uuid.uuid4().hex[:12]
+async def run_turn(ws: WebSocket, text: str, model_override: ModelAlias | None) -> None:
+    """Answer one user message and stream the reply to the browser."""
     await ws.send_json(events.status("thinking"))
     try:
         # aclosing: if sending fails (browser gone), end the brain turn right away.
-        async with aclosing(brain.send(text, model=model)) as stream:
+        async with aclosing(jarvis.handle_text(text, model_override)) as stream:
             async for ev in stream:
-                await ws.send_json(events.from_brain(ev, reply_id))
+                await ws.send_json(ev)
     finally:
         try:
             await ws.send_json(events.status("idle"))
@@ -91,11 +91,9 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                 text = str(msg.get("text", "")).strip()
                 if not text:
                     continue
-                # Phase 2 replaces this with the router.
-                model: ModelAlias = model_override or "sonnet"
                 # Run the turn in the background so this loop keeps listening
                 # (later: confirmations, barge-in). The brain runs one turn at a time.
-                task = asyncio.create_task(run_turn(ws, text, model))
+                task = asyncio.create_task(run_turn(ws, text, model_override))
                 turns.add(task)
                 task.add_done_callback(turns.discard)
 

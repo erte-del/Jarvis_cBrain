@@ -198,9 +198,32 @@
   40% { opacity: 1; transform: translateY(-3px); }
 }
 
-/* Which model answered */
-.model-badge {
+/* Which model answered, and why */
+.msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 5px;
+}
+
+.route-reason {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* A tool is running mid-reply */
+.activity {
+  align-self: flex-start;
+  font-size: 13px;
+  color: var(--opus);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.45; }
+}
+
+.model-badge {
   padding: 1px 8px;
   border-radius: 999px;
   font-size: 11px;

@@ -9,7 +9,10 @@ Client -> server (Phase 1):
 Server -> client (Phase 1):
     status               {state: "idle" | "thinking"}
     assistant.text_delta {id, text}       id = the reply this text belongs to
-    assistant.done       {id, model}      model = full model ID that answered
+    assistant.done       {id, model, routed_to, reason, expert}
+                         model = full model ID that answered
+                         routed_to = the router's pick; reason = why
+                         expert = true if Opus was consulted via ask_expert
     tool.started         {id, name}
     tool.finished        {id, is_error}
     error                {message, id?}
@@ -33,6 +36,17 @@ def error(message: str, reply_id: str | None = None) -> Event:
     if reply_id:
         ev["id"] = reply_id
     return ev
+
+
+def done(reply_id: str, model: str, routed_to: str, reason: str, expert: bool) -> Event:
+    return {
+        "type": "assistant.done",
+        "id": reply_id,
+        "model": model,
+        "routed_to": routed_to,
+        "reason": reason,
+        "expert": expert,
+    }
 
 
 def from_brain(ev: BrainEvent, reply_id: str) -> Event:

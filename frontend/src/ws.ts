@@ -10,7 +10,14 @@ export type ModelAlias = 'haiku' | 'sonnet' | 'opus'
 export type ServerEvent =
   | { type: 'status'; state: 'idle' | 'thinking' }
   | { type: 'assistant.text_delta'; id: string; text: string }
-  | { type: 'assistant.done'; id: string; model: string }
+  | {
+      type: 'assistant.done'
+      id: string
+      model: string // full model ID that answered
+      routed_to: ModelAlias // the router's pick
+      reason: string // why the router picked it
+      expert: boolean // Opus was consulted via ask_expert
+    }
   | { type: 'tool.started'; id: string; name: string }
   | { type: 'tool.finished'; id: string; is_error: boolean }
   | { type: 'error'; message: string; id?: string }
@@ -86,6 +93,8 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'notice'
   text: string
   model?: string // full model ID that answered (assistant only)
+  reason?: string // why the router picked the model
+  expert?: boolean // Opus was consulted via ask_expert
   done?: boolean
   error?: string
 }
@@ -160,7 +169,13 @@ function reducer(state: ChatState, action: Action): ChatState {
         case 'assistant.done':
           return {
             ...state,
-            messages: updateMessage(state.messages, ev.id, (m) => ({ ...m, done: true, model: ev.model })),
+            messages: updateMessage(state.messages, ev.id, (m) => ({
+              ...m,
+              done: true,
+              model: ev.model,
+              reason: ev.reason,
+              expert: ev.expert,
+            })),
           }
         case 'tool.started':
           return { ...state, activeTool: ev.name }

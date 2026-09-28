@@ -21,6 +21,7 @@ from claude_agent_sdk import (
 )
 
 from config import STORAGE_DIR, use_pro_login
+from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
 from .prompts import JARVIS_SYSTEM_PROMPT
@@ -31,6 +32,9 @@ log = logging.getLogger("jarvis.brain")
 # If Claude Code sends nothing for this long, give up on the turn
 # (e.g. it is silently retrying while Anthropic's servers are overloaded).
 IDLE_TIMEOUT_S = 120
+# While one of Jarvis's tools runs (e.g. ask_expert thinking on Opus), Claude Code
+# stays quiet, so allow much longer.
+TOOL_TIMEOUT_S = 600
 
 BLOCKED_TOOLS = [
     "Bash", "Read", "Write", "Edit", "MultiEdit", "NotebookEdit",
@@ -52,9 +56,12 @@ class ClaudeCodeBrain:
             model=self._model,
             tools=[],  # no built-in tools yet (WebSearch/WebFetch come in Phase 3)
             disallowed_tools=BLOCKED_TOOLS,  # belt and braces
+            mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
+            allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
+            env={"MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000)},
             include_partial_messages=True,  # stream text word by word
             setting_sources=[],  # ignore ~/.claude settings, CLAUDE.md files, plugins
-            strict_mcp_config=True,  # only MCP servers Jarvis passes in (none yet)
+            strict_mcp_config=True,  # only MCP servers Jarvis passes in
             skills=[],
             cwd=STORAGE_DIR,
             resume=self._session_id,
@@ -89,10 +96,12 @@ class ClaudeCodeBrain:
                 await client.query(text)
 
                 answered_by = self._model
+                running_tools: set[str] = set()
                 messages = client.receive_response()
                 while True:
+                    timeout = TOOL_TIMEOUT_S if running_tools else IDLE_TIMEOUT_S
                     try:
-                        msg = await asyncio.wait_for(anext(messages), IDLE_TIMEOUT_S)
+                        msg = await asyncio.wait_for(anext(messages), timeout)
                     except StopAsyncIteration:
                         break
                     # Skip anything from sub-agents; Jarvis only shows its own reply.
@@ -112,11 +121,13 @@ class ClaudeCodeBrain:
                             log.warning("Claude error on %s: %s", msg.model, msg.error)
                         for block in msg.content:
                             if isinstance(block, ToolUseBlock):
+                                running_tools.add(block.id)
                                 yield ToolStart(block.id, block.name, block.input)
 
                     elif isinstance(msg, UserMessage) and isinstance(msg.content, list):
                         for block in msg.content:
                             if isinstance(block, ToolResultBlock):
+                                running_tools.discard(block.tool_use_id)
                                 yield ToolResult(block.tool_use_id, bool(block.is_error))
 
                     elif isinstance(msg, SystemMessage) and msg.subtype == "init":
@@ -132,8 +143,8 @@ class ClaudeCodeBrain:
                         else:
                             yield Done(answered_by)
             except TimeoutError:
-                log.error("No response from Claude Code for %ss; restarting session", IDLE_TIMEOUT_S)
-                yield Error(f"No response for {IDLE_TIMEOUT_S}s. Claude may be overloaded; try again.")
+                log.error("No response from Claude Code; restarting session")
+                yield Error("No response from Claude for too long. It may be overloaded; try again.")
             except Exception as e:  # keep the app alive; report to the UI
                 log.exception("Brain turn failed")
                 yield Error(f"{type(e).__name__}: {e}")
