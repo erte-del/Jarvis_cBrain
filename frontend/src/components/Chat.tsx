@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import type { ChatMessage, ConnectionState } from '../ws'
+import type { ActiveTool, ChatMessage, ConnectionState, Source } from '../ws'
 
 interface ChatProps {
   messages: ChatMessage[]
   connection: ConnectionState
   busy: boolean
-  activeTool: string | null
+  activeTool: ActiveTool | null
   onSend: (text: string) => boolean
 }
 
@@ -32,13 +32,59 @@ function ModelBadge({ model }: { model: string }) {
   )
 }
 
-const TOOL_LABELS: Record<string, string> = {
-  ask_expert: 'Consulting Opus (expert)…',
+function toolLabel({ name, detail }: ActiveTool): string {
+  switch (name) {
+    case 'ask_expert':
+      return 'Consulting Opus (expert)…'
+    case 'WebSearch':
+      return detail ? `Searching the web for “${detail}”…` : 'Searching the web…'
+    case 'WebFetch':
+      return detail ? `Reading ${detail}…` : 'Reading a web page…'
+    default:
+      return `Using ${name}…`
+  }
 }
 
-const toolLabel = (name: string) => TOOL_LABELS[name] ?? `Using ${name}…`
+// Claude ends web answers with a "Sources:" list of links. When we have the
+// sources as chips, hide that list from the text.
+const SOURCES_BLOCK =
+  /\n+[ \t]*(?:#+[ \t]*)?(?:\*\*|__)?Sources?[ \t]*:?[ \t]*(?:\*\*|__)?[ \t]*:?[ \t]*\n(?:[ \t]*(?:[-*+]|\d+\.)[ \t]+.*(?:\n|$))+\s*$/i
+
+const stripSourcesBlock = (text: string) => text.replace(SOURCES_BLOCK, '')
+
+const domain = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '')
+  } catch {
+    return url
+  }
+}
+
+function SourceChips({ sources }: { sources: Source[] }) {
+  const safe = sources.filter((s) => /^https?:\/\//i.test(s.url))
+  if (safe.length === 0) return null
+  return (
+    <div className="sources">
+      {safe.map((s) => (
+        <a
+          key={s.url}
+          className="source-chip"
+          href={s.url}
+          target="_blank"
+          rel="noreferrer noopener"
+          title={s.title ? `${s.title}\n${s.url}` : s.url}
+        >
+          {domain(s.url)}
+        </a>
+      ))}
+    </div>
+  )
+}
 
 function Message({ message }: { message: ChatMessage }) {
+  const hasSources = !!message.sources?.length
+  const text = hasSources ? stripSourcesBlock(message.text) : message.text
+
   if (message.role === 'notice') {
     return <div className="notice">{message.text}</div>
   }
@@ -52,18 +98,19 @@ function Message({ message }: { message: ChatMessage }) {
   return (
     <div className="msg msg-assistant">
       <div className="bubble">
-        {message.text && (
+        {text && (
           <Markdown
             remarkPlugins={[[remarkGfm, { singleTilde: false }]]} // "~$5" means "about $5", not strikethrough
             components={{
               a: (props) => <a {...props} target="_blank" rel="noreferrer noopener" />,
             }}
           >
-            {message.text}
+            {text}
           </Markdown>
         )}
         {!message.done && !message.error && <span className="cursor" />}
         {message.error && <div className="msg-error">{message.error}</div>}
+        {hasSources && <SourceChips sources={message.sources!} />}
       </div>
       {message.model && (
         <div className="msg-meta">

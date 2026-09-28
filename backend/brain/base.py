@@ -29,9 +29,10 @@ class ToolStart:
 
 @dataclass
 class ToolResult:
-    """A tool finished."""
+    """A tool finished. `data` is the tool's structured result, when there is one."""
     id: str
     is_error: bool = False
+    data: Any = None
     type: Literal["tool_result"] = "tool_result"
 
 

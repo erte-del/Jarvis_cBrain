@@ -9,11 +9,12 @@ Client -> server (Phase 1):
 Server -> client (Phase 1):
     status               {state: "idle" | "thinking"}
     assistant.text_delta {id, text}       id = the reply this text belongs to
-    assistant.done       {id, model, routed_to, reason, expert}
+    assistant.done       {id, model, routed_to, reason, expert, sources}
                          model = full model ID that answered
                          routed_to = the router's pick; reason = why
                          expert = true if Opus was consulted via ask_expert
-    tool.started         {id, name}
+                         sources = [{title, url}] web pages behind the answer
+    tool.started         {id, name, detail}   detail = e.g. the search query
     tool.finished        {id, is_error}
     error                {message, id?}
 
@@ -38,7 +39,14 @@ def error(message: str, reply_id: str | None = None) -> Event:
     return ev
 
 
-def done(reply_id: str, model: str, routed_to: str, reason: str, expert: bool) -> Event:
+def done(
+    reply_id: str,
+    model: str,
+    routed_to: str,
+    reason: str,
+    expert: bool,
+    sources: list[dict[str, str]],
+) -> Event:
     return {
         "type": "assistant.done",
         "id": reply_id,
@@ -46,7 +54,12 @@ def done(reply_id: str, model: str, routed_to: str, reason: str, expert: bool) -
         "routed_to": routed_to,
         "reason": reason,
         "expert": expert,
+        "sources": sources,
     }
+
+
+def tool_started(tool_id: str, name: str, detail: str = "") -> Event:
+    return {"type": "tool.started", "id": tool_id, "name": name, "detail": detail}
 
 
 def from_brain(ev: BrainEvent, reply_id: str) -> Event:
@@ -57,7 +70,7 @@ def from_brain(ev: BrainEvent, reply_id: str) -> Event:
         case Done(model=model):
             return {"type": "assistant.done", "id": reply_id, "model": model}
         case ToolStart(id=tool_id, name=name):
-            return {"type": "tool.started", "id": tool_id, "name": name}
+            return tool_started(tool_id, name)
         case ToolResult(id=tool_id, is_error=is_error):
             return {"type": "tool.finished", "id": tool_id, "is_error": is_error}
         case UIEvent(name=name, data=data):

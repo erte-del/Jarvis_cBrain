@@ -54,8 +54,9 @@ class ClaudeCodeBrain:
         return ClaudeAgentOptions(
             system_prompt=JARVIS_SYSTEM_PROMPT,  # replaces Claude Code's coding prompt
             model=self._model,
-            tools=[],  # no built-in tools yet (WebSearch/WebFetch come in Phase 3)
+            tools=registry.builtin_tools(),  # only WebSearch / WebFetch from Claude Code
             disallowed_tools=BLOCKED_TOOLS,  # belt and braces
+            hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
             mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
             allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
             env={"MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000)},
@@ -128,7 +129,9 @@ class ClaudeCodeBrain:
                         for block in msg.content:
                             if isinstance(block, ToolResultBlock):
                                 running_tools.discard(block.tool_use_id)
-                                yield ToolResult(block.tool_use_id, bool(block.is_error))
+                                yield ToolResult(
+                                    block.tool_use_id, bool(block.is_error), msg.tool_use_result
+                                )
 
                     elif isinstance(msg, SystemMessage) and msg.subtype == "init":
                         self.auth_source = msg.data.get("apiKeySource")

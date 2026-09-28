@@ -17,8 +17,9 @@ export type ServerEvent =
       routed_to: ModelAlias // the router's pick
       reason: string // why the router picked it
       expert: boolean // Opus was consulted via ask_expert
+      sources: Source[] // web pages behind the answer
     }
-  | { type: 'tool.started'; id: string; name: string }
+  | { type: 'tool.started'; id: string; name: string; detail: string }
   | { type: 'tool.finished'; id: string; is_error: boolean }
   | { type: 'error'; message: string; id?: string }
 
@@ -28,6 +29,16 @@ export type ClientEvent =
   | { type: 'settings.update'; model_override: ModelAlias | null }
 
 export type ConnectionState = 'connecting' | 'open' | 'closed'
+
+export interface Source {
+  title: string
+  url: string
+}
+
+export interface ActiveTool {
+  name: string
+  detail: string // e.g. the search query or the site being read
+}
 
 // ---------------------------------------------------------------------------
 // Socket: one connection that reconnects by itself if the backend restarts.
@@ -95,6 +106,7 @@ export interface ChatMessage {
   model?: string // full model ID that answered (assistant only)
   reason?: string // why the router picked the model
   expert?: boolean // Opus was consulted via ask_expert
+  sources?: Source[]
   done?: boolean
   error?: string
 }
@@ -103,7 +115,7 @@ interface ChatState {
   messages: ChatMessage[]
   connection: ConnectionState
   busy: boolean // a reply is in progress
-  activeTool: string | null
+  activeTool: ActiveTool | null
   modelOverride: ModelAlias | null
 }
 
@@ -175,10 +187,11 @@ function reducer(state: ChatState, action: Action): ChatState {
               model: ev.model,
               reason: ev.reason,
               expert: ev.expert,
+              sources: ev.sources,
             })),
           }
         case 'tool.started':
-          return { ...state, activeTool: ev.name }
+          return { ...state, activeTool: { name: ev.name, detail: ev.detail } }
         case 'tool.finished':
           return { ...state, activeTool: null }
         case 'error':

@@ -173,6 +173,35 @@
   50% { opacity: 0; }
 }
 
+/* Web sources under an answer */
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.source-chip {
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  text-decoration: none;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 /* "Thinking" dots before the first word arrives */
 .typing {
   display: flex;

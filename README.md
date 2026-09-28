@@ -43,7 +43,7 @@ Tests:
 
 - [x] Phase 1: text chat on the Pro subscription
 - [x] Phase 2: model router (Haiku / Sonnet / Opus, `ask_expert`)
-- [ ] Phase 3: web search
+- [x] Phase 3: web search
 - [ ] Phase 4: canvas and images
 - [ ] Phase 5: voice
 - [ ] Phase 6: connectors + confirmation gate
