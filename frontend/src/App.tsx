@@ -11,6 +11,8 @@ const CONNECTION_LABEL = {
 
 export default function App() {
   const jarvis = useJarvis()
+  // A 3D model is open: its panel gets most of the width (chat stays usable on the left).
+  const showingModel = jarvis.canvasOpen && jarvis.cards.some((c) => c.kind === 'model3d' && c.id === jarvis.canvasTab)
 
   return (
     <div className="app">
@@ -45,7 +47,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className={`workspace${jarvis.canvasOpen ? ' with-canvas' : ''}`}>
+      <main className={`workspace${jarvis.canvasOpen ? ' with-canvas' : ''}${showingModel ? ' with-model' : ''}`}>
         <Chat
           messages={jarvis.messages}
           connection={jarvis.connection}
@@ -60,6 +62,8 @@ export default function App() {
             onClose={jarvis.closeCard}
             selectedImage={jarvis.selectedImage}
             onSelectImage={jarvis.selectImage}
+            tab={jarvis.canvasTab}
+            onTab={jarvis.setCanvasTab}
           />
         )}
       </main>

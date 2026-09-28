@@ -1,15 +1,20 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Text, table, email list, events and image cards. 3D comes in step 4d.
+// Text, table, email list, events and image cards; each 3D model gets its own big tab.
 
-import type { CanvasCard, ImageCardData, ImageSelection } from '../ws'
+import { lazy, Suspense } from 'react'
+import type { CanvasCard, ImageCardData, ImageSelection, Model3DData } from '../ws'
 import ImageViewer from './ImageViewer'
 import Markdown from './Markdown'
 
+// three.js is big: only load the 3D viewer when a 3D model first appears.
+const Model3DViewer = lazy(() => import('./Model3DViewer'))
 interface CanvasProps {
   cards: CanvasCard[]
   onClose: (id: string) => void
   selectedImage: ImageSelection | null
   onSelectImage: (selection: ImageSelection | null) => void
+  tab: string
+  onTab: (tab: string) => void
 }
 
 function TableCard({ data }: { data: Record<string, unknown> }) {
@@ -78,7 +83,11 @@ function Events({ items }: { items: Item[] }) {
   )
 }
 
-function CardBody({ card, selectedImage, onSelectImage }: { card: CanvasCard } & Omit<CanvasProps, 'cards' | 'onClose'>) {
+function CardBody({
+  card,
+  selectedImage,
+  onSelectImage,
+}: { card: CanvasCard } & Pick<CanvasProps, 'selectedImage' | 'onSelectImage'>) {
   switch (card.kind) {
     case 'image':
       return (
@@ -105,24 +114,56 @@ function CardBody({ card, selectedImage, onSelectImage }: { card: CanvasCard } &
   }
 }
 
-export default function Canvas({ cards, onClose, selectedImage, onSelectImage }: CanvasProps) {
+export default function Canvas({ cards, onClose, selectedImage, onSelectImage, tab, onTab }: CanvasProps) {
+  const models = cards.filter((c) => c.kind === 'model3d')
+  const others = cards.filter((c) => c.kind !== 'model3d')
+  const model = models.find((m) => m.id === tab)
+
   return (
     <aside className="canvas" aria-label="Canvas">
-      {cards.length === 0 ? (
-        <div className="canvas-empty">Things Jarvis shows you will appear here.</div>
-      ) : (
-        [...cards].reverse().map((card) => (
-          <section key={card.id} className="card">
-            <header className="card-head">
-              <span className="card-title">{card.title}</span>
-              <span className="card-id">{card.id}</span>
-              <button className="card-close" onClick={() => onClose(card.id)} aria-label="Close card">
+      {models.length > 0 && (
+        <nav className="canvas-tabs" role="tablist">
+          {models.map((m) => (
+            <span key={m.id} className={`canvas-tab${m.id === tab ? ' active' : ''}`}>
+              <button role="tab" aria-selected={m.id === tab} onClick={() => onTab(m.id)}>
+                3D · {m.title}
+              </button>
+              <button className="tab-close" onClick={() => onClose(m.id)} aria-label={`Close ${m.title}`}>
                 ×
               </button>
-            </header>
-            <CardBody card={card} selectedImage={selectedImage} onSelectImage={onSelectImage} />
-          </section>
-        ))
+            </span>
+          ))}
+          <span className={`canvas-tab${!model ? ' active' : ''}`}>
+            <button role="tab" aria-selected={!model} onClick={() => onTab('cards')}>
+              Cards{others.length > 0 && ` (${others.length})`}
+            </button>
+          </span>
+        </nav>
+      )}
+
+      {model ? (
+        <Suspense fallback={<div className="canvas-empty">Loading the 3D viewer…</div>}>
+          <Model3DViewer key={model.id} data={model.data as unknown as Model3DData} />
+        </Suspense>
+      ) : (
+        <div className="canvas-cards">
+          {others.length === 0 ? (
+            <div className="canvas-empty">Things Jarvis shows you will appear here.</div>
+          ) : (
+            [...others].reverse().map((card) => (
+              <section key={card.id} className="card">
+                <header className="card-head">
+                  <span className="card-title">{card.title}</span>
+                  <span className="card-id">{card.id}</span>
+                  <button className="card-close" onClick={() => onClose(card.id)} aria-label="Close card">
+                    ×
+                  </button>
+                </header>
+                <CardBody card={card} selectedImage={selectedImage} onSelectImage={onSelectImage} />
+              </section>
+            ))
+          )}
+        </div>
       )}
     </aside>
   )

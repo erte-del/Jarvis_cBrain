@@ -48,7 +48,14 @@ function toolLabel({ name, detail, label }: ActiveTool): string {
     case 'image_edit':
       return 'Editing the image…'
     case 'image_undo':
+    case 'revert_3d':
       return 'Going back a version…'
+    case 'preview_3d':
+      return 'Building the 3D preview…'
+    case 'get_3d_spec':
+      return 'Reading the 3D model…'
+    case 'export_3d':
+      return 'Building the final 3D file in Blender…'
     default:
       return `${label || name}…`
   }

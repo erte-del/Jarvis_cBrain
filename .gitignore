@@ -13,6 +13,7 @@ __pycache__/
 *.db-journal
 backend/storage/assets/*
 !backend/storage/assets/.gitkeep
+backend/storage/models/
 
 # Node / frontend
 node_modules/

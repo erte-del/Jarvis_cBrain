@@ -24,6 +24,7 @@ Server -> client:
     confirm.resolved     {id, status}     status = approved | denied | expired
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
                          kind "image": data = {image_id, current, credit, versions[]}
+                         kind "model3d": data = {model_id, current, versions[], exports[]}
 
 Later phases add user.audio_*, 3D objects, ...
 """

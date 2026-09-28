@@ -11,6 +11,7 @@ from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 import config
@@ -20,7 +21,7 @@ from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
-from storage import image_store
+from storage import image_store, model_store
 
 log = logging.getLogger("jarvis")
 
@@ -51,6 +52,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Jarvis", lifespan=lifespan)
 
+# The 3D viewer downloads preview files with fetch(), which browsers only allow
+# across ports if the server says so. Only Jarvis's own page, and only reading.
+app.add_middleware(CORSMiddleware, allow_origins=sorted(ALLOWED_ORIGINS), allow_methods=["GET"])
+
 
 @app.get("/health")
 async def health() -> dict:
@@ -79,6 +84,19 @@ def make_sender(ws: WebSocket) -> hub.Sender:
             await ws.send_json(event)
 
     return send
+
+
+@app.get("/models/{model_id}/{filename}")
+async def model_file(model_id: str, filename: str, download: bool = False) -> FileResponse:
+    """3D previews (.glb) and finished exports. Names are checked strictly."""
+    try:
+        path = model_store.file_path(model_id, filename)
+    except KeyError:
+        raise HTTPException(404) from None
+    if download:
+        name = model_store.download_name(model_store.load(model_id), filename)
+        return FileResponse(path, filename=name)
+    return FileResponse(path, media_type="model/gltf-binary")
 
 
 async def run_turn(

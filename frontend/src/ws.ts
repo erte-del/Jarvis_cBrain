@@ -59,6 +59,13 @@ export interface ImageCardData {
   versions: ImageVersion[]
 }
 
+export interface Model3DData {
+  model_id: string
+  current: number
+  versions: { version: number; note: string; parts: number; size: [number, number, number]; preview_url: string }[]
+  exports: { version: number; format: string; url: string; name: string }[]
+}
+
 export interface ImageSelection {
   id: string
   version: number
@@ -164,6 +171,7 @@ interface ChatState {
   modelOverride: ModelAlias | null
   cards: CanvasCard[]
   canvasOpen: boolean
+  canvasTab: string // 'cards', or the id of a 3D model shown in its own tab
   selectedImage: ImageSelection | null
 }
 
@@ -176,6 +184,7 @@ type Action =
   | { kind: 'closeCard'; id: string }
   | { kind: 'toggleCanvas' }
   | { kind: 'select'; selection: ImageSelection | null }
+  | { kind: 'tab'; tab: string }
 
 let localId = 0
 const nextLocalId = () => `local-${++localId}`
@@ -217,8 +226,12 @@ function reducer(state: ChatState, action: Action): ChatState {
     case 'closeCard': {
       const cards = state.cards.filter((c) => c.id !== action.id)
       const selectedImage = state.selectedImage?.id === action.id ? null : state.selectedImage
-      return { ...state, cards, selectedImage, canvasOpen: state.canvasOpen && cards.length > 0 }
+      const canvasTab = state.canvasTab === action.id ? 'cards' : state.canvasTab
+      return { ...state, cards, selectedImage, canvasTab, canvasOpen: state.canvasOpen && cards.length > 0 }
     }
+
+    case 'tab':
+      return { ...state, canvasTab: action.tab }
 
     case 'select':
       return { ...state, selectedImage: action.selection }
@@ -301,7 +314,9 @@ function reducer(state: ChatState, action: Action): ChatState {
           if (ev.kind === 'image' && selectedImage?.id === ev.id) {
             selectedImage = { id: ev.id, version: (ev.data as unknown as ImageCardData).current }
           }
-          return { ...state, cards, selectedImage, canvasOpen: true }
+          // A 3D model opens (or comes back to) its own big tab.
+          const canvasTab = ev.kind === 'model3d' ? ev.id : state.canvasTab
+          return { ...state, cards, selectedImage, canvasTab, canvasOpen: true }
         }
         case 'error':
           if (ev.id) {
@@ -328,6 +343,7 @@ const initialState: ChatState = {
   modelOverride: null,
   cards: [],
   canvasOpen: false,
+  canvasTab: 'cards',
   selectedImage: null,
 }
 
@@ -389,6 +405,7 @@ export function useJarvis() {
     )
   }, [selectedImage, connected])
   const toggleCanvas = useCallback(() => dispatch({ kind: 'toggleCanvas' }), [])
+  const setCanvasTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage }
+  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage, setCanvasTab }
 }

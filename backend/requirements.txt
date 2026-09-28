@@ -3,3 +3,7 @@ uvicorn[standard]==0.54.0
 claude-agent-sdk==0.2.160
 python-dotenv==1.2.3
 pillow==12.3.0
+trimesh==5.1.0
+numpy==2.5.3
+shapely==2.1.2
+mapbox-earcut==2.1.0

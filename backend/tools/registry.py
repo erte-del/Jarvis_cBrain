@@ -22,6 +22,7 @@ from . import connectors, web
 from .canvas import show_on_canvas
 from .expert import ask_expert
 from .images import image_edit, image_search, image_undo, image_versions
+from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 
 SERVER_NAME = "jarvis"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
@@ -45,7 +46,15 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(image_edit, "read"),
     JarvisTool(image_undo, "read"),
     JarvisTool(image_versions, "read"),
+    # 3D previews only change Jarvis's own copies. The final file needs your approval.
+    JarvisTool(preview_3d, "read"),
+    JarvisTool(revert_3d, "read"),
+    JarvisTool(get_3d_spec, "read"),
+    JarvisTool(export_3d, "act"),
 ]
+
+# Friendlier titles for confirmation cards.
+TITLES = {"export_3d": "Build the final 3D file"}
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
 # ToolSearch lets Claude find connector tools on demand instead of loading
@@ -119,6 +128,8 @@ def friendly_name(name: str) -> str:
     """
     if name.startswith("mcp__"):
         server, _, tool_name = name.removeprefix("mcp__").partition("__")
+        if server == SERVER_NAME and tool_name in TITLES:
+            return TITLES[tool_name]
         action = tool_name.replace("_", " ").replace("-", " ").strip().capitalize() or tool_name
         if server == SERVER_NAME:
             return action
