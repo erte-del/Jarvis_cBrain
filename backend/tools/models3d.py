@@ -1,14 +1,18 @@
 """3D objects: fast previews, changes through chat, final file only after approval. (Phase 4d)
 
 Flow (JARVIS_BUILD_PROMPT.md, section 7b):
-  preview_3d  -> low-detail preview in the big 3D panel (new version every change)
-  revert_3d   -> back to an earlier version
+  preview_3d  -> low-detail preview in the big 3D panel (new version every change).
+                 Claude also gets 4 rendered views and a list of floating parts, so it
+                 can check its own work and fix mistakes before replying.
+  revert_3d  -> back to an earlier version
   get_3d_spec -> read back the spec of a version (e.g. after a restart)
   export_3d   -> 'act' tool: goes through the confirmation gate, then Blender builds
                  the detailed final file (.blend, .fbx, .obj, .stl, .gltf, .glb)
 """
 
 import asyncio
+import base64
+import io
 import json
 import logging
 import shutil
@@ -18,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from claude_agent_sdk import tool
+from PIL import Image, ImageDraw
 
 import config
 import events
@@ -29,18 +34,30 @@ from . import shapes
 log = logging.getLogger("jarvis.3d")
 
 EXPORT_SCRIPT = Path(__file__).with_name("blender_export_script.py")
+RENDER_SCRIPT = Path(__file__).with_name("blender_render_script.py")
 BLENDER_TIMEOUT_S = 180
+RENDER_TIMEOUT_S = 60
+VIEWS = [("three_quarter", "3/4 front"), ("side", "side (front is right)"),
+         ("front", "front"), ("top", "top (front is right)")]
 
 SPEC_DESCRIPTION = (
-    "The object as a list of parts. Units are meters, Y is up, sizes realistic. "
-    "Each part: {name, shape, position [x,y,z] (the part's center), rotation [x,y,z] degrees, "
-    "scale [x,y,z] (optional, e.g. to squash a sphere), color (name or #hex), "
-    "material: matte|glossy|metal|glass} plus its shape's fields: "
-    "box {size [w,h,d]}; sphere {radius}; cylinder {radius} or {radius_top, radius_bottom}, {height}; "
-    "cone {radius, height}; torus {radius, tube} (a ring lying flat); capsule {radius, height (total)}; "
+    "The object as a list of parts. Units are meters, Y is up, the ground is y=0, sizes realistic. "
+    "Vehicles, furniture and long objects: length along X with the FRONT toward +X, width along Z, "
+    "centered on z=0. Each part: {name, shape, position [x,y,z] (the part's center), rotation [x,y,z] "
+    "degrees, scale [x,y,z] (optional), color (name or #hex), material: matte|glossy|metal|glass, "
+    "mirror: true (also adds a copy on the other side, z -> -z; write symmetric parts ONCE with mirror)} "
+    "plus its shape's fields: "
+    "box {size [w,h,d], round 0–0.5 (rounded corners, as a fraction of the smallest side)}; "
+    "sphere {radius}; cylinder {radius} or {radius_top, radius_bottom}, {height}; cone {radius, height}; "
+    "torus {radius, tube} (a ring lying flat); capsule {radius, height (total)}; "
     "lathe {points [[radius, y], ...]} spun around the vertical axis (vases, bottles, lamps); "
-    "extrude {outline [[x, y], ...] in the X-Y plane, depth along Z} (signs, flat shapes, profiles). "
-    "Round shapes stand upright (axis along Y)."
+    "extrude {outline [[x, y], ...] in the X-Y plane, depth along Z} (flat shapes, signs, profiles); "
+    "loft {sections [{x, y, width, height, roundness, bottom_roundness}, ...]}: a SMOOTH body through "
+    "cross-sections placed along X (x increasing; y = the section's center height; width along Z; "
+    "roundness 0 = square, 1 = oval; bottom_roundness defaults to roundness). Use loft for car bodies, "
+    "cabins, boat hulls, fuselages, sofas: anything curved in more than one direction. "
+    "Round shapes stand upright (axis along Y); rotate [90,0,0] to make a wheel. "
+    "Parts must touch or overlap slightly: nothing should float."
 )
 
 
@@ -61,20 +78,77 @@ def _load(model_id: Any) -> model_store.ModelRecord:
 
 # ---- Preview ------------------------------------------------------------------------
 
-def _build_preview(spec: dict[str, Any]) -> tuple[bytes, int, list[float], int]:
+def _build_preview(spec: dict[str, Any]) -> tuple[bytes, int, list[float], int, list[tuple[str, float]]]:
     parts = shapes.validate(spec)
     scene = shapes.build_scene(parts, "preview")
     size, triangles = shapes.summary(scene)
-    return shapes.to_glb(scene), len(parts), size, triangles
+    return shapes.to_glb(scene), len(parts), size, triangles, shapes.floating_parts(scene)
+
+
+async def _blender(script: Path, *args: str, ok_marker: str, timeout: float) -> str:
+    """Run one of Jarvis's fixed Blender scripts in the background. Returns Blender's output."""
+    blender = config.BLENDER_PATH
+    if not Path(blender).exists():
+        raise RuntimeError(f"Blender not found at {blender} (set BLENDER_PATH in .env)")
+    proc = await asyncio.create_subprocess_exec(
+        blender, "--background", "--factory-startup", "--python-exit-code", "1",
+        "--python", str(script), "--", *args,
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
+    )
+    try:
+        out, _ = await asyncio.wait_for(proc.communicate(), timeout)
+    except TimeoutError:
+        proc.kill()
+        raise RuntimeError("Blender took too long") from None
+    text = out.decode(errors="replace")
+    if proc.returncode != 0 or ok_marker not in text:
+        log.error("Blender (%s) failed:\n%s", script.name, text[-3000:])
+        raise RuntimeError("Blender failed (details in the backend log)")
+    return text
+
+
+def _contact_sheet(folder: Path) -> bytes:
+    """The four views in a 2×2 grid with labels, as a JPEG for Claude."""
+    tiles = [(Image.open(folder / f"{name}.png").convert("RGB"), label) for name, label in VIEWS]
+    w, h = tiles[0][0].size
+    sheet = Image.new("RGB", (w * 2, h * 2), "white")
+    draw = ImageDraw.Draw(sheet)
+    for i, (tile, label) in enumerate(tiles):
+        x, y = (i % 2) * w, (i // 2) * h
+        sheet.paste(tile, (x, y))
+        draw.rectangle([x, y, x + 8 + 7 * len(label), y + 18], fill="white")
+        draw.text((x + 5, y + 4), label, fill="black")
+    buf = io.BytesIO()
+    sheet.save(buf, "JPEG", quality=82)
+    return buf.getvalue()
+
+
+async def render_views(glb: bytes) -> bytes | None:
+    """Four quick views of a preview for Claude to look at, or None if Blender isn't available."""
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            (folder / "preview.glb").write_bytes(glb)
+            await _blender(RENDER_SCRIPT, str(folder / "preview.glb"), str(folder),
+                           ok_marker="JARVIS_RENDER_OK", timeout=RENDER_TIMEOUT_S)
+            return await asyncio.to_thread(_contact_sheet, folder)
+    except Exception:
+        log.warning("Could not render preview views", exc_info=True)
+        return None
 
 
 @tool(
     "preview_3d",
     "Make or update a fast, low-detail 3D PREVIEW and show it in the big 3D panel. Use this "
-    "whenever the user asks for a 3D object, model, shape or scene. For a change, call it again "
+    "whenever the user asks for a 3D object, model, shape or scene. For a real, recognisable "
+    "object (a specific car, plane, building, product), look at a reference photo first "
+    "(image_search, ideally a side view) and match its silhouette and proportions. "
+    "For a change, call it again "
     "with the same model_id and the FULL updated spec; each call is a new version. "
     "This never makes the final file (that's export_3d, only after the user approves). "
-    "Use as few parts as show the shape: previews must be fast.",
+    "You get back 4 rendered views and a list of any floating parts: check them and fix "
+    "mistakes before replying. Keep previews fast: as few parts as show the shape, loft for "
+    "smooth bodies, and mirror for symmetric parts.",
     {
         "type": "object",
         "properties": {
@@ -94,7 +168,7 @@ def _build_preview(spec: dict[str, Any]) -> tuple[bytes, int, list[float], int]:
 async def preview_3d(args: dict[str, Any]) -> dict[str, Any]:
     spec = args.get("spec")
     try:
-        glb, parts, size, triangles = await asyncio.to_thread(_build_preview, spec)
+        glb, parts, size, triangles, floating = await asyncio.to_thread(_build_preview, spec)
     except shapes.SpecError as e:
         return _text(f"Preview not made: {e}", is_error=True)
     except Exception as e:  # geometry library errors
@@ -109,15 +183,36 @@ async def preview_3d(args: dict[str, Any]) -> dict[str, Any]:
         rec.title = str(args["title"])[:80]
     note = str(args.get("note") or ("first version" if not rec.versions else "changed"))
     v = await asyncio.to_thread(model_store.add_version, rec, spec, glb, note, parts, size)
-    await _show(rec)
-    log.info("3D preview %s v%s: %s parts, %s triangles, size %s", rec.id, v.version, parts, triangles, size)
+    await _show(rec)  # the user sees it right away; the check below runs after
+    log.info("3D preview %s v%s: %s parts, %s triangles, size %s, floating %s",
+             rec.id, v.version, parts, triangles, size, floating)
+
+    sheet = await render_views(glb)
     w, h, d = size
-    return _text(
+    lines = [
         f"{rec.id} v{v.version} is showing in the 3D preview panel: {parts} parts, "
-        f"{w} × {h} × {d} m (width × height × depth). The user can rotate and zoom it. "
-        "Ask what they'd like to change. When they say it's good, ask which file type they want "
+        f"{w} × {h} × {d} m (along X × Y × Z).",
+    ]
+    if floating:
+        lines.append("PROBLEM: these parts don't touch the rest of the object (floating): "
+                     + "; ".join(f"{name} ({gap * 100:.0f} cm gap)" for name, gap in floating) + ".")
+    if sheet:
+        lines.append(
+            "Attached: 4 views of the preview (3/4 front, side, front, top). CHECK THEM before replying: "
+            "floating or misplaced parts, parts facing the wrong way, wrong proportions, anything that "
+            "doesn't look like what the user asked for. If you looked at a reference photo, compare "
+            "the side view with it: silhouette, roofline, where the wheels and lights sit."
+        )
+    lines.append(
+        "If something is clearly wrong, fix it now with another preview_3d call (same model_id, full spec); "
+        "do at most 2 fix rounds, then reply. Otherwise tell the user briefly and ask what to change. "
+        "When they say it's good, ask which file type they want "
         f"({', '.join('.' + f for f in model_store.FORMATS)}) and then call export_3d."
     )
+    content: list[dict[str, Any]] = [{"type": "text", "text": "\n".join(lines)}]
+    if sheet:
+        content.append({"type": "image", "data": base64.b64encode(sheet).decode(), "mimeType": "image/jpeg"})
+    return {"content": content}
 
 
 @tool(
@@ -162,26 +257,6 @@ async def get_3d_spec(args: dict[str, Any]) -> dict[str, Any]:
 
 # ---- Final export -------------------------------------------------------------------
 
-async def _run_blender(src: Path, dst: Path, fmt: str) -> None:
-    blender = config.BLENDER_PATH
-    if not Path(blender).exists():
-        raise RuntimeError(f"Blender not found at {blender} (set BLENDER_PATH in .env)")
-    proc = await asyncio.create_subprocess_exec(
-        blender, "--background", "--factory-startup", "--python-exit-code", "1",
-        "--python", str(EXPORT_SCRIPT), "--", str(src), str(dst), fmt,
-        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
-    )
-    try:
-        out, _ = await asyncio.wait_for(proc.communicate(), BLENDER_TIMEOUT_S)
-    except TimeoutError:
-        proc.kill()
-        raise RuntimeError("Blender took too long") from None
-    text = out.decode(errors="replace")
-    if proc.returncode != 0 or "JARVIS_EXPORT_OK" not in text:
-        log.error("Blender export failed:\n%s", text[-3000:])
-        raise RuntimeError("Blender couldn't build the file (details in the backend log)")
-
-
 async def build_final(rec: model_store.ModelRecord, version: int, fmt: str) -> str:
     """Build the detailed model and export it. Returns the stored file name."""
     parts = shapes.validate(model_store.spec(rec, version))
@@ -194,7 +269,8 @@ async def build_final(rec: model_store.ModelRecord, version: int, fmt: str) -> s
         src.write_bytes(glb)
         out_dir = tmp_dir / "out"
         out_dir.mkdir()
-        await _run_blender(src, out_dir / f"model.{fmt}", fmt)
+        await _blender(EXPORT_SCRIPT, str(src), str(out_dir / f"model.{fmt}"), fmt,
+                       ok_marker="JARVIS_EXPORT_OK", timeout=BLENDER_TIMEOUT_S)
         produced = sorted(out_dir.iterdir())
         if len(produced) == 1:  # a single file (.blend, .fbx, .stl, .glb)
             name = f"final_v{version}.{fmt}"

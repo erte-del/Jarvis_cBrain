@@ -27,6 +27,77 @@ CHAIR = {"parts": [
 ]}
 
 
+CAR = {"parts": [
+    {"name": "body", "shape": "loft", "color": "gold", "sections": [
+        {"x": -2.2, "y": 0.55, "width": 1.6, "height": 0.5, "roundness": 0.4, "bottom_roundness": 0.1},
+        {"x": 0.0, "y": 0.62, "width": 1.8, "height": 0.7, "roundness": 0.5, "bottom_roundness": 0.1},
+        {"x": 2.2, "y": 0.45, "width": 1.5, "height": 0.25, "roundness": 0.8}]},
+    {"name": "wheel_front", "shape": "cylinder", "radius": 0.34, "height": 0.26, "rotation": [90, 0, 0],
+     "position": [1.4, 0.34, 0.8], "color": "#222", "mirror": True},
+    {"name": "wheel_rear", "shape": "cylinder", "radius": 0.34, "height": 0.26, "rotation": [90, 0, 0],
+     "position": [-1.4, 0.34, 0.8], "color": "#222", "mirror": True},
+]}
+
+
+class NewShapesTest(unittest.TestCase):
+    def test_loft_is_smooth_solid_and_follows_sections(self):
+        scene = shapes.build_scene(shapes.validate(CAR), "final")
+        body = scene.geometry["001_body"]
+        self.assertTrue(body.is_watertight)
+        self.assertGreater(body.volume, 0)
+        self.assertAlmostEqual(body.extents[0], 4.4, places=2)  # length along X
+        self.assertAlmostEqual(body.extents[2], 1.8, places=1)  # widest section, along Z
+
+    def test_mirror_adds_the_other_side(self):
+        scene = shapes.build_scene(shapes.validate(CAR))
+        self.assertEqual(len(scene.geometry), 5)  # body + 2 wheels × 2
+        left, right = scene.geometry["002_wheel_front"], scene.geometry["002m_wheel_front (mirrored)"]
+        self.assertAlmostEqual(left.centroid[2], -right.centroid[2], places=3)
+        self.assertGreater(right.volume, 0)  # still faces outward after reflecting
+
+    def test_rounded_box_keeps_its_size(self):
+        spec = {"parts": [{"shape": "box", "size": [1, 0.5, 0.8], "round": 0.3}]}
+        mesh = next(iter(shapes.build_scene(shapes.validate(spec)).geometry.values()))
+        self.assertTrue(all(abs(a - b) < 0.01 for a, b in zip(mesh.extents, [1, 0.5, 0.8])))
+        self.assertLess(mesh.volume, 1 * 0.5 * 0.8)  # corners are cut off
+
+    def test_bad_new_fields_are_explained(self):
+        for part in [
+            {"shape": "loft", "sections": [{"x": 0, "width": 1, "height": 1}]},  # one section
+            {"shape": "loft", "sections": [{"x": 1, "width": 1, "height": 1}, {"x": 0, "width": 1, "height": 1}]},
+            {"shape": "loft", "sections": [{"x": 0, "width": 1}, {"x": 1, "width": 1, "height": 1}]},
+            {"shape": "loft", "sections": [{"x": 0, "width": 1, "height": 1, "roundness": 2},
+                                           {"x": 1, "width": 1, "height": 1}]},
+            {"shape": "box", "size": [1, 1, 1], "round": 0.9},
+            {"shape": "box", "size": [1, 1, 1], "mirror": "sideways"},
+        ]:
+            with self.assertRaises(shapes.SpecError, msg=part):
+                shapes.validate({"parts": [part]})
+
+
+class FloatingTest(unittest.TestCase):
+    def floating(self, spec):
+        return shapes.floating_parts(shapes.build_scene(shapes.validate(spec)))
+
+    def test_connected_objects_pass(self):
+        self.assertEqual(self.floating(CHAIR), [])
+        self.assertEqual(self.floating(CAR), [])
+
+    def test_a_floating_part_is_reported_with_its_gap(self):
+        spec = {"parts": [*CHAIR["parts"],
+                          {"name": "lamp", "shape": "sphere", "radius": 0.05, "position": [0, 1.2, 0]}]}
+        result = self.floating(spec)
+        self.assertEqual([name for name, _ in result], ["lamp"])
+        # Nearest chair point is the top edge of the backrest at (0, 0.925, -0.18):
+        # distance from the lamp's center (0, 1.2, 0) minus its radius.
+        self.assertAlmostEqual(result[0][1], (0.275**2 + 0.18**2) ** 0.5 - 0.05, delta=0.01)
+
+    def test_a_part_inside_another_counts_as_attached(self):
+        spec = {"parts": [{"name": "block", "shape": "box", "size": [1, 1, 1]},
+                          {"name": "core", "shape": "sphere", "radius": 0.1}]}
+        self.assertEqual(self.floating(spec), [])
+
+
 class ShapesTest(unittest.TestCase):
     def test_every_shape_builds(self):
         spec = {"parts": [
@@ -122,6 +193,28 @@ class StoreTest(unittest.TestCase):
         # The STL is in millimeters: the chair is ~925 mm tall.
         stl = trimesh.load(model_store.file_path("mdl_001", "final_v1.stl"))
         self.assertAlmostEqual(max(stl.extents), 925, delta=15)
+
+    @unittest.skipUnless(Path(config.BLENDER_PATH).exists(), "Blender not installed")
+    def test_preview_gives_claude_four_views_and_floating_warning(self):
+        spec = {"parts": [*CAR["parts"],
+                          {"name": "mirror", "shape": "box", "size": [0.1, 0.08, 0.1],
+                           "position": [0.5, 1.1, 1.1], "mirror": True}]}
+        result = asyncio.run(models3d.preview_3d.handler({"spec": spec, "title": "Car"}))
+        text, image = result["content"][0]["text"], result["content"][1]
+        self.assertIn("PROBLEM", text)
+        self.assertIn("mirror (", text)
+        self.assertEqual(image["type"], "image")
+        from PIL import Image
+        sheet = Image.open(io.BytesIO(__import__("base64").b64decode(image["data"])))
+        self.assertEqual(sheet.size, (768, 768))  # 2 × 2 views
+
+    @unittest.skipUnless(Path(config.BLENDER_PATH).exists(), "Blender not installed")
+    def test_loft_and_mirror_export(self):
+        asyncio.run(models3d.preview_3d.handler({"spec": CAR, "title": "Car"}))
+        rec = model_store.load("mdl_001")
+        name = asyncio.run(models3d.build_final(rec, 1, "glb"))
+        exported = trimesh.load(model_store.file_path("mdl_001", name))
+        self.assertEqual(len(exported.geometry), 5)
 
 
 if __name__ == "__main__":
