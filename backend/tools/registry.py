@@ -2,17 +2,24 @@
 
 Every tool is labelled:
   read — runs freely (searching, looking things up, thinking)
-  act  — sends, deletes, buys or changes something; needs your confirmation (Phase 6)
+  act  — sends, deletes, buys or changes something; needs your confirmation (Phase 4a)
 
 To add a tool: write it with the SDK's @tool decorator, then add it to TOOLS.
+claude.ai connector tools are labelled by their action verb (see connectors.py).
+Any other tool Claude Code offers goes through the confirmation gate.
 """
+
+import json
+from contextlib import contextmanager
 
 from dataclasses import dataclass
 from typing import Any, Literal
 
+import claude_agent_sdk
 from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 
-from . import web
+from . import connectors, web
+from .canvas import show_on_canvas
 from .expert import ask_expert
 
 SERVER_NAME = "jarvis"
@@ -31,14 +38,29 @@ class JarvisTool:
 
 TOOLS: list[JarvisTool] = [
     JarvisTool(ask_expert, "read"),
+    JarvisTool(show_on_canvas, "read"),
 ]
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
-BUILTIN_READ_TOOLS: list[str] = [*web.WEB_TOOLS]
+# ToolSearch lets Claude find connector tools on demand instead of loading
+# hundreds of tool descriptions into every message.
+BUILTIN_READ_TOOLS: list[str] = [*web.WEB_TOOLS, "ToolSearch"]
 
 
 def builtin_tools() -> list[str]:
     return list(BUILTIN_READ_TOOLS)
+
+
+def classify(name: str) -> str:
+    """'read' (runs freely) or 'act' (asks you first) for any tool name Claude Code uses."""
+    if name in BUILTIN_READ_TOOLS:
+        return "read"
+    for t in TOOLS:
+        if t.full_name == name:
+            return t.kind
+    if connectors.is_read(name):
+        return "read"
+    return "act"
 
 
 def hooks() -> dict[str, list[HookMatcher]]:
@@ -46,9 +68,30 @@ def hooks() -> dict[str, list[HookMatcher]]:
     return {"PreToolUse": [HookMatcher(matcher="WebFetch", hooks=[web.block_private_urls])]}
 
 
+@contextmanager
+def _always_load():
+    """Mark Jarvis's own tools 'always load' so Tool Search doesn't hide them.
+
+    Claude Code reads this from the tool's `_meta`; the SDK (0.2.x) only fills
+    `_meta` from its own helper, so we wrap that helper while building our server.
+    """
+    original = claude_agent_sdk._build_meta
+
+    def build_meta(tool_def):
+        return {**(original(tool_def) or {}), "anthropic/alwaysLoad": True}
+
+    claude_agent_sdk._build_meta = build_meta
+    try:
+        yield
+    finally:
+        claude_agent_sdk._build_meta = original
+
+
 def mcp_servers() -> dict[str, Any]:
     """The in-process MCP server that exposes Jarvis's tools to Claude Code."""
-    return {SERVER_NAME: create_sdk_mcp_server(SERVER_NAME, tools=[t.tool for t in TOOLS])}
+    with _always_load():
+        server = create_sdk_mcp_server(SERVER_NAME, tools=[t.tool for t in TOOLS])
+    return {SERVER_NAME: server}
 
 
 def auto_allowed() -> list[str]:
@@ -59,3 +102,41 @@ def auto_allowed() -> list[str]:
 def short_name(name: str) -> str:
     """'mcp__jarvis__ask_expert' -> 'ask_expert'. Other names are unchanged."""
     return name.removeprefix(PREFIX)
+
+
+def friendly_name(name: str) -> str:
+    """A readable tool name for the confirmation card.
+
+    'mcp__jarvis__save_note'             -> 'Save note'
+    'mcp__claude_ai_Gmail__send_message'  -> 'Gmail: Send message'
+    'mcp__claude_ai_Canva__search-designs' -> 'Canva: Search designs'
+    """
+    if name.startswith("mcp__"):
+        server, _, tool_name = name.removeprefix("mcp__").partition("__")
+        action = tool_name.replace("_", " ").replace("-", " ").strip().capitalize() or tool_name
+        if server == SERVER_NAME:
+            return action
+        service = server.removeprefix("claude_ai_").replace("_", " ").strip()
+        return f"{service}: {action}"
+    return name
+
+
+MAX_DETAIL_CHARS = 600
+
+
+def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list[list[str]]]:
+    """(title, summary, details) describing a tool call, for the confirmation card."""
+    title = friendly_name(name)
+    summary = f"Jarvis wants to: {title}"
+    details = []
+    for key, value in tool_input.items():
+        if isinstance(value, str):
+            text = value
+        elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
+            text = ", ".join(str(v) for v in value)  # e.g. recipients
+        else:
+            text = json.dumps(value, ensure_ascii=False, indent=1)
+        if len(text) > MAX_DETAIL_CHARS:
+            text = text[:MAX_DETAIL_CHARS] + "…"
+        details.append([key.replace("_", " "), text])
+    return title, summary, details

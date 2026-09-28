@@ -1,4 +1,5 @@
 import './App.css'
+import Canvas from './components/Canvas'
 import Chat from './components/Chat'
 import { useJarvis, type ModelAlias } from './ws'
 
@@ -19,6 +20,13 @@ export default function App() {
           Jarvis
         </div>
         <div className="topbar-right">
+          <button
+            className={`canvas-toggle${jarvis.canvasOpen ? ' active' : ''}`}
+            onClick={jarvis.toggleCanvas}
+            aria-pressed={jarvis.canvasOpen}
+          >
+            Canvas{jarvis.cards.length > 0 && <span className="count">{jarvis.cards.length}</span>}
+          </button>
           <label className="model-picker">
             Model
             <select
@@ -37,13 +45,17 @@ export default function App() {
         </div>
       </header>
 
-      <Chat
-        messages={jarvis.messages}
-        connection={jarvis.connection}
-        busy={jarvis.busy}
-        activeTool={jarvis.activeTool}
-        onSend={jarvis.sendText}
-      />
+      <main className={`workspace${jarvis.canvasOpen ? ' with-canvas' : ''}`}>
+        <Chat
+          messages={jarvis.messages}
+          connection={jarvis.connection}
+          busy={jarvis.busy}
+          activeTool={jarvis.activeTool}
+          onSend={jarvis.sendText}
+          onConfirm={jarvis.answerConfirm}
+        />
+        {jarvis.canvasOpen && <Canvas cards={jarvis.cards} onClose={jarvis.closeCard} />}
+      </main>
     </div>
   )
 }

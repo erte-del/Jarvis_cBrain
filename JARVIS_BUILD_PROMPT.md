@@ -171,6 +171,54 @@ Claude can't create or edit pixels itself. It uses **tools**, and tools push **U
 
 ---
 
+## 7b. 3D objects: preview mode (Phase 4d)
+
+### Feature spec (written by me)
+
+**GOAL**
+When I ask Jarvis to make a 3D object (or anything similar, like a model, shape, or scene), Jarvis must NOT build the final file right away. Jarvis first makes a fast, low-detail PREVIEW so I can look at it and ask for changes. The preview must be quick to make and quick to show.
+
+**LAYOUT**
+1. When I ask for a 3D object, Jarvis opens a new panel on the right side of the screen.
+2. The preview panel must be bigger than the chat panel.
+3. The chat panel stays open on the left side. It is smaller than the preview panel.
+
+**PREVIEW PANEL**
+1. The panel shows the 3D object floating in space.
+2. I can rotate the object to see it from all sides.
+3. I can zoom in and zoom out.
+4. I can NOT edit the object by hand in this panel. It is view-only. All changes go through the chat.
+5. The preview is NOT the final object. It is a simple, fast version (for example, low detail) made only so I can check the look and shape.
+
+**CHANGE LOOP**
+1. If I want a change, I write it in the chat panel on the left. Example: "Make the base wider" or "Make it blue."
+2. Jarvis makes the change and updates the preview panel with the new version.
+3. I can repeat this as many times as I want.
+
+**FINAL EXPORT**
+1. When I say the object is good, Jarvis asks me which file type I want (for example .blend, .obj, .fbx, .stl, .gltf).
+2. I tell Jarvis the file type.
+3. Only now does Jarvis build the full, final object in that format and give me the file.
+
+**RULES**
+- Never make the final file before I approve the preview.
+- Keep previews fast. Speed is the reason previews exist.
+- The chat panel stays usable the whole time.
+
+### Technical approach (proposed by Claude)
+
+- **One description, two builds.** Claude describes the object as a **scene spec**: a JSON list of parts. Each part is a shape (box, sphere, cylinder, cone, torus, capsule, a *lathe* profile for round things like vases, or an *extrusion* of a 2D outline), with size, position, rotation, color and material (matte, glossy, metal, glass). The preview and the final file are both built from this same spec, so the final is exactly the shape I approved.
+- **Preview = drawn in the browser with three.js.** Only the small JSON travels to the browser and drawing is instant. Low detail on purpose (few polygons, simple lighting). Mouse or trackpad to rotate and zoom (three.js OrbitControls); no editing tools.
+- **Final = built by Blender** (installed: Blender 5.2, `/Applications/Blender.app`), running in the background with no window. Jarvis's own fixed converter script turns the approved spec into a Blender scene at high detail (many more polygons, smooth shading, bevelled edges) and exports `.blend`, `.obj`, `.fbx`, `.stl`, `.gltf` or `.glb`. The file is saved in `backend/storage/exports/` and offered as a download.
+- **Safety: Claude never writes code that runs on my Mac.** Claude only writes the JSON spec; Jarvis's own script does the building. Letting Claude write Blender Python directly would be more flexible, but it would mean running generated code with full access to my computer, and a malicious web page or email could try to steer that.
+- **Tools:**
+  - `preview_3d(title, spec, model_id?)`: **read** (it only shows something). Every call makes a new version (v1, v2, …) so "go back to the previous version" works.
+  - `export_3d(model_id, version, format)`: **act**, so it goes through the confirmation gate ("Build the final 'Chair' v4 as .fbx?"). The gate enforces the rule "never make the final file before I approve".
+- **Layout:** while a 3D object is open, the right-hand panel shows the 3D viewer at about 65% of the width, the chat about 35%. Other canvas cards stay reachable from a tab.
+- **Limitation:** objects are built from simple shapes, which suits furniture, props, buildings, vehicles, stylised characters and scenes. Realistic organic shapes (a lifelike dog, a human face) are beyond this; that would need an AI 3D-generation service (paid, not local), which is out of scope for now.
+
+---
+
 ## 8. Safety: confirmation gate and trust rules
 
 - Every tool is labeled **read** (runs freely) or **act** (needs confirmation).
@@ -261,14 +309,18 @@ Jarvis_cBrain/
 
 ## 12. Build phases
 
-1. **Text chat.** Brain via the Pro login, streaming, chat UI, model badge per message.
-2. **Router.** Haiku/Sonnet/Opus selection, `ask_expert`, manual override.
-3. **Web search.** Enable WebSearch/WebFetch, show sources.
-4. **Canvas and images.** `image_search`, `image_edit`, versions, canvas UI.
+1. ✅ **Text chat.** Brain via the Pro login, streaming, chat UI, model badge per message.
+2. ✅ **Router.** Haiku/Sonnet/Opus selection, `ask_expert`, manual override.
+3. ✅ **Web search.** Enable WebSearch/WebFetch, show sources.
+4. **Abilities: give Jarvis lots of functions.** This is the big phase where Jarvis gets its tools. Each sub-step must work on its own before the next one starts, and every new tool is labelled **read** or **act** in `tools/registry.py`.
+   - **4a. Confirmation gate + canvas foundation.** Build this first, because connectors and other "act" tools depend on it. "Act" tools pause and show a confirmation card (section 8) and only run after I approve. Add the canvas panel to the UI (the area where images, 3D objects and cards appear) and the `ui_event` path from tools to the frontend.
+   - **4b. Claude connectors.** All my claude.ai connectors (Gmail, Calendar, Drive, and whatever else is connected on my account) via Claude Code, with the MCP fallback from section 6 for any that don't come through. Reading runs freely; sending, replying, deleting, creating and editing go through the gate. Show results as canvas cards (email list, calendar events, files).
+   - **4c. Images.** `image_search` (Pexels), `image_edit` (Pillow) with versions, undo/redo, select-an-image, download, as in section 7.
+   - **4d. 3D objects.** Fast view-only previews in a large right-hand panel, changes through chat, and the final file (.blend, .obj, .fbx, .stl, .gltf) built only after I approve. See section 7b.
+   - **4e. More features.** Further functions to be added here as I describe them. Each one gets its own sub-step.
 5. **Voice.** STT, VAD, TTS, voice orb, sentence streaming.
-6. **Connectors.** Gmail/Calendar via claude.ai connectors (or MCP fallback), plus the confirmation gate.
-7. **Memory.** History, remember/recall.
-8. **Polish.** Wake word, barge-in, desktop wrapper (Tauri/Electron), settings screen.
+6. **Memory.** History, remember/recall.
+7. **Polish.** Wake word, barge-in, desktop wrapper (Tauri/Electron), settings screen.
 
 ---
 

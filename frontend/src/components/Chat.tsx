@@ -1,9 +1,9 @@
 // Message list, input box, streaming replies, model badge.
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import type { ActiveTool, ChatMessage, ConnectionState, Source } from '../ws'
+import ConfirmCard from './ConfirmCard'
+import Markdown from './Markdown'
 
 interface ChatProps {
   messages: ChatMessage[]
@@ -11,6 +11,7 @@ interface ChatProps {
   busy: boolean
   activeTool: ActiveTool | null
   onSend: (text: string) => boolean
+  onConfirm: (id: string, approved: boolean) => void
 }
 
 /** "claude-haiku-4-5-20251001" -> "Haiku" */
@@ -32,7 +33,7 @@ function ModelBadge({ model }: { model: string }) {
   )
 }
 
-function toolLabel({ name, detail }: ActiveTool): string {
+function toolLabel({ name, detail, label }: ActiveTool): string {
   switch (name) {
     case 'ask_expert':
       return 'Consulting Opus (expert)…'
@@ -40,8 +41,10 @@ function toolLabel({ name, detail }: ActiveTool): string {
       return detail ? `Searching the web for “${detail}”…` : 'Searching the web…'
     case 'WebFetch':
       return detail ? `Reading ${detail}…` : 'Reading a web page…'
+    case 'ToolSearch':
+      return 'Looking for the right tool…'
     default:
-      return `Using ${name}…`
+      return `${label || name}…`
   }
 }
 
@@ -81,10 +84,13 @@ function SourceChips({ sources }: { sources: Source[] }) {
   )
 }
 
-function Message({ message }: { message: ChatMessage }) {
+function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: ChatProps['onConfirm'] }) {
   const hasSources = !!message.sources?.length
   const text = hasSources ? stripSourcesBlock(message.text) : message.text
 
+  if (message.role === 'confirm' && message.confirm) {
+    return <ConfirmCard confirm={message.confirm} onAnswer={(approved) => onConfirm(message.id, approved)} />
+  }
   if (message.role === 'notice') {
     return <div className="notice">{message.text}</div>
   }
@@ -98,16 +104,7 @@ function Message({ message }: { message: ChatMessage }) {
   return (
     <div className="msg msg-assistant">
       <div className="bubble">
-        {text && (
-          <Markdown
-            remarkPlugins={[[remarkGfm, { singleTilde: false }]]} // "~$5" means "about $5", not strikethrough
-            components={{
-              a: (props) => <a {...props} target="_blank" rel="noreferrer noopener" />,
-            }}
-          >
-            {text}
-          </Markdown>
-        )}
+        {text && <Markdown text={text} />}
         {!message.done && !message.error && <span className="cursor" />}
         {message.error && <div className="msg-error">{message.error}</div>}
         {hasSources && <SourceChips sources={message.sources!} />}
@@ -127,7 +124,7 @@ function Message({ message }: { message: ChatMessage }) {
   )
 }
 
-export default function Chat({ messages, connection, busy, activeTool, onSend }: ChatProps) {
+export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm }: ChatProps) {
   const [draft, setDraft] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -168,6 +165,7 @@ export default function Chat({ messages, connection, busy, activeTool, onSend }:
 
   const last = messages[messages.length - 1]
   const waitingForFirstWord = busy && (!last || last.role === 'user')
+  const waitingForYou = messages.some((m) => m.confirm?.status === 'pending')
   // A tool started after the reply already had some text (e.g. "Let me think…").
   const toolMidReply = busy && activeTool && last?.role === 'assistant' && !last.done
 
@@ -181,10 +179,10 @@ export default function Chat({ messages, connection, busy, activeTool, onSend }:
           </div>
         )}
         {messages.map((m) => (
-          <Message key={m.id} message={m} />
+          <Message key={m.id} message={m} onConfirm={onConfirm} />
         ))}
         {toolMidReply && <div className="activity">{toolLabel(activeTool)}</div>}
-        {waitingForFirstWord && (
+        {waitingForFirstWord && !waitingForYou && (
           <div className="msg msg-assistant">
             <div className="bubble typing">
               {activeTool ? toolLabel(activeTool) : <><span /><span /><span /></>}
@@ -205,7 +203,13 @@ export default function Chat({ messages, connection, busy, activeTool, onSend }:
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder={connection === 'open' ? 'Message Jarvis…' : 'Waiting for the backend…'}
+          placeholder={
+            connection !== 'open'
+              ? 'Waiting for the backend…'
+              : waitingForYou
+                ? 'Jarvis is waiting for your approval above…'
+                : 'Message Jarvis…'
+          }
           rows={1}
           autoFocus
         />

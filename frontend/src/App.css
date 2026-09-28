@@ -70,16 +70,235 @@
 .conn-open::before { background: var(--haiku); }
 .conn-closed::before { background: var(--danger); }
 
+.canvas-toggle {
+  font: inherit;
+  color: var(--text-dim);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.canvas-toggle.active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.canvas-toggle .count {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #06202b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ---- Layout: chat, plus the canvas when it's open ------------------------ */
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
 /* ---- Chat ------------------------------------------------------------- */
 
 .chat {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 820px;
   margin: 0 auto;
+}
+
+.workspace.with-canvas .chat {
+  flex: 0 1 44%;
+  max-width: none;
+  margin: 0;
+  border-right: 1px solid var(--border);
+}
+
+/* ---- Canvas ----------------------------------------------------------- */
+
+.canvas {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #090c11;
+}
+
+.canvas-empty {
+  margin: auto;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-2);
+}
+
+.card-title {
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-id {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.card-close {
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.card-close:hover {
+  color: var(--text);
+}
+
+.card-text {
+  padding: 4px 16px 12px;
+}
+
+.card-raw {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table-wrap th,
+.table-wrap td {
+  text-align: left;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.table-wrap th {
+  color: var(--text-dim);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-wrap tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.email-list,
+.event-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.email-list li,
+.event-list li {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.email-list li:last-child,
+.event-list li:last-child {
+  border-bottom: none;
+}
+
+.email-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.email-from {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-date {
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.email-subject {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.email-snippet,
+.event-meta {
+  font-size: 12px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-list li.unread .email-from,
+.email-list li.unread .email-subject {
+  font-weight: 700;
+}
+.email-list li.unread {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.event-when {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.event-title {
+  font-weight: 600;
+}
+
+@media (max-width: 800px) {
+  .workspace.with-canvas {
+    flex-direction: column;
+  }
+  .workspace.with-canvas .chat {
+    flex: 1 1 55%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
 }
 
 .messages {
@@ -200,6 +419,100 @@
 .source-chip:hover {
   color: var(--accent);
   border-color: var(--accent);
+}
+
+/* Confirmation card: an action waiting for your approval */
+.confirm-card {
+  align-self: stretch;
+  border: 1px solid #b8860b;
+  background: #1c1810;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+.confirm-card.confirm-approved { border-color: var(--haiku); background: var(--panel); }
+.confirm-card.confirm-denied,
+.confirm-card.confirm-expired { border-color: var(--border); background: var(--panel); opacity: 0.75; }
+
+.confirm-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  background: #f0b429;
+  color: #1c1810;
+}
+.confirm-approved .confirm-icon { background: var(--haiku); }
+.confirm-denied .confirm-icon,
+.confirm-expired .confirm-icon { background: var(--text-dim); }
+
+.confirm-title {
+  font-weight: 600;
+  flex: 1;
+}
+
+.confirm-status {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.confirm-approved .confirm-status { color: var(--haiku); }
+
+.confirm-details {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.confirm-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.confirm-row dt {
+  color: var(--text-dim);
+}
+
+.confirm-row dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.confirm-actions button {
+  font: inherit;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-approve {
+  background: var(--haiku);
+  color: #062016;
+}
+
+.btn-deny {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border) !important;
 }
 
 /* "Thinking" dots before the first word arrives */

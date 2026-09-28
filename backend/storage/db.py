@@ -1,1 +1,1 @@
-"""SQLite: chats, memory, image versions. (Phase 7)"""
+"""SQLite: chats, memory, image versions. (Phase 6)"""

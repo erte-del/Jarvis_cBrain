@@ -1,4 +1,4 @@
-# Connector configs (fallback path, Phase 6)
+# Connector configs (fallback path, Phase 4b)
 
 MCP server configs for connectors (Gmail, Calendar, …) go here, used only if
 the claude.ai connectors don't come through the Agent SDK.

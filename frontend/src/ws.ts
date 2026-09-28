@@ -19,14 +19,34 @@ export type ServerEvent =
       expert: boolean // Opus was consulted via ask_expert
       sources: Source[] // web pages behind the answer
     }
-  | { type: 'tool.started'; id: string; name: string; detail: string }
+  | { type: 'tool.started'; id: string; name: string; detail: string; label: string }
   | { type: 'tool.finished'; id: string; is_error: boolean }
   | { type: 'error'; message: string; id?: string }
+  | { type: 'confirm.request'; id: string; title: string; summary: string; details: [string, string][] }
+  | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
+  | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
 
 // Browser -> server
 export type ClientEvent =
   | { type: 'user.text'; text: string }
+  | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'settings.update'; model_override: ModelAlias | null }
+
+export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
+
+export interface Confirmation {
+  title: string
+  summary: string
+  details: [string, string][] // [label, value]
+  status: ConfirmStatus
+}
+
+export interface CanvasCard {
+  id: string
+  kind: string // 'text' | 'table' for now; more kinds in later steps
+  title: string
+  data: Record<string, unknown>
+}
 
 export type ConnectionState = 'connecting' | 'open' | 'closed'
 
@@ -38,6 +58,7 @@ export interface Source {
 export interface ActiveTool {
   name: string
   detail: string // e.g. the search query or the site being read
+  label: string // readable name, e.g. "Gmail: Search threads"
 }
 
 // ---------------------------------------------------------------------------
@@ -101,8 +122,9 @@ export class JarvisSocket {
 
 export interface ChatMessage {
   id: string
-  role: 'user' | 'assistant' | 'notice'
+  role: 'user' | 'assistant' | 'notice' | 'confirm'
   text: string
+  confirm?: Confirmation // role 'confirm': an action waiting for your approval
   model?: string // full model ID that answered (assistant only)
   reason?: string // why the router picked the model
   expert?: boolean // Opus was consulted via ask_expert
@@ -117,6 +139,8 @@ interface ChatState {
   busy: boolean // a reply is in progress
   activeTool: ActiveTool | null
   modelOverride: ModelAlias | null
+  cards: CanvasCard[]
+  canvasOpen: boolean
 }
 
 type Action =
@@ -124,6 +148,9 @@ type Action =
   | { kind: 'connection'; state: ConnectionState }
   | { kind: 'user'; text: string }
   | { kind: 'override'; model: ModelAlias | null }
+  | { kind: 'answer'; id: string; approved: boolean }
+  | { kind: 'closeCard'; id: string }
+  | { kind: 'toggleCanvas' }
 
 let localId = 0
 const nextLocalId = () => `local-${++localId}`
@@ -154,16 +181,36 @@ function reducer(state: ChatState, action: Action): ChatState {
     case 'override':
       return { ...state, modelOverride: action.model }
 
+    case 'answer':
+      return {
+        ...state,
+        messages: updateMessage(state.messages, action.id, (m) =>
+          m.confirm ? { ...m, confirm: { ...m.confirm, status: action.approved ? 'approved' : 'denied' } } : m,
+        ),
+      }
+
+    case 'closeCard': {
+      const cards = state.cards.filter((c) => c.id !== action.id)
+      return { ...state, cards, canvasOpen: state.canvasOpen && cards.length > 0 }
+    }
+
+    case 'toggleCanvas':
+      return { ...state, canvasOpen: !state.canvasOpen }
+
     case 'connection': {
       if (action.state !== 'closed' || state.connection === 'closed') {
         return { ...state, connection: action.state }
       }
       // Lost the connection: any reply in progress won't finish.
-      const messages = state.messages.map((m) =>
-        m.role === 'assistant' && !m.done && !m.error
-          ? { ...m, error: 'Connection lost before the reply finished.' }
-          : m,
-      )
+      const messages = state.messages.map((m): ChatMessage => {
+        if (m.role === 'assistant' && !m.done && !m.error) {
+          return { ...m, error: 'Connection lost before the reply finished.' }
+        }
+        if (m.confirm?.status === 'pending') {
+          return { ...m, confirm: { ...m.confirm, status: 'expired' } }
+        }
+        return m
+      })
       return { ...state, connection: 'closed', busy: false, activeTool: null, messages }
     }
 
@@ -191,9 +238,37 @@ function reducer(state: ChatState, action: Action): ChatState {
             })),
           }
         case 'tool.started':
-          return { ...state, activeTool: { name: ev.name, detail: ev.detail } }
+          return { ...state, activeTool: { name: ev.name, detail: ev.detail, label: ev.label } }
         case 'tool.finished':
           return { ...state, activeTool: null }
+        case 'confirm.request': {
+          const confirm: Confirmation = {
+            title: ev.title,
+            summary: ev.summary,
+            details: ev.details,
+            status: 'pending',
+          }
+          const exists = state.messages.some((m) => m.id === ev.id)
+          return {
+            ...state,
+            messages: exists
+              ? updateMessage(state.messages, ev.id, (m) => ({ ...m, confirm }))
+              : [...state.messages, { id: ev.id, role: 'confirm', text: '', confirm }],
+          }
+        }
+        case 'confirm.resolved':
+          return {
+            ...state,
+            messages: updateMessage(state.messages, ev.id, (m) =>
+              m.confirm ? { ...m, confirm: { ...m.confirm, status: ev.status } } : m,
+            ),
+          }
+        case 'canvas.card': {
+          const card: CanvasCard = { id: ev.id, kind: ev.kind, title: ev.title, data: ev.data }
+          const i = state.cards.findIndex((c) => c.id === ev.id)
+          const cards = i === -1 ? [...state.cards, card] : state.cards.map((c, j) => (j === i ? card : c))
+          return { ...state, cards, canvasOpen: true }
+        }
         case 'error':
           if (ev.id) {
             return {
@@ -217,6 +292,8 @@ const initialState: ChatState = {
   busy: false,
   activeTool: null,
   modelOverride: null,
+  cards: [],
+  canvasOpen: false,
 }
 
 export function useJarvis() {
@@ -253,5 +330,14 @@ export function useJarvis() {
     socketRef.current?.send({ type: 'settings.update', model_override: model })
   }, [])
 
-  return { ...state, sendText, setModelOverride }
+  const answerConfirm = useCallback((id: string, approved: boolean) => {
+    if (socketRef.current?.send({ type: 'user.confirm', id, approved })) {
+      dispatch({ kind: 'answer', id, approved })
+    }
+  }, [])
+
+  const closeCard = useCallback((id: string) => dispatch({ kind: 'closeCard', id }), [])
+  const toggleCanvas = useCallback(() => dispatch({ kind: 'toggleCanvas' }), [])
+
+  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas }
 }

@@ -2,11 +2,12 @@
 
 Every message is a JSON object with a "type" field.
 
-Client -> server (Phase 1):
+Client -> server:
     user.text        {text}
+    user.confirm     {id, approved}       your answer to a confirm.request
     settings.update  {model_override: "haiku" | "sonnet" | "opus" | null}
 
-Server -> client (Phase 1):
+Server -> client:
     status               {state: "idle" | "thinking"}
     assistant.text_delta {id, text}       id = the reply this text belongs to
     assistant.done       {id, model, routed_to, reason, expert, sources}
@@ -14,11 +15,15 @@ Server -> client (Phase 1):
                          routed_to = the router's pick; reason = why
                          expert = true if Opus was consulted via ask_expert
                          sources = [{title, url}] web pages behind the answer
-    tool.started         {id, name, detail}   detail = e.g. the search query
+    tool.started         {id, name, detail, label}  detail = e.g. the search query;
+                                                     label = readable name ("Gmail: Search threads")
     tool.finished        {id, is_error}
     error                {message, id?}
+    confirm.request      {id, title, summary, details}   an 'act' tool wants to run
+    confirm.resolved     {id, status}     status = approved | denied | expired
+    canvas.card          {id, kind, title, data}  show (or replace) a canvas card
 
-Later phases add user.audio_*, user.confirm, canvas.*, confirm.request, ...
+Later phases add user.audio_*, canvas images, 3D objects, ...
 """
 
 from typing import Any
@@ -58,8 +63,26 @@ def done(
     }
 
 
-def tool_started(tool_id: str, name: str, detail: str = "") -> Event:
-    return {"type": "tool.started", "id": tool_id, "name": name, "detail": detail}
+def tool_started(tool_id: str, name: str, detail: str = "", label: str = "") -> Event:
+    return {"type": "tool.started", "id": tool_id, "name": name, "detail": detail, "label": label or name}
+
+
+def confirm_request(request_id: str, title: str, summary: str, details: list[list[str]]) -> Event:
+    return {
+        "type": "confirm.request",
+        "id": request_id,
+        "title": title,
+        "summary": summary,
+        "details": details,  # [[label, value], ...]
+    }
+
+
+def confirm_resolved(request_id: str, status: str) -> Event:
+    return {"type": "confirm.resolved", "id": request_id, "status": status}
+
+
+def canvas_card(card_id: str, kind: str, title: str, data: dict[str, Any]) -> Event:
+    return {"type": "canvas.card", "id": card_id, "kind": kind, "title": title, "data": data}
 
 
 def from_brain(ev: BrainEvent, reply_id: str) -> Event:

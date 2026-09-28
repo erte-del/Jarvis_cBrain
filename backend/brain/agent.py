@@ -42,11 +42,17 @@ class Jarvis:
                         yield events.from_brain(ev, reply_id)
 
                     case ToolStart():
+                        label = registry.friendly_name(ev.name)
                         ev.name = registry.short_name(ev.name)
                         tool_calls[ev.id] = ev
                         consulted_expert |= ev.name == "ask_expert"
                         log.info("Tool %s %s", ev.name, web.tool_detail(ev.name, ev.input))
-                        yield events.tool_started(ev.id, ev.name, web.tool_detail(ev.name, ev.input))
+                        yield events.tool_started(
+                            ev.id,
+                            ev.name,
+                            web.tool_detail(ev.name, ev.input),
+                            label,
+                        )
 
                     case ToolResult():
                         call = tool_calls.get(ev.id)

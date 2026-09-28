@@ -38,7 +38,7 @@ class ToolResult:
 
 @dataclass
 class UIEvent:
-    """Something for the frontend to show (canvas image, card, ...). Phase 4+."""
+    """Something for the frontend to show (canvas image, card, ...). Phase 4a+."""
     name: str
     data: dict[str, Any] = field(default_factory=dict)
     type: Literal["ui_event"] = "ui_event"

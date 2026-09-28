@@ -44,8 +44,12 @@ Tests:
 - [x] Phase 1: text chat on the Pro subscription
 - [x] Phase 2: model router (Haiku / Sonnet / Opus, `ask_expert`)
 - [x] Phase 3: web search
-- [ ] Phase 4: canvas and images
+- [ ] Phase 4: abilities
+  - [x] 4a: confirmation gate + canvas
+  - [x] 4b: Claude connectors (Gmail, Calendar, Drive, …)
+  - [ ] 4c: images (search + edit)
+  - [ ] 4d: 3D objects
+  - [ ] 4e: more features
 - [ ] Phase 5: voice
-- [ ] Phase 6: connectors + confirmation gate
-- [ ] Phase 7: memory
-- [ ] Phase 8: polish (wake word, barge-in, desktop app)
+- [ ] Phase 6: memory
+- [ ] Phase 7: polish (wake word, barge-in, desktop app)

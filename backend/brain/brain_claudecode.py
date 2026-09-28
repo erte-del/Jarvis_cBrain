@@ -6,10 +6,13 @@ One Claude Code process stays running for the whole conversation
 
 import asyncio
 import logging
+import warnings
 from typing import AsyncIterator
 
 from claude_agent_sdk import (
     AssistantMessage,
+    CanUseTool,
+    CanUseToolShadowedWarning,
     ClaudeAgentOptions,
     ClaudeSDKClient,
     ResultMessage,
@@ -28,6 +31,10 @@ from .prompts import JARVIS_SYSTEM_PROMPT
 
 log = logging.getLogger("jarvis.brain")
 
+# The SDK warns that 'read' tools in allowed_tools skip the confirmation gate.
+# That's exactly what we want: only 'act' tools should ask you.
+warnings.filterwarnings("ignore", category=CanUseToolShadowedWarning)
+
 # Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
 # If Claude Code sends nothing for this long, give up on the turn
 # (e.g. it is silently retrying while Anthropic's servers are overloaded).
@@ -35,6 +42,8 @@ IDLE_TIMEOUT_S = 120
 # While one of Jarvis's tools runs (e.g. ask_expert thinking on Opus), Claude Code
 # stays quiet, so allow much longer.
 TOOL_TIMEOUT_S = 600
+# claude.ai connectors connect in the background; wait this long for them at startup.
+CONNECTOR_WAIT_S = 15
 
 BLOCKED_TOOLS = [
     "Bash", "Read", "Write", "Edit", "MultiEdit", "NotebookEdit",
@@ -43,8 +52,9 @@ BLOCKED_TOOLS = [
 
 
 class ClaudeCodeBrain:
-    def __init__(self, model: ModelAlias = "sonnet") -> None:
+    def __init__(self, model: ModelAlias = "sonnet", can_use_tool: CanUseTool | None = None) -> None:
         self._model: ModelAlias = model
+        self._can_use_tool = can_use_tool  # the confirmation gate for 'act' tools
         self._client: ClaudeSDKClient | None = None
         self._lock = asyncio.Lock()  # one turn at a time
         self.auth_source: str | None = None  # reported by Claude Code at startup
@@ -54,15 +64,23 @@ class ClaudeCodeBrain:
         return ClaudeAgentOptions(
             system_prompt=JARVIS_SYSTEM_PROMPT,  # replaces Claude Code's coding prompt
             model=self._model,
-            tools=registry.builtin_tools(),  # only WebSearch / WebFetch from Claude Code
+            tools=registry.builtin_tools(),  # only WebSearch / WebFetch / ToolSearch
             disallowed_tools=BLOCKED_TOOLS,  # belt and braces
             hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
             mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
             allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
-            env={"MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000)},
+            can_use_tool=self._can_use_tool,  # every other tool asks you first
+            env={
+                "MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000),
+                # Connector tools stay hidden until Claude searches for one. Without
+                # this, ~300 tool descriptions went into every message (~220K tokens).
+                "ENABLE_TOOL_SEARCH": "true",
+            },
             include_partial_messages=True,  # stream text word by word
             setting_sources=[],  # ignore ~/.claude settings, CLAUDE.md files, plugins
-            strict_mcp_config=True,  # only MCP servers Jarvis passes in
+            # False = also load the claude.ai connectors (Gmail, ...) of the Pro account.
+            # Their tools are labelled read/act in tools/connectors.py.
+            strict_mcp_config=False,
             skills=[],
             cwd=STORAGE_DIR,
             resume=self._session_id,
@@ -75,7 +93,38 @@ class ClaudeCodeBrain:
             await client.connect()
             self._client = client
             log.info("Claude Code session started (model=%s)", self._model)
+            await self._wait_for_connectors(client)
         return self._client
+
+    async def _wait_for_connectors(self, client: ClaudeSDKClient) -> None:
+        """Give slow connectors a moment, so the first message can already use them."""
+        deadline = asyncio.get_running_loop().time() + CONNECTOR_WAIT_S
+        servers: list = []
+        while True:
+            try:
+                servers = (await client.get_mcp_status()).get("mcpServers", [])
+            except Exception:
+                log.debug("Could not read connector status", exc_info=True)
+                return
+            # An empty list means Claude Code hasn't registered the servers yet
+            # (Jarvis's own server is always there once it has).
+            pending = [s["name"] for s in servers if s.get("status") == "pending"]
+            if (servers and not pending) or asyncio.get_running_loop().time() > deadline:
+                break
+            await asyncio.sleep(0.5)
+        by_status: dict[str, list[str]] = {}
+        for s in servers:
+            by_status.setdefault(s.get("status", "?"), []).append(s["name"].removeprefix("claude.ai "))
+        log.info("Connectors: %s", "; ".join(f"{k}: {', '.join(v)}" for k, v in by_status.items()) or "none")
+
+    async def start(self) -> None:
+        """Start Claude Code ahead of the first message (called at server startup)."""
+        async with self._lock:
+            try:
+                await self._connect()
+            except Exception:
+                log.exception("Could not start Claude Code; will retry on the first message")
+                await self.close()
 
     async def send(
         self,
@@ -84,7 +133,7 @@ class ClaudeCodeBrain:
         model: ModelAlias = "sonnet",
     ) -> AsyncIterator[BrainEvent]:
         if images:
-            raise NotImplementedError("Image input arrives in Phase 4")
+            raise NotImplementedError("Image input arrives in Phase 4c")
 
         async with self._lock:
             finished = False

@@ -1,2 +1,2 @@
-// Main image + version strip + download. (Phase 4)
+// Main image + version strip + download. (Phase 4c)
 export {}
