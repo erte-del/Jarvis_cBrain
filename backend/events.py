@@ -7,6 +7,7 @@ Client -> server:
     user.confirm     {id, approved}       your answer to a confirm.request
     user.select_image {id, version} | {id: null}   you clicked an image on the canvas
     settings.update  {model_override: "haiku" | "sonnet" | "opus" | null}
+    user.new_chat    {}                   start a fresh conversation
 
 Server -> client:
     status               {state: "idle" | "thinking"}
@@ -22,6 +23,7 @@ Server -> client:
     error                {message, id?}
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
+    conversation.new     {reason: "button" | "idle"}   Jarvis forgot the conversation
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
                          kind "image": data = {image_id, current, credit, versions[]}
                          kind "model3d": data = {model_id, current, versions[], exports[]}
@@ -82,6 +84,10 @@ def confirm_request(request_id: str, title: str, summary: str, details: list[lis
 
 def confirm_resolved(request_id: str, status: str) -> Event:
     return {"type": "confirm.resolved", "id": request_id, "status": status}
+
+
+def conversation_new(reason: str) -> Event:
+    return {"type": "conversation.new", "reason": reason}
 
 
 def canvas_card(card_id: str, kind: str, title: str, data: dict[str, Any]) -> Event:

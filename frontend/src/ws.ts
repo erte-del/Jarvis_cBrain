@@ -26,6 +26,7 @@ export type ServerEvent =
   | { type: 'confirm.request'; id: string; title: string; summary: string; details: [string, string][] }
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
+  | { type: 'conversation.new'; reason: 'button' | 'idle' }
 
 // Browser -> server
 export type ClientEvent =
@@ -33,6 +34,7 @@ export type ClientEvent =
   | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override: ModelAlias | null }
+  | { type: 'user.new_chat' }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
 
@@ -305,6 +307,21 @@ function reducer(state: ChatState, action: Action): ChatState {
               m.confirm ? { ...m, confirm: { ...m.confirm, status: ev.status } } : m,
             ),
           }
+        case 'conversation.new': {
+          if (ev.reason === 'button') return { ...state, messages: [] }
+          // Started over by itself after a long break: say so above your new message.
+          const notice: ChatMessage = {
+            id: nextLocalId(),
+            role: 'notice',
+            text:
+              'New conversation: the last one sat idle for over an hour, and sending it all to Claude ' +
+              'again would use a lot of your limit. Jarvis no longer remembers the messages above.',
+          }
+          const lastUser = state.messages.map((m) => m.role).lastIndexOf('user')
+          const messages = state.messages.slice()
+          messages.splice(lastUser === -1 ? messages.length : lastUser, 0, notice)
+          return { ...state, messages }
+        }
         case 'canvas.card': {
           const card: CanvasCard = { id: ev.id, kind: ev.kind, title: ev.title, data: ev.data }
           const i = state.cards.findIndex((c) => c.id === ev.id)
@@ -387,6 +404,10 @@ export function useJarvis() {
     }
   }, [])
 
+  const newChat = useCallback(() => {
+    socketRef.current?.send({ type: 'user.new_chat' })
+  }, [])
+
   const closeCard = useCallback((id: string) => dispatch({ kind: 'closeCard', id }), [])
   const selectImage = useCallback(
     (selection: ImageSelection | null) => dispatch({ kind: 'select', selection }),
@@ -407,5 +428,5 @@ export function useJarvis() {
   const toggleCanvas = useCallback(() => dispatch({ kind: 'toggleCanvas' }), [])
   const setCanvasTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage, setCanvasTab }
+  return { ...state, sendText, newChat, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage, setCanvasTab }
 }

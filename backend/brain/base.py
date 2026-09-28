@@ -63,6 +63,7 @@ BrainEvent = TextDelta | ToolStart | ToolResult | UIEvent | Done | Error
 class Brain(Protocol):
     model: ModelAlias  # the model the conversation is on now
     context_tokens: int  # size of the conversation so far (switching models re-sends it)
+    last_active: float  # time.time() of the last message, 0 if none yet
 
     async def send(
         self,
@@ -71,6 +72,10 @@ class Brain(Protocol):
         model: ModelAlias = "sonnet",
     ) -> AsyncIterator[BrainEvent]:
         """Send one user message and stream back events until `Done` or `Error`."""
+        ...
+
+    async def new_conversation(self) -> None:
+        """Forget the conversation and start a fresh one."""
         ...
 
     async def close(self) -> None:

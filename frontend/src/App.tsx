@@ -23,6 +23,14 @@ export default function App() {
         </div>
         <div className="topbar-right">
           <button
+            className="new-chat"
+            onClick={jarvis.newChat}
+            disabled={jarvis.busy || jarvis.connection !== 'open' || jarvis.messages.length === 0}
+            title="Start fresh. Long conversations use more of your limit with every message."
+          >
+            New chat
+          </button>
+          <button
             className={`canvas-toggle${jarvis.canvasOpen ? ' active' : ''}`}
             onClick={jarvis.toggleCanvas}
             aria-pressed={jarvis.canvasOpen}

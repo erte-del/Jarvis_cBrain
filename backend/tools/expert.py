@@ -10,11 +10,18 @@ import time
 
 from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query, tool
 
-from config import STORAGE_DIR
+import hub
+from config import EFFORT, STORAGE_DIR
+
+from .canvas import show_text
 
 log = logging.getLogger("jarvis.expert")
 
 EXPERT_MODEL = "opus"
+
+# Longer answers go straight onto the canvas, so the calling model doesn't have to
+# type them out again (that doubled the output tokens, the priciest kind).
+CANVAS_MIN_CHARS = 1200
 
 EXPERT_SYSTEM_PROMPT = """\
 You are the expert advisor behind Jarvis, a personal assistant. Jarvis sends you \
@@ -51,6 +58,7 @@ async def consult_expert(task: str, context: str = "") -> str:
     options = ClaudeAgentOptions(
         system_prompt=EXPERT_SYSTEM_PROMPT,
         model=EXPERT_MODEL,
+        effort=EFFORT,  # same thinking level as Jarvis (see .env)
         tools=[],  # thinking only, no tools
         setting_sources=[],
         strict_mcp_config=True,
@@ -89,4 +97,10 @@ async def ask_expert(args: dict) -> dict:
             "content": [{"type": "text", "text": f"The expert could not answer: {e}. Answer yourself."}],
             "is_error": True,
         }
+    if len(answer) >= CANVAS_MIN_CHARS and hub.has_clients():
+        card_id = await show_text("Expert answer", answer)
+        answer = (
+            f"The user can already read this full answer on the canvas ({card_id}). "
+            "Don't repeat it: reply with a short summary that points to the card.\n\n" + answer
+        )
     return {"content": [{"type": "text", "text": answer}]}

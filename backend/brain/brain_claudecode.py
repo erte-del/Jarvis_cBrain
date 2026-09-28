@@ -6,6 +6,7 @@ One Claude Code process stays running for the whole conversation
 
 import asyncio
 import logging
+import time
 import warnings
 from typing import AsyncIterator
 
@@ -43,6 +44,8 @@ IDLE_TIMEOUT_S = 120
 TOOL_TIMEOUT_S = 600
 # claude.ai connectors connect in the background; wait this long for them at startup.
 CONNECTOR_WAIT_S = 15
+# Jarvis's own server can show up before the claude.ai ones; give those this long to appear.
+CONNECTOR_LIST_WAIT_S = 3
 
 # Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
 BLOCKED_TOOLS = [
@@ -62,6 +65,8 @@ class ClaudeCodeBrain:
         # How many tokens the conversation takes up now (from Claude's last reply).
         # Switching models means sending all of it again, so the router uses this.
         self.context_tokens = 0
+        # Wall-clock time of the last message (keeps counting while the Mac sleeps).
+        self.last_active = 0.0
 
     @property
     def model(self) -> ModelAlias:
@@ -107,7 +112,7 @@ class ClaudeCodeBrain:
 
     async def _wait_for_connectors(self, client: ClaudeSDKClient) -> None:
         """Give slow connectors a moment, so the first message can already use them."""
-        deadline = asyncio.get_running_loop().time() + CONNECTOR_WAIT_S
+        started = asyncio.get_running_loop().time()
         servers: list = []
         while True:
             try:
@@ -115,30 +120,35 @@ class ClaudeCodeBrain:
             except Exception:
                 log.debug("Could not read connector status", exc_info=True)
                 return
-            # An empty list means Claude Code hasn't registered the servers yet
-            # (Jarvis's own server is always there once it has).
+            # Wait until the claude.ai connectors are listed (or clearly aren't coming)
+            # and none is still connecting.
+            waited = asyncio.get_running_loop().time() - started
+            listed = any(s["name"].startswith("claude.ai ") for s in servers)
             pending = [s["name"] for s in servers if s.get("status") == "pending"]
-            if (servers and not pending) or asyncio.get_running_loop().time() > deadline:
+            if ((listed or waited > CONNECTOR_LIST_WAIT_S) and not pending) or waited > CONNECTOR_WAIT_S:
                 break
             await asyncio.sleep(0.5)
-        await self._disable_unlisted_connectors(client, servers)
+        await self._apply_connector_choice(client, servers)
         by_status: dict[str, list[str]] = {}
         for s in servers:
             by_status.setdefault(s.get("status", "?"), []).append(s["name"].removeprefix("claude.ai "))
         log.info("Connectors: %s", "; ".join(f"{k}: {', '.join(v)}" for k, v in by_status.items()) or "none")
 
-    async def _disable_unlisted_connectors(self, client: ClaudeSDKClient, servers: list) -> None:
-        """Switch off claude.ai connectors not listed in JARVIS_CONNECTORS (.env)."""
-        if "all" in CONNECTORS:
-            return
+    async def _apply_connector_choice(self, client: ClaudeSDKClient, servers: list) -> None:
+        """Switch claude.ai connectors on or off to match JARVIS_CONNECTORS (.env).
+        Claude Code remembers the switch, so both directions are needed."""
         for server in servers:
             name = server.get("name", "")
-            if name.startswith("claude.ai ") and name.removeprefix("claude.ai ").lower() not in CONNECTORS:
+            if not name.startswith("claude.ai "):
+                continue
+            wanted = "all" in CONNECTORS or name.removeprefix("claude.ai ").lower() in CONNECTORS
+            is_off = server.get("status") == "disabled"
+            if wanted == is_off:
                 try:
-                    await client.toggle_mcp_server(name, False)
-                    server["status"] = "off"
+                    await client.toggle_mcp_server(name, wanted)
+                    server["status"] = "switched on" if wanted else "disabled"
                 except Exception:
-                    log.warning("Could not switch off %s", name, exc_info=True)
+                    log.warning("Could not switch %s %s", name, "on" if wanted else "off", exc_info=True)
 
     async def start(self) -> None:
         """Start Claude Code ahead of the first message (called at server startup)."""
@@ -231,11 +241,22 @@ class ClaudeCodeBrain:
                 log.exception("Brain turn failed")
                 yield Error(f"{type(e).__name__}: {e}")
             finally:
+                self.last_active = time.time()
                 # If the turn was cut short (error, timeout, browser closed mid-reply),
                 # Claude Code may still be sending the old reply. Restart it so the next
                 # turn starts clean; `resume` keeps the conversation.
                 if not finished:
                     await self.close()
+
+    async def new_conversation(self) -> None:
+        """Forget the conversation: the next message starts a fresh Claude Code session."""
+        async with self._lock:  # waits for a reply in progress to finish
+            await self.close()
+            self._session_id = None
+            self._model = "sonnet"
+            self.context_tokens = 0
+            self.last_active = 0.0
+        log.info("Started a new conversation")
 
     async def close(self) -> None:
         if self._client is not None:

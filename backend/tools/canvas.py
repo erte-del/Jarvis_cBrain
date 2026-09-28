@@ -84,6 +84,13 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
     raise ValueError(f"Unknown card kind {kind!r}; use one of {CARD_KINDS}")
 
 
+async def show_text(title: str, content: str) -> str:
+    """Put a markdown card on the canvas from Jarvis's own code. Returns the card id."""
+    card_id = f"card_{next(_card_ids)}"
+    await hub.emit(events.canvas_card(card_id, "text", title, {"content": content}))
+    return card_id
+
+
 @tool(
     "show_on_canvas",
     "Show content on the canvas, the panel next to the chat. Use it for things better "

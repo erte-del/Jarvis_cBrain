@@ -114,12 +114,14 @@ Use the Agent SDK model aliases `haiku`, `sonnet`, `opus`.
 
 **How routing works (`router.py`):**
 1. **Manual override first.** "think hard", "use opus" or a UI toggle forces Opus. "quick" forces Haiku.
-2. **Rule pre-check.** Very short or chit-chat messages go to Haiku, especially in voice mode.
+2. **Rule pre-check.** Chit-chat ("hi", "thanks") stays on the current model: each model keeps its own cached copy of the conversation, so switching to Haiku for a short reply re-sends everything and costs more than it saves. Short voice messages go to Haiku (for speed).
 3. **Default is Sonnet**, with an **`ask_expert` tool.** When Sonnet decides a task is too hard, it calls `ask_expert(task, context)`. That runs the task on Opus as a one-shot call and returns the answer to Sonnet, so most messages never touch Opus.
 4. Optional later: a Haiku "classifier" call that labels each message easy / medium / hard.
-5. **Sticky routing (saves usage).** Switching models re-sends the whole conversation to the new model, which quickly costs more than it saves. Once a conversation is past ~20K tokens, automatic picks (3 and the default) keep the current model; my own choices (picker, "use opus", "quick") still switch.
+5. **Sticky routing (saves usage).** Switching models re-sends the whole conversation to the new model, which quickly costs more than it saves. Once a conversation is past ~20K tokens, automatic picks never move it to a cheaper model (e.g. back from Opus); moving up from Haiku to Sonnet for a real question is still allowed. My own choices (picker, "use opus", "quick") always switch.
+6. **Expert answers on the canvas.** `ask_expert` runs with the same effort setting. Long expert answers go straight onto the canvas, so Sonnet only summarises them instead of typing them out again.
+7. **New chat.** A "New chat" button starts a fresh conversation (every message re-reads the whole conversation, so long ones cost more each time). A big conversation (>20K tokens) left idle longer than the cache lifetime (1 hour) also starts over by itself, with a note in the chat, because continuing would re-send all of it at full price. Phase 6 (memory) will carry important facts across conversations.
 
-**Usage settings (`.env`):** `JARVIS_EFFORT` (default `medium`) sets how much the models think before answering; thinking was the biggest single use of the Pro limit. `JARVIS_CONNECTORS` (default `all`) picks which claude.ai connectors load; each adds its tool list to every new conversation (all 8 ≈ 10K tokens, Gmail only ≈ 1K).
+**Usage settings (`.env`):** `JARVIS_EFFORT` (default `medium`) sets how much the models think before answering; thinking was the biggest single use of the Pro limit. `JARVIS_CONNECTORS` (default `all`) picks which claude.ai connectors load; each adds its tool list to every new conversation (all 8 ≈ 10K tokens, Gmail only ≈ 1K). Claude Code remembers connectors switched off, so Jarvis applies the setting in both directions at startup. `JARVIS_NEW_CHAT_AFTER_IDLE_MIN` (default `60`, `0` = never) sets when an idle big conversation starts over.
 
 To switch models, use the SDK client's `set_model(...)` if available, otherwise separate sessions per model. Switching models mid-conversation loses some caching, which is acceptable.
 

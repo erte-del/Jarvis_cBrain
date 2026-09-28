@@ -123,6 +123,15 @@ async def run_turn(
             pass  # browser already gone
 
 
+background: set[asyncio.Task] = set()  # keeps tasks alive until they finish
+
+
+async def start_new_chat() -> None:
+    await brain.new_conversation()
+    await hub.emit(events.conversation_new("button"))
+    await brain.start()  # ready before your next message
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket) -> None:
     origin = ws.headers.get("origin")
@@ -159,6 +168,12 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                 task = asyncio.create_task(run_turn(send, text, model_override, selected_image))
                 turns.add(task)
                 task.add_done_callback(turns.discard)
+
+            elif kind == "user.new_chat":
+                # Not tied to this tab: closing it mustn't cut the restart short.
+                task = asyncio.create_task(start_new_chat())
+                background.add(task)
+                task.add_done_callback(background.discard)
 
             elif kind == "user.confirm":
                 if not gate.resolve(str(msg.get("id")), msg.get("approved") is True):

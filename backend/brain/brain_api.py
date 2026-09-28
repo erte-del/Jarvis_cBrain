@@ -24,5 +24,8 @@ class ApiBrain:
         raise NotImplementedError("API brain not used; Jarvis runs on the Pro subscription")
         yield  # pragma: no cover  (makes this an async generator)
 
+    async def new_conversation(self) -> None:
+        pass
+
     async def close(self) -> None:
         pass

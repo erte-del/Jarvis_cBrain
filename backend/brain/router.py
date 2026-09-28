@@ -3,12 +3,18 @@
 Order of checks:
   1. The model picked in the UI (manual override) always wins.
   2. Words in the message: "use opus", "think hard" -> Opus; "quick", "use haiku" -> Haiku.
-  3. Small talk ("hi", "thanks", "how are you") -> Haiku. In voice mode, short messages too.
+  3. Small talk ("hi", "thanks", "how are you") -> stays on the current model.
+     In voice mode, short messages -> Haiku.
   4. Everything else -> Sonnet, which can call `ask_expert` to consult Opus.
 
-Sticky: switching models means sending the whole conversation again to the new model,
-which quickly costs more than the switch saves. So once a conversation is bigger than
-STICKY_CONTEXT_TOKENS, the automatic picks (3 and 4) keep the model it's already on.
+Why small talk no longer goes to Haiku: each model keeps its own copy of the
+conversation (the cache). Switching means sending the whole conversation to the other
+model again, and even a fresh conversation is ~6-15K tokens. A short Haiku reply saves
+far less than that, so the switch always cost more than it saved.
+
+Sticky: for the same reason, once a conversation is bigger than STICKY_CONTEXT_TOKENS,
+automatic picks never move it to a cheaper model (e.g. back from Opus to Sonnet).
+Moving up from Haiku to Sonnet for a real question is still allowed.
 Your own choices (1 and 2) always switch.
 """
 
@@ -50,9 +56,11 @@ _SMALL_TALK = re.compile(
 VOICE_SHORT_WORDS = 6
 
 
-# A fresh conversation is ~15K tokens (instructions + tool lists), so this allows
+# A fresh conversation is ~6-15K tokens (instructions + tool lists), so this allows
 # free switching for the first few messages only.
 STICKY_CONTEXT_TOKENS = 20_000
+
+_RANK: dict[str, int] = {"haiku": 0, "sonnet": 1, "opus": 2}
 
 
 def route(
@@ -73,12 +81,13 @@ def route(
         return Route("haiku", "you asked for a quick answer")
 
     if _SMALL_TALK.match(text):
-        auto = Route("haiku", "small talk")
+        auto = Route(current or "sonnet", "small talk: stayed on the same model")
     elif voice and len(text.split()) <= VOICE_SHORT_WORDS:
         auto = Route("haiku", "short voice message")
     else:
         auto = Route("sonnet", "default")
 
-    if current and current != auto.model and context_tokens > STICKY_CONTEXT_TOKENS:
+    cheaper = current is not None and _RANK[auto.model] < _RANK[current]
+    if cheaper and context_tokens > STICKY_CONTEXT_TOKENS:
         return Route(current, f"stayed on {current.capitalize()}: switching would re-send the conversation")
     return auto

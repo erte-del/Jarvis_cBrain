@@ -70,6 +70,7 @@
 .conn-open::before { background: var(--haiku); }
 .conn-closed::before { background: var(--danger); }
 
+.new-chat,
 .canvas-toggle {
   font: inherit;
   color: var(--text-dim);
@@ -78,6 +79,10 @@
   border-radius: 6px;
   padding: 3px 10px;
   cursor: pointer;
+}
+.new-chat:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 .canvas-toggle.active {
   color: var(--accent);

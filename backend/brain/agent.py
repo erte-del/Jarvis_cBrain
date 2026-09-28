@@ -1,15 +1,18 @@
 """Jarvis logic: router -> brain -> events."""
 
 import logging
+import time
 import uuid
 from contextlib import aclosing
 from typing import AsyncIterator
 
 import events
+import hub
+from config import NEW_CHAT_AFTER_IDLE_MIN
 from tools import registry, web
 
 from .base import Brain, Done, ModelAlias, TextDelta, ToolResult, ToolStart
-from .router import route
+from .router import STICKY_CONTEXT_TOKENS, route
 
 log = logging.getLogger("jarvis.agent")
 
@@ -17,6 +20,14 @@ log = logging.getLogger("jarvis.agent")
 class Jarvis:
     def __init__(self, brain: Brain) -> None:
         self.brain = brain
+
+    def _idle_too_long(self) -> bool:
+        """A big conversation left alone for over an hour: Claude's cached copy has
+        expired, so continuing would send all of it again at full price."""
+        if not NEW_CHAT_AFTER_IDLE_MIN or not self.brain.last_active:
+            return False
+        idle_s = time.time() - self.brain.last_active
+        return idle_s > NEW_CHAT_AFTER_IDLE_MIN * 60 and self.brain.context_tokens > STICKY_CONTEXT_TOKENS
 
     async def handle_text(
         self,
@@ -27,6 +38,9 @@ class Jarvis:
     ) -> AsyncIterator[events.Event]:
         """Answer one user message, yielding WebSocket events for the browser."""
         reply_id = uuid.uuid4().hex[:12]
+        if self._idle_too_long():
+            await self.brain.new_conversation()
+            await hub.emit(events.conversation_new("idle"))
         r = route(text, model_override, voice, self.brain.model, self.brain.context_tokens)
         log.info("Route -> %s (%s)", r.model, r.reason)
 

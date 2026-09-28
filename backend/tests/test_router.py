@@ -37,10 +37,14 @@ class RouterTest(unittest.TestCase):
     def test_force_sonnet(self):
         self.check("hi, use sonnet please", "sonnet")
 
-    def test_small_talk(self):
+    def test_small_talk_stays_on_the_current_model(self):
+        # Switching would re-send the conversation, which costs more than Haiku saves.
         for text in ["hi", "Hey Jarvis!", "good morning", "thanks!", "Thank you so much",
                      "how are you?", "ok", "bye", "Got it."]:
-            self.check(text, "haiku")
+            self.check(text, "sonnet")
+            self.check(text, "sonnet", current="sonnet", context_tokens=8_000)
+            self.check(text, "opus", current="opus", context_tokens=8_000)
+            self.check(text, "haiku", current="haiku", context_tokens=8_000)
 
     def test_default_sonnet(self):
         for text in [
@@ -53,17 +57,18 @@ class RouterTest(unittest.TestCase):
             self.check(text, "sonnet")
 
     def test_sticky_once_the_conversation_is_big(self):
-        # Fresh conversation: automatic switching is fine.
-        self.check("hi", "haiku", current="sonnet", context_tokens=16_000)
-        # Big conversation: switching would re-send it all, so stay.
-        self.check("hi", "sonnet", current="sonnet", context_tokens=60_000)
+        # Small conversation: going back from Opus to Sonnet is fine.
+        self.check("what's the capital of France?", "sonnet", current="opus", context_tokens=16_000)
+        # Big conversation: moving to a cheaper model would re-send it all, so stay.
         self.check("what's the capital of France?", "opus", current="opus", context_tokens=60_000)
-        self.check("what's the capital of France?", "haiku", current="haiku", context_tokens=60_000)
+        self.check("what time is it", "sonnet", current="sonnet", context_tokens=60_000, voice=True)
+        # Moving up from Haiku for a real question is still allowed.
+        self.check("what's the capital of France?", "sonnet", current="haiku", context_tokens=60_000)
         # Your own choices always switch.
         self.check("use sonnet: what's the capital of France?", "sonnet", current="opus", context_tokens=60_000)
         self.check("quick: 2+2?", "haiku", current="sonnet", context_tokens=60_000)
         self.check("hi", "opus", override="opus", current="sonnet", context_tokens=60_000)
-        self.assertIn("stayed on", route("hi", current="sonnet", context_tokens=60_000).reason)
+        self.assertIn("stayed on", route("why?", current="opus", context_tokens=60_000).reason)
 
     def test_voice_short_goes_to_haiku(self):
         self.check("what time is it in Tokyo", "haiku", voice=True)

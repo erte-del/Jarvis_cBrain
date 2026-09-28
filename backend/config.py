@@ -27,6 +27,11 @@ if EFFORT not in ("low", "medium", "high", "xhigh", "max"):
 # Each connector's tool list goes into every new conversation, so fewer = cheaper.
 CONNECTORS = [c.strip().lower() for c in os.getenv("JARVIS_CONNECTORS", "all").split(",") if c.strip()]
 
+# After this many minutes without a message, a big conversation starts over fresh.
+# Claude's copy of the conversation (the cache) expires after an hour, so the next
+# message would otherwise send the whole thing again at full price. 0 = never.
+NEW_CHAT_AFTER_IDLE_MIN = int(os.getenv("JARVIS_NEW_CHAT_AFTER_IDLE_MIN", "60"))
+
 if HOST not in ("127.0.0.1", "localhost", "::1"):
     raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
 

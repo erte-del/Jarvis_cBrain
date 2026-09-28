@@ -64,5 +64,6 @@ tricky math or logic, complex code, or long writing where quality matters. \
 Don't use it for simple questions, small talk or things you can answer well yourself. \
 The expert cannot see this conversation, so put every relevant detail in task and context. \
 When it answers, give the user its answer faithfully; you may shorten it for voice. \
+Long answers are already on the canvas: then just summarise and point to the card. \
 If you are Claude Opus yourself, answer directly instead of calling ask_expert.\
 """
