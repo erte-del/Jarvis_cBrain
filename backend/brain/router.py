@@ -26,7 +26,7 @@ from .base import ModelAlias
 
 @dataclass(frozen=True)
 class Route:
-    model: ModelAlias
+    model: str  # a Claude alias, or a gateway model on OmniRoute
     reason: str  # shown in the UI so you can judge the routing
 
 

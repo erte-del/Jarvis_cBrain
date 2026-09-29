@@ -7,12 +7,13 @@ from contextlib import aclosing
 from typing import AsyncIterator
 
 import events
+import gateway
 import hub
 import usage
-from config import GATEWAY_MODEL, NEW_CHAT_AFTER_IDLE_MIN
+from config import NEW_CHAT_AFTER_IDLE_MIN
 from tools import registry, web
 
-from .base import Brain, Done, ModelAlias, TextDelta, ToolResult, ToolStart
+from .base import Brain, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
 from .router import STICKY_CONTEXT_TOKENS, Route, route
 
 log = logging.getLogger("jarvis.agent")
@@ -46,8 +47,8 @@ class Jarvis:
             await self.brain.new_conversation()
             await hub.emit(events.conversation_new("idle"))
         if self.brain.provider == "omniroute":
-            # Every model name goes to the one gateway model (see config.GATEWAY_MODEL).
-            r = Route("sonnet", f"OmniRoute ({GATEWAY_MODEL})")
+            # The gateway model you picked in the app (no automatic routing).
+            r = Route(self.brain.gateway_model, "OmniRoute")
         else:
             r = route(text, model_override, voice, self.brain.model, self.brain.context_tokens)
         log.info("Route -> %s (%s)", r.model, r.reason)
@@ -97,6 +98,9 @@ class Jarvis:
                             reply_id, ev.model, r.model, r.reason, consulted_expert, sources
                         )
                         await hub.emit(self.usage_event())
+
+                    case Error() if self.brain.provider == "omniroute":
+                        yield events.error(gateway.explain_error(ev.message), reply_id)
 
                     case _:
                         yield events.from_brain(ev, reply_id)

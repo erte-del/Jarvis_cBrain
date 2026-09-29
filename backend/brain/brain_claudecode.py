@@ -26,7 +26,7 @@ from claude_agent_sdk import (
 )
 
 import usage
-from config import CONNECTORS, EFFORT, PROVIDER, STORAGE_DIR, set_login
+from config import CONNECTORS, EFFORT, GATEWAY_MODEL, PROVIDER, STORAGE_DIR, set_login
 from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
@@ -59,7 +59,9 @@ BLOCKED_TOOLS = [
 class ClaudeCodeBrain:
     def __init__(self, model: ModelAlias = "sonnet", can_use_tool: CanUseTool | None = None) -> None:
         self.provider = PROVIDER  # "claude" (Pro login) or "omniroute" (gateway)
-        self._model: ModelAlias = model
+        self.gateway_model = GATEWAY_MODEL  # picked in the app (OmniRoute only)
+        # A Claude alias (haiku / sonnet / opus), or a gateway model on OmniRoute.
+        self._model: str = model
         self._can_use_tool = can_use_tool  # the confirmation gate for 'act' tools
         self._client: ClaudeSDKClient | None = None
         self._lock = asyncio.Lock()  # one turn at a time
@@ -72,7 +74,7 @@ class ClaudeCodeBrain:
         self.last_active = 0.0
 
     @property
-    def model(self) -> ModelAlias:
+    def model(self) -> str:
         """The model the conversation is on now."""
         return self._model
 
@@ -175,7 +177,7 @@ class ClaudeCodeBrain:
         self,
         text: str,
         images: list[bytes] | None = None,
-        model: ModelAlias = "sonnet",
+        model: str = "sonnet",
     ) -> AsyncIterator[BrainEvent]:
         if images:
             raise NotImplementedError("Image input arrives in Phase 4c")

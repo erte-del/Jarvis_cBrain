@@ -128,7 +128,9 @@ class UsageNumbersTest(unittest.TestCase):
             },
         })
         snap = usage.snapshot("claude", 1234)
-        self.assertEqual(snap["windows"]["five_hour"], {"used": 0.16, "resets_at": resets})
+        self.assertEqual(snap["windows"]["five_hour"]["used"], 0.16)
+        self.assertEqual(snap["windows"]["five_hour"]["resets_at"], resets)
+        self.assertAlmostEqual(snap["windows"]["five_hour"]["reported_at"], time.time(), delta=5)
         self.assertEqual(snap["windows"]["seven_day"]["used"], 0.02)
         self.assertEqual(snap["context_tokens"], 1234)
 

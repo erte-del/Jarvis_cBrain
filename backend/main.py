@@ -7,8 +7,6 @@ Run from the backend folder:
 import asyncio
 import json
 import logging
-import urllib.error
-import urllib.request
 from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
@@ -19,6 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 import config
 import events
+import gateway
 import hub
 from brain.agent import Jarvis
 from brain.base import ModelAlias
@@ -129,7 +128,7 @@ background: set[asyncio.Task] = set()  # keeps tasks alive until they finish
 
 
 def settings_event() -> events.Event:
-    return events.settings_state(brain.provider, config.GATEWAY_URL, config.GATEWAY_MODEL)
+    return events.settings_state(brain.provider, config.GATEWAY_URL, brain.gateway_model, config.GATEWAY_MODELS)
 
 
 async def start_new_chat() -> None:
@@ -138,25 +137,15 @@ async def start_new_chat() -> None:
     await brain.start()  # ready before your next message
 
 
-def gateway_running() -> bool:
-    """Does anything answer at the gateway's address? (Any HTTP reply counts.)"""
-    try:
-        urllib.request.urlopen(config.GATEWAY_URL, timeout=2).close()
-    except urllib.error.HTTPError:
-        pass  # it answered, just not with 200
-    except (urllib.error.URLError, OSError):
-        return False
-    return True
-
-
 async def switch_provider(provider: str) -> None:
     if provider == brain.provider:
         return
-    if provider == "omniroute" and not await asyncio.to_thread(gateway_running):
-        await hub.emit(events.error(
-            f"OmniRoute isn't running at {config.GATEWAY_URL}. Start it (run: omniroute) and try again."
-        ))
-        return
+    if provider == "omniroute" and not await asyncio.to_thread(gateway.running):
+        await hub.emit(events.notice("Starting OmniRoute…"))
+        problem = await asyncio.to_thread(gateway.start)
+        if problem:
+            await hub.emit(events.error(problem))
+            return
     await brain.new_conversation(provider)
     await hub.emit(events.conversation_new("provider"))
     await hub.emit(settings_event())
@@ -231,6 +220,12 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                         task.add_done_callback(background.discard)
                     else:
                         await send(events.error(f"Unknown provider: {provider}"))
+                if "gateway_model" in msg:
+                    if msg["gateway_model"] in config.GATEWAY_MODELS:
+                        brain.gateway_model = msg["gateway_model"]
+                        await hub.emit(settings_event())
+                    else:
+                        await send(events.error(f"Unknown OmniRoute model: {msg['gateway_model']}"))
                 if "model_override" in msg:
                     override = msg.get("model_override")
                     if override is None or override in MODELS:

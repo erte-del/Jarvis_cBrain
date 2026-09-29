@@ -619,6 +619,11 @@
   color: var(--accent);
 }
 .meter-value.dim { color: var(--text-dim); }
+.meter-value span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dim);
+}
 
 .meter-bar {
   height: 4px;
@@ -631,6 +636,7 @@
   box-shadow: 0 0 8px var(--glow);
 }
 
+.meter-sub + .meter-sub { margin-top: 1px; opacity: 0.75; }
 .meter-sub {
   margin-top: 6px;
   font-size: 10px;
@@ -725,6 +731,17 @@
 .model-btn:disabled {
   opacity: 0.4;
   cursor: default;
+}
+.model-btn.model-gateway { --c: var(--haiku); aspect-ratio: auto; min-height: 64px; padding: 8px 4px; gap: 4px; }
+.model-sub {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .model-dot {
   width: 8px;
@@ -1276,6 +1293,7 @@
   color: var(--danger);
   font-size: 13px;
 }
+.notice.notice-info { color: var(--text-dim); }
 
 /* Blinking cursor while a reply streams in */
 .cursor {

@@ -8,7 +8,7 @@ JARVIS_BUILD_PROMPT.md for notes.
 
 from typing import AsyncIterator
 
-from .base import BrainEvent, ModelAlias
+from .base import BrainEvent
 
 
 class ApiBrain:
@@ -19,7 +19,7 @@ class ApiBrain:
         self,
         text: str,
         images: list[bytes] | None = None,
-        model: ModelAlias = "sonnet",
+        model: str = "sonnet",
     ) -> AsyncIterator[BrainEvent]:
         raise NotImplementedError("API brain not used; Jarvis runs on the Pro subscription")
         yield  # pragma: no cover  (makes this an async generator)

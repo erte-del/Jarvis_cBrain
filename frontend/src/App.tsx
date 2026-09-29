@@ -57,6 +57,7 @@ export default function App() {
             settings={jarvis.settings}
             modelOverride={jarvis.modelOverride}
             onModel={jarvis.setModelOverride}
+            onGatewayModel={jarvis.setGatewayModel}
           />
           <LogPanel log={jarvis.log} />
           <TerminalPanel busy={jarvis.busy} activeTool={jarvis.activeTool} connection={jarvis.connection} />

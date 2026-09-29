@@ -22,8 +22,10 @@ Frontend (Node 24 via nvm):
 
 Copy `.env.example` to `.env`. Never add an `ANTHROPIC_API_KEY`: Jarvis uses the Claude Pro login.
 
-Optional: [OmniRoute](https://github.com/diegosouzapw/OmniRoute) as a second brain. Install and
-start it (`npm i -g omniroute`, then `omniroute`), then pick it with the gear icon in the app.
+Optional: [OmniRoute](https://github.com/diegosouzapw/OmniRoute) as a second brain. Install it
+(`npm i -g omniroute`) and pick it with the gear icon: Jarvis starts it if needed, on this Mac only
+(127.0.0.1). Connect at least one provider in its dashboard (http://localhost:20128 → Providers);
+its keyless free providers mostly refuse outside their own apps.
 Claude (Pro login, Sonnet) stays the default. The claude.ai connectors and web search are off in
 OmniRoute mode. See `.env.example`.
 

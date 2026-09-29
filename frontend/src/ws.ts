@@ -11,12 +11,14 @@ export type Provider = 'claude' | 'omniroute'
 export interface BrainSettings {
   provider: Provider
   gateway_url: string
-  gateway_model: string
+  gateway_model: string // the OmniRoute model in use, e.g. "groq/openai/gpt-oss-120b"
+  gateway_models: string[] // the ones you can switch between (JARVIS_GATEWAY_MODELS)
 }
 
 export interface UsageWindow {
   used: number // 0..1 of the plan window
   resets_at: number // unix seconds, 0 = not reported yet
+  reported_at: number // unix seconds: when Claude Code last told us (with a Jarvis reply)
 }
 
 export interface UsageSnapshot {
@@ -49,6 +51,7 @@ export type ServerEvent =
   | { type: 'tool.started'; id: string; name: string; detail: string; label: string }
   | { type: 'tool.finished'; id: string; is_error: boolean }
   | { type: 'error'; message: string; id?: string }
+  | { type: 'notice'; message: string }
   | { type: 'confirm.request'; id: string; title: string; summary: string; details: [string, string][] }
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
@@ -61,7 +64,7 @@ export type ClientEvent =
   | { type: 'user.text'; text: string }
   | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'user.select_image'; id: string | null; version?: number }
-  | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider }
+  | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
   | { type: 'user.new_chat' }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
@@ -184,6 +187,7 @@ export interface ChatMessage {
   id: string
   role: 'user' | 'assistant' | 'notice' | 'confirm'
   text: string
+  info?: boolean // role 'notice': just so you know, not an error
   confirm?: Confirmation // role 'confirm': an action waiting for your approval
   model?: string // full model ID that answered (assistant only)
   reason?: string // why the router picked the model
@@ -268,10 +272,17 @@ function logLine(state: ChatState, action: Action): Omit<LogLine, 'id' | 'time'>
         case 'conversation.new':
           return { text: `NEW CONVERSATION${ev.reason === 'idle' ? ' (IDLE OVER 1H)' : ''}`, tone: 'ok' }
         case 'settings.state':
-          if (state.settings?.provider === ev.provider) return null
-          return { text: `BRAIN · ${ev.provider === 'claude' ? 'CLAUDE (PRO LOGIN)' : `OMNIROUTE (${ev.gateway_model})`}` }
+          if (state.settings?.provider !== ev.provider) {
+            return { text: `BRAIN · ${ev.provider === 'claude' ? 'CLAUDE (PRO LOGIN)' : `OMNIROUTE (${ev.gateway_model})`}` }
+          }
+          if (ev.provider === 'omniroute' && state.settings?.gateway_model !== ev.gateway_model) {
+            return { text: `MODEL · ${ev.gateway_model.toUpperCase()}` }
+          }
+          return null
         case 'error':
           return { text: `ERROR · ${clip(ev.message, 60)}`, tone: 'error' }
+        case 'notice':
+          return { text: ev.message.toUpperCase() }
       }
       return null
     }
@@ -425,6 +436,11 @@ function baseReducer(state: ChatState, action: Action): ChatState {
           const { type: _type, ...usage } = ev
           return { ...state, usage }
         }
+        case 'notice':
+          return {
+            ...state,
+            messages: [...state.messages, { id: nextLocalId(), role: 'notice', text: ev.message, info: true }],
+          }
         case 'error':
           if (ev.id) {
             return {
@@ -500,6 +516,10 @@ export function useJarvis() {
     socketRef.current?.send({ type: 'settings.update', provider })
   }, [])
 
+  const setGatewayModel = useCallback((gateway_model: string) => {
+    socketRef.current?.send({ type: 'settings.update', gateway_model })
+  }, [])
+
   const newChat = useCallback(() => {
     socketRef.current?.send({ type: 'user.new_chat' })
   }, [])
@@ -523,5 +543,5 @@ export function useJarvis() {
   }, [selectedImage, connected])
   const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, newChat, setProvider, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
+  return { ...state, sendText, newChat, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
 }

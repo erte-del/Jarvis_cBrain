@@ -50,8 +50,18 @@ GATEWAY_URL = (os.getenv("JARVIS_GATEWAY_URL") or "http://localhost:20128").stri
 GATEWAY_KEY = os.getenv("JARVIS_GATEWAY_KEY", "").strip()
 if not GATEWAY_URL.startswith(("http://", "https://")):
     raise SystemExit(f"JARVIS_GATEWAY_URL={GATEWAY_URL!r}: must start with http:// or https://")
-# The gateway model Claude Code's sonnet / opus / haiku go to ("auto" = OmniRoute picks).
-GATEWAY_MODEL = os.getenv("JARVIS_GATEWAY_MODEL", "auto").strip() or "auto"
+# Gateway models you can switch between in the app, as OmniRoute names them
+# ("provider/model"). The first is the default. Each needs its provider connected in
+# OmniRoute's dashboard.
+GATEWAY_MODELS = [
+    m.strip()
+    for m in os.getenv("JARVIS_GATEWAY_MODELS", "groq/openai/gpt-oss-120b, gemini/gemini-3.7-flash").split(",")
+    if m.strip()
+]
+if not GATEWAY_MODELS:
+    raise SystemExit("JARVIS_GATEWAY_MODELS is empty: list at least one OmniRoute model")
+# Claude Code's own sonnet / opus / haiku names (e.g. for WebFetch) go to this one.
+GATEWAY_MODEL = GATEWAY_MODELS[0]
 
 # If any of these are set, Claude Code uses them instead of the Pro login.
 _API_AUTH_VARS = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL")

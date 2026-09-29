@@ -22,7 +22,8 @@ FILE = STORAGE_DIR / "usage.json"
 FIVE_HOURS = 5 * 3600
 KEEP_S = 8 * 24 * 3600  # older turns are dropped
 
-# Plan windows as last reported: {"five_hour": {"used": 0.16, "resets_at": 1790674800}, ...}
+# Plan windows as last reported:
+# {"five_hour": {"used": 0.16, "resets_at": 1790674800, "reported_at": 1790660000}, ...}
 windows: dict[str, dict[str, float]] = {}
 # One entry per reply: [time, model, input, cache_write, cache_read, output]
 _turns: list[list[Any]] = []
@@ -49,13 +50,15 @@ def _save() -> None:
 
 
 def record_limits(raw: dict[str, Any]) -> None:
-    """From Claude Code's rate_limit_event."""
+    """From Claude Code's rate_limit_event. The numbers cover your whole Pro plan (Claude
+    Code, claude.ai, Jarvis), but only arrive with Jarvis's replies, so they can lag."""
+    now = int(time.time())
     for name, w in (raw.get("unifiedWindows") or {}).items():
         if isinstance(w, dict) and w.get("utilization") is not None:
-            windows[name] = {"used": float(w["utilization"]), "resets_at": w.get("resetsAt") or 0}
+            windows[name] = {"used": float(w["utilization"]), "resets_at": w.get("resetsAt") or 0, "reported_at": now}
     kind = raw.get("rateLimitType")
     if kind and raw.get("utilization") is not None:  # older CLIs: only the window that applies
-        windows[kind] = {"used": float(raw["utilization"]), "resets_at": raw.get("resetsAt") or 0}
+        windows[kind] = {"used": float(raw["utilization"]), "resets_at": raw.get("resetsAt") or 0, "reported_at": now}
     _save()
 
 
@@ -91,7 +94,7 @@ def snapshot(provider: str, context_tokens: int) -> dict[str, Any]:
             tokens["cache_read"] += t[4]
             tokens["output"] += t[5]
     # A window that has reset since the last report is back to 0.
-    current = {k: w if w["resets_at"] > now else {"used": 0.0, "resets_at": 0} for k, w in windows.items()}
+    current = {k: w if w["resets_at"] > now else {"used": 0.0, "resets_at": 0, "reported_at": 0} for k, w in windows.items()}
     return {"provider": provider, "windows": current, "tokens": tokens, "context_tokens": context_tokens}
 
 

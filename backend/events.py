@@ -9,6 +9,7 @@ Client -> server:
     settings.update  {model_override: "haiku" | "sonnet" | "opus" | null}
     user.new_chat    {}                   start a fresh conversation
     settings.update  {provider: "claude" | "omniroute"}   switch brain (starts a new chat)
+    settings.update  {gateway_model}      pick one of the OmniRoute models
 
 Server -> client:
     status               {state: "idle" | "thinking"}
@@ -22,10 +23,11 @@ Server -> client:
                                                      label = readable name ("Gmail: Search threads")
     tool.finished        {id, is_error}
     error                {message, id?}
+    notice               {message}        something to know that isn't an error
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
     conversation.new     {reason: "button" | "idle" | "provider"}   Jarvis forgot the conversation
-    settings.state       {provider, gateway_url, gateway_model}   the brain in use
+    settings.state       {provider, gateway_url, gateway_model, gateway_models}   the brain in use
     usage.update         {provider, windows, tokens, context_tokens}   see usage.py
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
                          kind "image": data = {image_id, current, credit, versions[]}
@@ -50,6 +52,10 @@ def error(message: str, reply_id: str | None = None) -> Event:
     if reply_id:
         ev["id"] = reply_id
     return ev
+
+
+def notice(message: str) -> Event:
+    return {"type": "notice", "message": message}
 
 
 def done(
@@ -89,8 +95,14 @@ def confirm_resolved(request_id: str, status: str) -> Event:
     return {"type": "confirm.resolved", "id": request_id, "status": status}
 
 
-def settings_state(provider: str, gateway_url: str, gateway_model: str) -> Event:
-    return {"type": "settings.state", "provider": provider, "gateway_url": gateway_url, "gateway_model": gateway_model}
+def settings_state(provider: str, gateway_url: str, gateway_model: str, gateway_models: list[str]) -> Event:
+    return {
+        "type": "settings.state",
+        "provider": provider,
+        "gateway_url": gateway_url,
+        "gateway_model": gateway_model,
+        "gateway_models": gateway_models,
+    }
 
 
 def usage_update(snapshot: dict[str, Any]) -> Event:

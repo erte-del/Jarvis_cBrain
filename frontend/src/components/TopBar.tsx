@@ -1,6 +1,7 @@
 // HUD top bar: name, system status, local time, brain, New chat and settings.
 
 import { useEffect, useRef, useState } from 'react'
+import { gatewayModelName } from '../labels'
 import { useNow } from '../useNow'
 import type { BrainSettings, ConnectionState, Provider } from '../ws'
 
@@ -75,7 +76,8 @@ function Settings({ settings, onProvider }: Pick<TopBarProps, 'settings' | 'onPr
           >
             <span className="provider-name">OmniRoute</span>
             <span className="provider-note">
-              Other providers' models ({settings?.gateway_model ?? 'auto'}) through {settings?.gateway_url ?? 'OmniRoute'}.
+              Your OmniRoute models ({settings?.gateway_models.map((m) => gatewayModelName(m).provider).join(', ')}) through{' '}
+              {settings?.gateway_url ?? 'OmniRoute'}. Switch between them with the model buttons.
               Doesn't use your Pro limit. Connectors and web search are off, and tools may work less reliably.
             </span>
           </button>
@@ -115,7 +117,11 @@ export default function TopBar({ connection, busy, settings, canStartNewChat, on
         </div>
         <div>
           <div className="readout-key">BRAIN</div>
-          <div className="readout-val">{settings?.provider === 'omniroute' ? 'OMNIROUTE' : 'CLAUDE · PRO'}</div>
+          <div className="readout-val">
+            {settings?.provider === 'omniroute'
+              ? `OMNIROUTE · ${gatewayModelName(settings.gateway_model).provider.toUpperCase()}`
+              : 'CLAUDE · PRO'}
+          </div>
         </div>
       </div>
 

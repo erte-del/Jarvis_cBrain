@@ -62,6 +62,7 @@ BrainEvent = TextDelta | ToolStart | ToolResult | UIEvent | Done | Error
 
 class Brain(Protocol):
     provider: str  # "claude" (Pro login) or "omniroute" (gateway)
+    gateway_model: str  # the OmniRoute model picked in the app
     model: ModelAlias  # the model the conversation is on now
     context_tokens: int  # size of the conversation so far (switching models re-sends it)
     last_active: float  # time.time() of the last message, 0 if none yet

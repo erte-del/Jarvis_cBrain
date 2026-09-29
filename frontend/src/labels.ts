@@ -38,3 +38,10 @@ export function toolLabel({ name, detail, label }: ActiveTool): string {
       return `${label || name}…`
   }
 }
+
+/** "groq/openai/gpt-oss-120b" -> { provider: "Groq", model: "gpt-oss-120b" } */
+export function gatewayModelName(id: string): { provider: string; model: string } {
+  const [provider, ...rest] = id.split('/')
+  const model = rest.length ? rest[rest.length - 1] : provider
+  return { provider: provider.charAt(0).toUpperCase() + provider.slice(1), model }
+}

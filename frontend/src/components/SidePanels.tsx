@@ -1,7 +1,7 @@
 // Right-hand HUD panels: usage (plan limit + tokens + model), system log, terminal.
 
 import { useEffect, useRef } from 'react'
-import { toolLabel } from '../labels'
+import { gatewayModelName, toolLabel } from '../labels'
 import { useNow } from '../useNow'
 import type { ActiveTool, BrainSettings, ConnectionState, LogLine, ModelAlias, UsageSnapshot, UsageWindow } from '../ws'
 import Panel from './Panel'
@@ -34,18 +34,26 @@ function Meter({ label, window, now }: { label: string; window?: UsageWindow; no
       </div>
     )
   }
-  const left = Math.max(0, 1 - window.used)
-  const tone = left < 0.05 ? ' danger' : left < 0.2 ? ' warn' : ''
+  // Shown as "used", like Claude's own usage screen.
+  const used = Math.min(1, Math.max(0, window.used))
+  const tone = used > 0.95 ? ' danger' : used > 0.8 ? ' warn' : ''
   return (
     <div className={`meter${tone}`}>
       <div className="meter-label">{label}</div>
-      <div className="meter-value">{Math.round(left * 100)}%</div>
+      <div className="meter-value">
+        {Math.round(used * 100)}% <span>used</span>
+      </div>
       <div className="meter-bar">
-        <span style={{ width: `${left * 100}%` }} />
+        <span style={{ width: `${used * 100}%` }} />
       </div>
       <div className="meter-sub">
         {window.resets_at ? `resets ${resetTime(window.resets_at)} · ${countdown(window.resets_at, now)}` : 'window just reset'}
       </div>
+      {window.reported_at > 0 && (
+        <div className="meter-sub" title="Includes Claude Code and claude.ai, but Jarvis only gets the number with its replies.">
+          as of {resetTime(window.reported_at)}
+        </div>
+      )}
     </div>
   )
 }
@@ -62,9 +70,34 @@ interface UsagePanelProps {
   settings: BrainSettings | null
   modelOverride: ModelAlias | null
   onModel: (model: ModelAlias | null) => void
+  onGatewayModel: (model: string) => void
 }
 
-export function UsagePanel({ usage, settings, modelOverride, onModel }: UsagePanelProps) {
+function GatewayModels({ settings, onGatewayModel }: { settings: BrainSettings; onGatewayModel: (model: string) => void }) {
+  return (
+    <div className="model-buttons">
+      {settings.gateway_models.map((id) => {
+        const { provider, model } = gatewayModelName(id)
+        return (
+          <button
+            key={id}
+            type="button"
+            className={`model-btn model-gateway${settings.gateway_model === id ? ' active' : ''}`}
+            onClick={() => onGatewayModel(id)}
+            aria-pressed={settings.gateway_model === id}
+            title={id}
+          >
+            <span className="model-dot" />
+            {provider.toUpperCase()}
+            <span className="model-sub">{model}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+export function UsagePanel({ usage, settings, modelOverride, onModel, onGatewayModel }: UsagePanelProps) {
   const now = useNow(30_000)
   const onClaude = settings?.provider !== 'omniroute'
   const t = usage?.tokens
@@ -74,8 +107,8 @@ export function UsagePanel({ usage, settings, modelOverride, onModel }: UsagePan
     <Panel title="USAGE" tag={onClaude ? 'PRO PLAN' : 'OMNIROUTE'} className="usage-panel">
       {onClaude ? (
         <div className="meters">
-          <Meter label="5-HOUR LIMIT LEFT" window={usage?.windows.five_hour} now={now} />
-          <Meter label="WEEKLY LIMIT LEFT" window={usage?.windows.seven_day} now={now} />
+          <Meter label="5-HOUR LIMIT" window={usage?.windows.five_hour} now={now} />
+          <Meter label="WEEKLY · ALL MODELS" window={usage?.windows.seven_day} now={now} />
         </div>
       ) : (
         <div className="usage-note">OmniRoute doesn't use your Pro limit.</div>
@@ -95,23 +128,26 @@ export function UsagePanel({ usage, settings, modelOverride, onModel }: UsagePan
         </dl>
       </div>
 
-      <div className="usage-label">{onClaude ? 'MODEL' : `MODEL · ${settings?.gateway_model ?? 'auto'}`}</div>
-      <div className="model-buttons">
-        {MODELS.map((m) => (
-          <button
-            key={m.label}
-            type="button"
-            className={`model-btn model-${m.id ?? 'auto'}${modelOverride === m.id ? ' active' : ''}`}
-            onClick={() => onModel(m.id)}
-            disabled={!onClaude}
-            aria-pressed={modelOverride === m.id}
-            title={onClaude ? m.hint : 'OmniRoute picks the model'}
-          >
-            <span className="model-dot" />
-            {m.label}
-          </button>
-        ))}
-      </div>
+      <div className="usage-label">{onClaude ? 'MODEL' : 'MODEL · OMNIROUTE'}</div>
+      {onClaude || !settings ? (
+        <div className="model-buttons">
+          {MODELS.map((m) => (
+            <button
+              key={m.label}
+              type="button"
+              className={`model-btn model-${m.id ?? 'auto'}${modelOverride === m.id ? ' active' : ''}`}
+              onClick={() => onModel(m.id)}
+              aria-pressed={modelOverride === m.id}
+              title={m.hint}
+            >
+              <span className="model-dot" />
+              {m.label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <GatewayModels settings={settings} onGatewayModel={onGatewayModel} />
+      )}
     </Panel>
   )
 }

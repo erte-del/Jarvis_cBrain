@@ -71,7 +71,7 @@ function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: Chat
     return <ConfirmCard confirm={message.confirm} onAnswer={(approved) => onConfirm(message.id, approved)} />
   }
   if (message.role === 'notice') {
-    return <div className="notice">{message.text}</div>
+    return <div className={`notice${message.info ? ' notice-info' : ''}`}>{message.text}</div>
   }
   if (message.role === 'user') {
     return (
