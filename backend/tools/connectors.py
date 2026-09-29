@@ -24,6 +24,7 @@ READ_EXTRA: dict[str, set[str]] = {
     "Claude_Docs": {"query", "guide"},
     "Supabase": {"query_logs"},
     "Google_Calendar": {"suggest_time"},
+    "TickTick": {"filter_tasks"},
 }
 
 
@@ -44,26 +45,28 @@ def is_read(name: str) -> bool:
     return verb in READ_VERBS or action in READ_EXTRA.get(connector, set())
 
 
-# Calendar events Jarvis has seen in tool results, so a confirmation card that only
-# gets an eventId can still say which event it is.
-_seen_events: dict[str, str] = {}
+# Calendar events and tasks Jarvis has seen in tool results, so a confirmation card
+# that only gets an id (eventId, task_id) can still say which one it is.
+REMEMBER_FROM = {"Google_Calendar", "TickTick"}
+_seen: dict[str, str] = {}
 
 
-def remember_events(name: str, result: Any) -> None:
+def remember_items(name: str, result: Any) -> None:
     parsed = parse(name)
-    if parsed is None or parsed[0] != "Google_Calendar":
+    if parsed is None or parsed[0] not in REMEMBER_FROM:
         return
     for obj in _dicts(result):
-        if obj.get("id") and obj.get("summary"):
-            start = obj.get("start")
-            if isinstance(start, dict):
-                start = start.get("dateTime") or start.get("date")
-            _seen_events[str(obj["id"])] = f"{obj['summary']} ({start})" if start else str(obj["summary"])
+        label = obj.get("summary") or obj.get("title")
+        if obj.get("id") and label:
+            when = obj.get("start") or obj.get("dueDate")
+            if isinstance(when, dict):
+                when = when.get("dateTime") or when.get("date")
+            _seen[str(obj["id"])] = f"{label} ({when})" if when else str(label)
 
 
-def event_label(event_id: str) -> str | None:
+def item_label(item_id: str) -> str | None:
     """'h5hdgf82...' -> 'Jarvis test (2026-09-30T16:00:00+04:00)', if Jarvis has seen it."""
-    return _seen_events.get(event_id)
+    return _seen.get(item_id)
 
 
 def _dicts(value: Any) -> Iterator[dict]:

@@ -104,7 +104,7 @@ class Jarvis:
                         call = tool_calls.get(ev.id)
                         if call and not ev.is_error:
                             looked_at += web.sources_from_result(call.name, call.input, ev.data)
-                            connectors.remember_events(call.name, ev.data)
+                            connectors.remember_items(call.name, ev.data)
                         yield events.from_brain(ev, reply_id)
 
                     case Done():

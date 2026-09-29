@@ -24,7 +24,7 @@ class CalendarTest(unittest.TestCase):
         # Shape of a real search_events result: JSON text inside the MCP content blocks.
         result = [{"type": "text", "text": '{"events":[{"id":"ev1","summary":"Jarvis test",'
                    '"start":{"dateTime":"2026-09-30T16:00:00+04:00"}}]}'}]
-        registry.connectors.remember_events(CAL + "search_events", result)
+        registry.connectors.remember_items(CAL + "search_events", result)
         _, _, details = registry.describe_call(CAL + "delete_event", {"eventId": "ev1"})
         self.assertIn(["event", "Jarvis test (2026-09-30T16:00:00+04:00)"], details)
         _, _, details = registry.describe_call(CAL + "delete_event", {"eventId": "unknown"})

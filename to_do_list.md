@@ -38,15 +38,16 @@ Today: events can be displayed on the canvas, but Jarvis can't create, move, or 
 
 Today: "remind me to…" is the most common voice request and has nowhere to go.
 
-- [ ] Pick backend: Apple Reminders (syncs to iPhone, free) vs Todoist vs Things. Default: **Apple Reminders**.
-- [ ] Add reminder: text, optional due date/time, optional list ("Groceries", "Work")
-- [ ] List reminders: today, overdue, by list → task card on the canvas
-- [ ] Complete / uncomplete a reminder ("mark call the bank as done")
+- [x] Pick backend → **TickTick** (claude.ai connector + Android app; Apple Reminders doesn't reach Android). Prompt + `tasks` canvas card ready.
+- [x] Connect TickTick on claude.ai, check real tool names (`filter_tasks` added as read)
+- [x] Add reminder: text, optional due date/time, optional list ("Groceries", "Work") (tested: inbox + time; lists untested)
+- [x] List reminders: today, overdue, by list → task card on the canvas
+- [ ] Complete / uncomplete a reminder ("mark call the bank as done") (complete works; uncomplete untested)
 - [ ] Edit / reschedule a reminder ("move that to Monday")
 - [ ] Delete a reminder (confirm)
 - [ ] Location-based reminders ("when I get home") — later, if the backend supports it
-- [ ] Voice flow: "remind me to X at Y" works end-to-end in one sentence
-- [ ] Test: add → list → complete round trip
+- [ ] Voice flow: "remind me to X at Y" works end-to-end in one sentence (works typed; not tried by voice)
+- [x] Test: add → list → complete round trip (done live 2026-09-29)
 
 ## 3. Contacts lookup  — *Priority 3*
 

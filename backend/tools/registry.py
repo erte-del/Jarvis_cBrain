@@ -153,6 +153,8 @@ def friendly_name(name: str) -> str:
 
 
 MAX_DETAIL_CHARS = 600
+# Id arguments a card can name: the event or task Jarvis saw earlier.
+ID_KEYS = {"eventId": "event", "task_id": "task"}
 
 
 def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list[list[str]]]:
@@ -160,7 +162,11 @@ def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list
     title = friendly_name(name)
     summary = f"Jarvis wants to: {title}"
     details = []
+    # One nested object (TickTick's create_task sends {"task": {...}}) becomes its own rows.
+    items = []
     for key, value in tool_input.items():
+        items += value.items() if isinstance(value, dict) else [(key, value)]
+    for key, value in items:
         if isinstance(value, str):
             text = value
         elif isinstance(value, list) and all(isinstance(v, (str, int, float)) for v in value):
@@ -170,6 +176,6 @@ def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list
         if len(text) > MAX_DETAIL_CHARS:
             text = text[:MAX_DETAIL_CHARS] + "…"
         details.append([key.replace("_", " "), text])
-        if key == "eventId" and (label := connectors.event_label(text)):
-            details.append(["event", label])
+        if key in ID_KEYS and (label := connectors.item_label(text)):
+            details.append([ID_KEYS[key], label])
     return title, summary, details

@@ -1693,3 +1693,8 @@
 @media (prefers-reduced-motion: reduce) {
   .reactor *, .waveform span { animation: none !important; }
 }
+
+.task-list li.done .event-title {
+  text-decoration: line-through;
+  opacity: 0.6;
+}

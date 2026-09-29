@@ -12,12 +12,13 @@ from claude_agent_sdk import tool
 import events
 import hub
 
-CARD_KINDS = ["text", "table", "email_list", "events"]
+CARD_KINDS = ["text", "table", "email_list", "events", "tasks"]
 
 # Fields each list item may have, per kind (all strings; anything else is dropped).
 ITEM_FIELDS = {
     "email_list": ["from", "subject", "date", "snippet", "unread", "id"],
     "events": ["title", "start", "end", "location", "attendees", "notes"],
+    "tasks": ["title", "due", "list", "notes", "done"],
 }
 MAX_ITEMS = 50
 
@@ -46,7 +47,9 @@ INPUT_SCHEMA = {
             "enum": CARD_KINDS,
             "description": "text: markdown content. table: columns + rows. "
             "email_list: items with from/subject/date/snippet/unread. "
-            "events: items with title/start/end/location/attendees/notes.",
+            "events: items with title/start/end/location/attendees/notes. "
+            "tasks: items with title/due/list/notes/done (done: true or false). "
+            "Write dates and times for people, in the user's local time, e.g. 'Wed 30 Sep, 09:00'.",
         },
         "title": {"type": "string", "description": "Short card title."},
         "content": {"type": "string", "description": "For kind=text: the markdown to show."},
@@ -63,7 +66,7 @@ INPUT_SCHEMA = {
         "items": {
             "type": "array",
             "items": {"type": "object"},
-            "description": "For kind=email_list or events: one object per email / event.",
+            "description": "For kind=email_list, events or tasks: one object per email / event / task.",
         },
         "replace_card_id": {
             "type": "string",

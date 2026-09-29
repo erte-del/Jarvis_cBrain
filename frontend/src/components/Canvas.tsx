@@ -1,5 +1,5 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Shown in the centre panel: the cards tab (text, table, email list, events, images),
+// Shown in the centre panel: the cards tab (text, table, email list, events, tasks, images),
 // or one 3D model per tab. The tabs themselves are in Stage.tsx.
 
 import { lazy, Suspense } from 'react'
@@ -85,6 +85,22 @@ function Events({ items }: { items: Item[] }) {
   )
 }
 
+function Tasks({ items }: { items: Item[] }) {
+  return (
+    <ul className="event-list task-list">
+      {items.map((t, i) => (
+        <li key={i} className={isUnread(t.done) ? 'done' : undefined}>
+          <div className="event-title">
+            {isUnread(t.done) ? '☑' : '☐'} {t.title}
+          </div>
+          {(t.due || t.list) && <div className="event-meta">{[t.due, t.list].filter(Boolean).join(' · ')}</div>}
+          {t.notes && <div className="event-meta">{t.notes}</div>}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function CardBody({
   card,
   selectedImage,
@@ -113,6 +129,8 @@ function CardBody({
       return <EmailList items={(card.data.items as Item[]) ?? []} />
     case 'events':
       return <Events items={(card.data.items as Item[]) ?? []} />
+    case 'tasks':
+      return <Tasks items={(card.data.items as Item[]) ?? []} />
     default:
       return <pre className="card-raw">{JSON.stringify(card.data, null, 2)}</pre>
   }
