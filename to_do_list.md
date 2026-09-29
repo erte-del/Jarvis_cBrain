@@ -53,12 +53,13 @@ Today: "remind me to…" is the most common voice request and has nowhere to go.
 
 Today: "email Sarah" or "call mom" depends on guessing.
 
-- [ ] Source: macOS Contacts (AppleScript / `contacts` framework) and/or Google Contacts
-- [ ] Lookup by name, nickname, relationship ("mom", "my boss") → email / phone / address
-- [ ] If several matches: ask which one (show a small contact picker card)
+- [x] Source → **macOS Contacts, synced from Google** (no Google Contacts connector exists; Android contacts live in Google). `find_contact` tool, read-only
+- [x] Setup: Google account in System Settings → Internet Accounts (Contacts on)
+- [x] Lookup by name, nickname, relationship → email / phone / address. Relationships: My Card, then English → Turkish → other languages ("mom" found "Annem…"). Tested live
+- [x] If several matches: ask which one (in chat, tested live; no picker card)
 - [ ] Remember aliases in Memory (item 4): "Sarah" = Sarah K. from work
-- [ ] Wire into email (to/cc), calendar invites, and messaging (item 8)
-- [ ] Read-only by default; adding/editing contacts needs confirmation
+- [ ] Wire into email (to/cc), calendar invites, and messaging (item 8) (prompt: look up before emailing/inviting; needs a test by you, since it sends)
+- [x] Read-only by default (no add/edit tool at all; add one with an "act" label if ever needed)
 
 ## 4. Persistent user memory  — *Priority 4* (README Phase 6, `backend/tools/memory.py` is still a stub)
 
