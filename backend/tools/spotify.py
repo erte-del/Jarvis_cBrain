@@ -1,0 +1,289 @@
+"""Spotify: play music in the Spotify app on this Mac, and read your playlists.
+
+The claude.ai Spotify connector can search but can't play or list a playlist's songs,
+so Jarvis adds two tools of its own:
+
+  spotify_control         drives the Spotify desktop app with AppleScript. No login,
+                          no Premium. The connector's search finds the spotify: URIs.
+  spotify_playlist_tracks the songs in one of your playlists, via Spotify's Web API.
+                          Needs SPOTIFY_CLIENT_ID in .env and a one-time login (Jarvis
+                          shows the link). Since February 2026 Spotify only gives the
+                          contents of playlists you own or collaborate on, and the
+                          developer app's owner needs Premium.
+"""
+
+import asyncio
+import base64
+import hashlib
+import json
+import re
+import secrets
+import time
+from typing import Any
+from urllib.error import HTTPError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
+from claude_agent_sdk import tool
+
+import config
+from .canvas import show_table, show_text
+
+# --- Playback (AppleScript) ---
+
+KINDS = "track|album|playlist|artist|episode|show"
+URI_RE = re.compile(rf"spotify:({KINDS}):([A-Za-z0-9]+)")
+URL_RE = re.compile(rf"open\.spotify\.com/(?:intl-[a-z-]+/)?({KINDS})/([A-Za-z0-9]+)")
+
+
+def to_uri(ref: str) -> str | None:
+    """A spotify: URI or open.spotify.com link -> 'spotify:kind:id'. None if it's neither.
+
+    The result goes into an AppleScript string, so only letters and digits get through.
+    """
+    ref = ref.strip()
+    m = URI_RE.fullmatch(ref) or URL_RE.search(ref)
+    return f"spotify:{m[1]}:{m[2]}" if m else None
+
+
+NOW_PLAYING = 'delay 1\nreturn "Now playing: " & (name of current track) & " by " & (artist of current track)'
+SCRIPTS = {
+    "pause": "pause\nreturn \"Paused.\"",
+    "resume": f"play\n{NOW_PLAYING}",
+    "next": f"next track\n{NOW_PLAYING}",
+    "previous": f"previous track\n{NOW_PLAYING}",
+}
+
+
+async def _osascript(body: str) -> str:
+    script = f'tell application "Spotify"\n{body}\nend tell'
+    proc = await asyncio.create_subprocess_exec(
+        "osascript", "-e", script, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+    try:
+        out, err = await asyncio.wait_for(proc.communicate(), timeout=20)
+    except TimeoutError:
+        proc.kill()
+        raise RuntimeError("Spotify didn't answer in time") from None
+    if proc.returncode:
+        raise RuntimeError(err.decode().strip() or "osascript failed")
+    return out.decode().strip()
+
+
+def _text(text: str, is_error: bool = False) -> dict[str, Any]:
+    result: dict[str, Any] = {"content": [{"type": "text", "text": text}]}
+    if is_error:
+        result["is_error"] = True
+    return result
+
+
+@tool(
+    "spotify_control",
+    "Control the Spotify app on this Mac. action=play needs uri: a spotify: URI (track, "
+    "album, playlist, artist, episode) or open.spotify.com link, e.g. the 'uri' of a "
+    "Spotify connector search result. Other actions: pause, resume, next, previous, "
+    "volume (with volume 0-100). Returns what's playing now.",
+    {
+        "type": "object",
+        "properties": {
+            "action": {"type": "string", "enum": ["play", "pause", "resume", "next", "previous", "volume"]},
+            "uri": {"type": "string", "description": "For play: what to play."},
+            "volume": {"type": "integer", "minimum": 0, "maximum": 100},
+        },
+        "required": ["action"],
+    },
+)
+async def spotify_control(args: dict[str, Any]) -> dict[str, Any]:
+    action = args["action"]
+    if action == "play":
+        uri = to_uri(str(args.get("uri") or ""))
+        if not uri:
+            return _text("play needs a spotify: URI or open.spotify.com link; search Spotify first.", True)
+        body = f'play track "{uri}"\n{NOW_PLAYING}'
+    elif action == "volume":
+        body = f'set sound volume to {max(0, min(100, int(args.get("volume", 50))))}\nreturn "Volume set."'
+    elif action in SCRIPTS:
+        body = SCRIPTS[action]
+    else:
+        return _text(f"Unknown action {action!r}", True)
+    try:
+        out = await _osascript(body)
+    except (RuntimeError, OSError) as e:
+        return _text(f"Spotify app: {e}", True)
+    return _text(out)
+
+
+# --- Playlists (Web API, OAuth with PKCE: no client secret needed) ---
+
+CLIENT_ID = config.SPOTIFY_CLIENT_ID
+TOKEN_FILE = config.STORAGE_DIR / "spotify_token.json"
+SCOPES = "playlist-read-private playlist-read-collaborative"
+API = "https://api.spotify.com/v1"
+MAX_TRACKS = 200
+_pending: dict[str, str] = {}  # login state -> PKCE verifier
+
+
+def redirect_uri() -> str:
+    return f"http://127.0.0.1:{config.PORT}/spotify/callback"
+
+
+def login_url() -> str:
+    verifier = secrets.token_urlsafe(64)
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
+    state = secrets.token_urlsafe(16)
+    _pending[state] = verifier
+    return "https://accounts.spotify.com/authorize?" + urlencode(
+        {
+            "client_id": CLIENT_ID,
+            "response_type": "code",
+            "redirect_uri": redirect_uri(),
+            "scope": SCOPES,
+            "state": state,
+            "code_challenge_method": "S256",
+            "code_challenge": challenge,
+        }
+    )
+
+
+def _load_token() -> dict[str, Any]:
+    try:
+        return json.loads(TOKEN_FILE.read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def _token_request(form: dict[str, str]) -> dict[str, Any]:
+    req = Request(
+        "https://accounts.spotify.com/api/token",
+        data=urlencode({**form, "client_id": CLIENT_ID}).encode(),
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    with urlopen(req, timeout=15) as r:
+        tok = json.load(r)
+    tok["expires_at"] = time.time() + int(tok.get("expires_in", 3600)) - 60
+    tok.setdefault("refresh_token", _load_token().get("refresh_token"))
+    TOKEN_FILE.touch(mode=0o600)
+    TOKEN_FILE.write_text(json.dumps(tok))
+    return tok
+
+
+def finish_login(state: str, code: str, error: str) -> str:
+    """The /spotify/callback page: swap the code for a token. Returns a message for the tab."""
+    verifier = _pending.pop(state, None)
+    if error or not code:
+        return f"Spotify login cancelled ({error or 'no code'})."
+    if not verifier:
+        return "This login link is old or was already used. Ask Jarvis for a new one."
+    _token_request(
+        {"grant_type": "authorization_code", "code": code, "redirect_uri": redirect_uri(), "code_verifier": verifier}
+    )
+    return "Spotify connected. You can close this tab and ask Jarvis again."
+
+
+def _access_token() -> str | None:
+    tok = _load_token()
+    if not tok.get("refresh_token"):
+        return None
+    if time.time() < tok.get("expires_at", 0):
+        return tok["access_token"]
+    try:
+        return _token_request({"grant_type": "refresh_token", "refresh_token": tok["refresh_token"]})["access_token"]
+    except HTTPError as e:
+        if e.code == 400:  # refresh token revoked or expired: log in again
+            TOKEN_FILE.unlink(missing_ok=True)
+            return None
+        raise
+
+
+def _get(token: str, path: str, **params: Any) -> dict[str, Any]:
+    url = f"{API}{path}" + (f"?{urlencode(params)}" if params else "")
+    with urlopen(Request(url, headers={"Authorization": f"Bearer {token}"}), timeout=15) as r:
+        return json.load(r)
+
+
+def _my_playlists(token: str) -> list[dict[str, Any]]:
+    out, offset = [], 0
+    while offset < 500:
+        page = _get(token, "/me/playlists", limit=50, offset=offset)
+        out += [p for p in page.get("items") or [] if p]
+        if not page.get("next"):
+            break
+        offset += 50
+    return out
+
+
+def match_playlist(name: str, playlists: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Exact name first (ignoring case), then the first name that contains it."""
+    want = name.strip().lower()
+    names = [(p, str(p.get("name", "")).lower()) for p in playlists]
+    return next((p for p, n in names if n == want), None) or next((p for p, n in names if want in n), None)
+
+
+def _minutes(ms: int) -> str:
+    return f"{ms // 60000}:{ms // 1000 % 60:02d}"
+
+
+def _playlist_tracks(token: str, ref: str) -> dict[str, Any]:
+    """Blocking: resolve the playlist, fetch its songs, return {title, rows, lines} or {text}."""
+    if not ref.strip():
+        names = [f"- {p['name']} ({p['uri']})" for p in _my_playlists(token)]
+        return {"text": "Your playlists:\n" + "\n".join(names) if names else "You have no playlists."}
+
+    uri = to_uri(ref)
+    if uri and uri.startswith("spotify:playlist:"):
+        playlist_id, title = uri.rsplit(":", 1)[1], None
+    else:
+        playlists = _my_playlists(token)
+        found = match_playlist(ref, playlists)
+        if not found:
+            return {"text": f"No playlist named {ref!r}. Yours: " + ", ".join(p["name"] for p in playlists)}
+        playlist_id, title = found["id"], found["name"]
+    title = title or _get(token, f"/playlists/{playlist_id}", fields="name").get("name", "Playlist")
+
+    rows, lines, offset = [], [], 0
+    while offset < MAX_TRACKS:
+        page = _get(token, f"/playlists/{playlist_id}/items", limit=50, offset=offset)
+        for entry in page.get("items") or []:
+            item = entry.get("item") or entry.get("track")  # 'track' is Spotify's old name
+            if not item:
+                continue
+            artists = ", ".join(a["name"] for a in item.get("artists") or [])
+            n = len(rows) + 1
+            rows.append([str(n), item["name"], artists, (item.get("album") or {}).get("name", ""), _minutes(item.get("duration_ms", 0))])
+            lines.append(f"{n}. {item['name']} - {artists} ({item.get('uri', '')})")
+        if not page.get("next"):
+            break
+        offset += 50
+    return {"title": title, "rows": rows, "lines": lines, "total": page.get("total", len(rows))}
+
+
+@tool(
+    "spotify_playlist_tracks",
+    "List the songs in one of the user's Spotify playlists and show them on the canvas. "
+    "playlist: its name, a spotify:playlist: URI or an open.spotify.com link. Leave it "
+    "empty to list the user's playlists. Only playlists the user owns or collaborates on "
+    "can be read. Returns each song's uri, for spotify_control.",
+    {"type": "object", "properties": {"playlist": {"type": "string"}}},
+)
+async def spotify_playlist_tracks(args: dict[str, Any]) -> dict[str, Any]:
+    if not CLIENT_ID:
+        return _text("Spotify playlists aren't set up: SPOTIFY_CLIENT_ID is missing from .env (see .env.example).", True)
+    try:
+        token = await asyncio.to_thread(_access_token)
+        if not token:
+            url = login_url()
+            card = await show_text("Connect Spotify", f"[Log in to Spotify]({url}), then ask me again.")
+            return _text(f"Not logged in to Spotify. A login link is on the canvas ({card}); ask the user to open it.")
+        result = await asyncio.to_thread(_playlist_tracks, token, str(args.get("playlist") or ""))
+    except HTTPError as e:
+        if e.code == 403:
+            return _text("Spotify refused: it only shares the songs of playlists the user owns or collaborates on.", True)
+        return _text(f"Spotify API error {e.code}: {e.reason}", True)
+    except OSError as e:
+        return _text(f"Couldn't reach Spotify: {e}", True)
+
+    if "text" in result:
+        return _text(result["text"])
+    card = await show_table(result["title"], ["#", "Title", "Artist", "Album", "Length"], result["rows"])
+    more = f" (first {len(result['rows'])} of {result['total']})" if result["total"] > len(result["rows"]) else ""
+    return _text(f"{len(result['rows'])} songs{more}, shown on the canvas as {card}.\n" + "\n".join(result["lines"]))

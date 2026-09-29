@@ -15,6 +15,7 @@ load_dotenv(ROOT_DIR / ".env")
 HOST = os.getenv("JARVIS_HOST", "127.0.0.1")
 PORT = int(os.getenv("JARVIS_PORT", "8000"))
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
 
 # How hard Claude thinks before answering: low | medium | high | xhigh | max.

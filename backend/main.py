@@ -12,7 +12,7 @@ from contextlib import aclosing, asynccontextmanager
 import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 import config
@@ -24,6 +24,7 @@ from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
 from storage import image_store, model_store
+from tools import spotify
 
 log = logging.getLogger("jarvis")
 
@@ -105,6 +106,15 @@ async def model_file(model_id: str, filename: str, download: bool = False) -> Fi
         name = model_store.download_name(model_store.load(model_id), filename)
         return FileResponse(path, filename=name)
     return FileResponse(path, media_type="model/gltf-binary")
+
+
+@app.get("/spotify/callback", response_class=PlainTextResponse)
+async def spotify_callback(state: str = "", code: str = "", error: str = "") -> str:
+    """Spotify sends you back here after the login link Jarvis showed you."""
+    try:
+        return await asyncio.to_thread(spotify.finish_login, state, code, error)
+    except OSError as e:
+        return f"Couldn't finish the Spotify login: {e}"
 
 
 async def run_turn(

@@ -29,4 +29,5 @@ Jarvis.app/
 .vscode/
 .idea/
 backend/storage/usage.json
+backend/storage/spotify_token.json
 graphify-out/

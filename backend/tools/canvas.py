@@ -91,6 +91,13 @@ async def show_text(title: str, content: str) -> str:
     return card_id
 
 
+async def show_table(title: str, columns: list[str], rows: list[list[str]]) -> str:
+    """Put a table card on the canvas from Jarvis's own code. Returns the card id."""
+    card_id = f"card_{next(_card_ids)}"
+    await hub.emit(events.canvas_card(card_id, "table", title, {"columns": columns, "rows": rows}))
+    return card_id
+
+
 @tool(
     "show_on_canvas",
     "Show content on the canvas, the panel next to the chat. Use it for things better "
