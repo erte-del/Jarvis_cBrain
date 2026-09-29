@@ -35,3 +35,4 @@ Jarvis.app/
 backend/storage/usage.json
 backend/storage/spotify_token.json
 graphify-out/
+backend/storage/chats.json

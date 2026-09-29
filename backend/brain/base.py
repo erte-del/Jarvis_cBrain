@@ -66,6 +66,7 @@ class Brain(Protocol):
     model: ModelAlias  # the model the conversation is on now
     context_tokens: int  # size of the conversation so far (switching models re-sends it)
     last_active: float  # time.time() of the last message, 0 if none yet
+    session_id: str | None  # id to resume this conversation later (saved chats)
 
     async def send(
         self,
@@ -76,8 +77,9 @@ class Brain(Protocol):
         """Send one user message and stream back events until `Done` or `Error`."""
         ...
 
-    async def new_conversation(self, provider: str | None = None) -> None:
-        """Forget the conversation and start a fresh one (optionally on another provider)."""
+    async def new_conversation(self, provider: str | None = None, resume: str | None = None) -> None:
+        """Forget the conversation and start a fresh one (optionally on another provider),
+        or continue the saved conversation `resume`."""
         ...
 
     async def close(self) -> None:

@@ -21,6 +21,13 @@ export default function App() {
         canStartNewChat={!jarvis.busy && jarvis.connection === 'open' && jarvis.messages.length > 0}
         onNewChat={jarvis.newChat}
         onProvider={jarvis.setProvider}
+        savedChats={jarvis.savedChats}
+        maxSavedChats={jarvis.maxSavedChats}
+        canSaveChat={!jarvis.busy && jarvis.connection === 'open' && jarvis.messages.length > 0}
+        canLoadChat={!jarvis.busy && jarvis.connection === 'open'}
+        onSaveChat={jarvis.saveChat}
+        onLoadChat={jarvis.loadChat}
+        onDeleteChat={jarvis.deleteChat}
       />
 
       <main className="hud-grid">

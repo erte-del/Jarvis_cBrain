@@ -28,6 +28,13 @@ export interface UsageSnapshot {
   context_tokens: number // size of the current conversation
 }
 
+export interface SavedChat {
+  id: string
+  title: string // the first thing you said
+  provider: Provider
+  saved_at: number // unix seconds
+}
+
 export interface LogLine {
   id: number
   time: string // HH:MM:SS
@@ -56,6 +63,8 @@ export type ServerEvent =
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
   | { type: 'conversation.new'; reason: 'button' | 'idle' | 'provider' }
+  | { type: 'conversation.loaded'; messages: Pick<ChatMessage, 'role' | 'text' | 'files' | 'model'>[] }
+  | { type: 'chats.list'; chats: SavedChat[]; max: number }
   | ({ type: 'settings.state' } & BrainSettings)
   | ({ type: 'usage.update' } & UsageSnapshot)
 
@@ -66,6 +75,9 @@ export type ClientEvent =
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
   | { type: 'user.new_chat' }
+  | { type: 'user.save_chat'; messages: ChatMessage[] }
+  | { type: 'user.load_chat'; id: string }
+  | { type: 'user.delete_chat'; id: string }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
 
@@ -238,6 +250,8 @@ interface ChatState {
   selectedImage: ImageSelection | null
   settings: BrainSettings | null
   usage: UsageSnapshot | null
+  savedChats: SavedChat[]
+  maxSavedChats: number
   log: LogLine[]
 }
 
@@ -301,6 +315,8 @@ function logLine(state: ChatState, action: Action): Omit<LogLine, 'id' | 'time'>
           return { text: `CANVAS UPDATED · ${clip(ev.title, 36)}` }
         case 'conversation.new':
           return { text: `NEW CONVERSATION${ev.reason === 'idle' ? ' (IDLE OVER 1H)' : ''}`, tone: 'ok' }
+        case 'conversation.loaded':
+          return { text: 'SAVED CHAT LOADED', tone: 'ok' }
         case 'settings.state':
           if (state.settings?.provider !== ev.provider) {
             return { text: `BRAIN · ${ev.provider === 'claude' ? 'CLAUDE (PRO LOGIN)' : `OMNIROUTE (${ev.gateway_model})`}` }
@@ -446,6 +462,13 @@ function baseReducer(state: ChatState, action: Action): ChatState {
           messages.splice(lastUser === -1 ? messages.length : lastUser, 0, notice)
           return { ...state, messages }
         }
+        case 'conversation.loaded':
+          return {
+            ...state,
+            messages: ev.messages.map((m) => ({ ...m, id: nextLocalId(), done: true, model: m.model || undefined })),
+          }
+        case 'chats.list':
+          return { ...state, savedChats: ev.chats, maxSavedChats: ev.max }
         case 'canvas.card': {
           const card: CanvasCard = { id: ev.id, kind: ev.kind, title: ev.title, data: ev.data }
           const i = state.cards.findIndex((c) => c.id === ev.id)
@@ -504,6 +527,8 @@ const initialState: ChatState = {
   selectedImage: null,
   settings: null,
   usage: null,
+  savedChats: [],
+  maxSavedChats: 5,
   log: [],
 }
 
@@ -559,6 +584,19 @@ export function useJarvis() {
     socketRef.current?.send({ type: 'user.new_chat' })
   }, [])
 
+  const messages = state.messages
+  const saveChat = useCallback(() => {
+    socketRef.current?.send({ type: 'user.save_chat', messages })
+  }, [messages])
+
+  const loadChat = useCallback((id: string) => {
+    socketRef.current?.send({ type: 'user.load_chat', id })
+  }, [])
+
+  const deleteChat = useCallback((id: string) => {
+    socketRef.current?.send({ type: 'user.delete_chat', id })
+  }, [])
+
   const closeCard = useCallback((id: string) => dispatch({ kind: 'closeCard', id }), [])
   const selectImage = useCallback(
     (selection: ImageSelection | null) => dispatch({ kind: 'select', selection }),
@@ -578,5 +616,5 @@ export function useJarvis() {
   }, [selectedImage, connected])
   const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, newChat, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
+  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
 }

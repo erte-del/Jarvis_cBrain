@@ -10,6 +10,9 @@ Client -> server:
     user.new_chat    {}                   start a fresh conversation
     settings.update  {provider: "claude" | "omniroute"}   switch brain (starts a new chat)
     settings.update  {gateway_model}      pick one of the OmniRoute models
+    user.save_chat   {messages}           save this chat (at most 5; see storage/chat_store.py)
+    user.load_chat   {id}                 continue a saved chat
+    user.delete_chat {id}
 
 Server -> client:
     status               {state: "idle" | "thinking"}
@@ -27,6 +30,8 @@ Server -> client:
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
     conversation.new     {reason: "button" | "idle" | "provider"}   Jarvis forgot the conversation
+    conversation.loaded  {messages}       a saved chat was loaded: show these messages
+    chats.list           {chats: [{id, title, provider, saved_at}], max}   saved chats, newest first
     settings.state       {provider, gateway_url, gateway_model, gateway_models}   the brain in use
     usage.update         {provider, windows, tokens, context_tokens}   see usage.py
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
@@ -112,6 +117,14 @@ def usage_update(snapshot: dict[str, Any]) -> Event:
 
 def conversation_new(reason: str) -> Event:
     return {"type": "conversation.new", "reason": reason}
+
+
+def conversation_loaded(messages: list[dict]) -> Event:
+    return {"type": "conversation.loaded", "messages": messages}
+
+
+def chats_list(chats: list[dict], max_chats: int) -> Event:
+    return {"type": "chats.list", "chats": chats, "max": max_chats}
 
 
 def canvas_card(card_id: str, kind: str, title: str, data: dict[str, Any]) -> Event:

@@ -167,6 +167,18 @@
   color: var(--text-dim);
 }
 
+.provider:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.saved-chat {
+  display: flex;
+  gap: 6px;
+}
+.saved-chat .provider { flex: 1; min-width: 0; }
+.saved-chat .provider-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .settings-foot {
   font-size: 10px;
   color: var(--text-dim);

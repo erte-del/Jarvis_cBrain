@@ -25,7 +25,7 @@ from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
 from PIL import UnidentifiedImageError
 
-from storage import image_store, model_store, upload_store, video_store
+from storage import chat_store, image_store, model_store, upload_store, video_store
 from tools import spotify
 
 log = logging.getLogger("jarvis")
@@ -182,6 +182,39 @@ async def start_new_chat() -> None:
     await brain.start()  # ready before your next message
 
 
+def chats_event() -> events.Event:
+    return events.chats_list(chat_store.summaries(), chat_store.MAX_CHATS)
+
+
+async def save_chat(messages: list) -> None:
+    if not brain.session_id:
+        await hub.emit(events.error("Nothing to save yet: send Jarvis a message first."))
+        return
+    try:
+        await asyncio.to_thread(chat_store.save, brain.session_id, brain.provider, messages)
+    except ValueError as e:
+        await hub.emit(events.error(str(e)))
+        return
+    await hub.emit(chats_event())
+    await hub.emit(events.notice("Chat saved."))
+
+
+async def load_chat(chat_id: str) -> None:
+    try:
+        chat = await asyncio.to_thread(chat_store.load, chat_id)
+    except KeyError:
+        await hub.emit(events.error("That saved chat no longer exists."))
+        return
+    if chat["provider"] != brain.provider:
+        # Claude Code can only continue it on the brain it was saved on.
+        await hub.emit(events.error(f"That chat was saved on {chat['provider']}. Switch the brain in settings first."))
+        return
+    await brain.new_conversation(resume=chat_id)
+    await hub.emit(events.conversation_loaded(chat["messages"]))
+    await hub.emit(jarvis.usage_event())
+    await brain.start()
+
+
 async def switch_provider(provider: str) -> None:
     if provider == brain.provider:
         return
@@ -212,6 +245,7 @@ async def websocket_endpoint(ws: WebSocket) -> None:
     hub.connect(send)
     await send(settings_event())
     await send(jarvis.usage_event())
+    await send(chats_event())
     for request in gate.pending_requests():  # questions asked before this tab opened
         await send(request)
     model_override: ModelAlias | None = None
@@ -244,6 +278,16 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                 task = asyncio.create_task(start_new_chat())
                 background.add(task)
                 task.add_done_callback(background.discard)
+
+            elif kind in ("user.save_chat", "user.load_chat"):
+                job = save_chat(msg.get("messages")) if kind == "user.save_chat" else load_chat(str(msg.get("id")))
+                task = asyncio.create_task(job)
+                background.add(task)
+                task.add_done_callback(background.discard)
+
+            elif kind == "user.delete_chat":
+                await asyncio.to_thread(chat_store.delete, str(msg.get("id")))
+                await hub.emit(chats_event())
 
             elif kind == "user.confirm":
                 if not gate.resolve(str(msg.get("id")), msg.get("approved") is True):

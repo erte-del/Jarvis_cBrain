@@ -74,6 +74,11 @@ class ClaudeCodeBrain:
         self.last_active = 0.0
 
     @property
+    def session_id(self) -> str | None:
+        """The Claude Code session of this conversation, once it has one (for saved chats)."""
+        return self._session_id
+
+    @property
     def model(self) -> str:
         """The model the conversation is on now."""
         return self._model
@@ -272,8 +277,9 @@ class ClaudeCodeBrain:
                 if not finished:
                     await self.close()
 
-    async def new_conversation(self, provider: str | None = None) -> None:
-        """Forget the conversation: the next message starts a fresh Claude Code session.
+    async def new_conversation(self, provider: str | None = None, resume: str | None = None) -> None:
+        """Forget the conversation: the next message starts a fresh Claude Code session,
+        or continues the saved session `resume`.
         Switching provider always does this (the other side can't continue it)."""
         if self._lock.locked() and self._client is not None:
             try:  # a reply in progress: stop it rather than wait for it
@@ -284,11 +290,11 @@ class ClaudeCodeBrain:
             await self.close()
             if provider:
                 self.provider = provider
-            self._session_id = None
+            self._session_id = resume
             self._model = "sonnet" if self.provider == "claude" else self.gateway_model
             self.context_tokens = 0
             self.last_active = 0.0
-        log.info("Started a new conversation (provider=%s)", self.provider)
+        log.info("Started a %s conversation (provider=%s)", "saved" if resume else "new", self.provider)
 
     async def close(self) -> None:
         if self._client is not None:
