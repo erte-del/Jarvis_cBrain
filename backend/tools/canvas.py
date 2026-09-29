@@ -4,7 +4,7 @@ The canvas is the panel next to the chat where Jarvis *shows* things. Cards are
 pushed to every open tab through the hub. Later steps add images and 3D objects.
 """
 
-import itertools
+import re
 from typing import Any
 
 from claude_agent_sdk import tool
@@ -21,7 +21,22 @@ ITEM_FIELDS = {
 }
 MAX_ITEMS = 50
 
-_card_ids = itertools.count(1)
+_last_card = 0
+
+
+def _new_card_id() -> str:
+    global _last_card
+    _last_card += 1
+    return f"card_{_last_card}"
+
+
+def restored(card_ids: list[str]) -> None:
+    """Cards of a loaded chat are back on the canvas: new cards mustn't reuse their ids
+    (the count starts at 1 again whenever the server restarts)."""
+    global _last_card
+    for card_id in card_ids:
+        if m := re.fullmatch(r"card_(\d+)", card_id):
+            _last_card = max(_last_card, int(m[1]))
 
 INPUT_SCHEMA = {
     "type": "object",
@@ -86,14 +101,14 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
 
 async def show_text(title: str, content: str) -> str:
     """Put a markdown card on the canvas from Jarvis's own code. Returns the card id."""
-    card_id = f"card_{next(_card_ids)}"
+    card_id = _new_card_id()
     await hub.emit(events.canvas_card(card_id, "text", title, {"content": content}))
     return card_id
 
 
 async def show_table(title: str, columns: list[str], rows: list[list[str]]) -> str:
     """Put a table card on the canvas from Jarvis's own code. Returns the card id."""
-    card_id = f"card_{next(_card_ids)}"
+    card_id = _new_card_id()
     await hub.emit(events.canvas_card(card_id, "table", title, {"columns": columns, "rows": rows}))
     return card_id
 
@@ -112,7 +127,7 @@ async def show_on_canvas(args: dict[str, Any]) -> dict[str, Any]:
     except ValueError as e:
         return {"content": [{"type": "text", "text": f"Not shown: {e}"}], "is_error": True}
 
-    card_id = args.get("replace_card_id") or f"card_{next(_card_ids)}"
+    card_id = args.get("replace_card_id") or _new_card_id()
     await hub.emit(events.canvas_card(card_id, args["kind"], str(args["title"]), data))
     note = "" if hub.has_clients() else " (no browser is open, so nobody can see it right now)"
     return {"content": [{"type": "text", "text": f"Shown on the canvas as {card_id}.{note}"}]}

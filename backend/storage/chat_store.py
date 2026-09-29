@@ -1,7 +1,9 @@
 """Saved chats (at most MAX_CHATS), in storage/chats.json.
 
 A saved chat is the Claude Code session id (so Jarvis can resume the conversation)
-plus the messages the browser showed (so you can see them again).
+plus the messages and canvas cards the browser showed (so you can see them again).
+Image, 3D and video cards are kept as ids only: main.load_chat rebuilds them from
+their own stores, which still hold the files.
 """
 
 import json
@@ -38,13 +40,28 @@ def _clean(messages: list) -> list[dict]:
     return keep
 
 
+FILE_CARDS = ("image", "model3d", "video")
+
+
+def _clean_cards(cards: list) -> list[dict]:
+    keep = []
+    for c in cards if isinstance(cards, list) else []:
+        if not (isinstance(c, dict) and all(isinstance(c.get(k), str) for k in ("id", "kind", "title"))):
+            continue
+        card = {"id": c["id"], "kind": c["kind"], "title": c["title"]}
+        if c["kind"] not in FILE_CARDS:
+            card["data"] = c["data"] if isinstance(c.get("data"), dict) else {}
+        keep.append(card)
+    return keep
+
+
 def summaries() -> list[dict]:
     """Newest first, without the messages."""
     chats = sorted(_read().values(), key=lambda c: c["saved_at"], reverse=True)
     return [{k: c[k] for k in ("id", "title", "provider", "saved_at")} for c in chats]
 
 
-def save(session_id: str, provider: str, messages: list) -> None:
+def save(session_id: str, provider: str, messages: list, cards: list) -> None:
     """Save (or update) a chat. ValueError when it's new and MAX_CHATS are already saved."""
     messages = _clean(messages)
     first = next((m["text"] for m in messages if m["role"] == "user" and m["text"]), "Chat")
@@ -59,6 +76,7 @@ def save(session_id: str, provider: str, messages: list) -> None:
             "provider": provider,
             "saved_at": time.time(),
             "messages": messages,
+            "cards": _clean_cards(cards),
         }
         STORAGE_DIR.mkdir(parents=True, exist_ok=True)
         CHATS_FILE.write_text(json.dumps(chats))

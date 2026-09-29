@@ -63,7 +63,7 @@ export type ServerEvent =
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
   | { type: 'conversation.new'; reason: 'button' | 'idle' | 'provider' }
-  | { type: 'conversation.loaded'; messages: Pick<ChatMessage, 'role' | 'text' | 'files' | 'model'>[] }
+  | { type: 'conversation.loaded'; messages: Pick<ChatMessage, 'role' | 'text' | 'files' | 'model'>[]; cards: CanvasCard[] }
   | { type: 'chats.list'; chats: SavedChat[]; max: number }
   | ({ type: 'settings.state' } & BrainSettings)
   | ({ type: 'usage.update' } & UsageSnapshot)
@@ -75,7 +75,7 @@ export type ClientEvent =
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
   | { type: 'user.new_chat' }
-  | { type: 'user.save_chat'; messages: ChatMessage[] }
+  | { type: 'user.save_chat'; messages: ChatMessage[]; cards: CanvasCard[] }
   | { type: 'user.load_chat'; id: string }
   | { type: 'user.delete_chat'; id: string }
 
@@ -462,11 +462,17 @@ function baseReducer(state: ChatState, action: Action): ChatState {
           messages.splice(lastUser === -1 ? messages.length : lastUser, 0, notice)
           return { ...state, messages }
         }
-        case 'conversation.loaded':
+        case 'conversation.loaded': {
+          // The chat's canvas replaces the current one.
+          const cards = ev.cards.map(({ id, kind, title, data }) => ({ id, kind, title, data }))
           return {
             ...state,
             messages: ev.messages.map((m) => ({ ...m, id: nextLocalId(), done: true, model: m.model || undefined })),
+            cards,
+            selectedImage: null,
+            stageTab: cards.some((c) => c.kind !== 'model3d') ? 'cards' : 'core',
           }
+        }
         case 'chats.list':
           return { ...state, savedChats: ev.chats, maxSavedChats: ev.max }
         case 'canvas.card': {
@@ -584,10 +590,10 @@ export function useJarvis() {
     socketRef.current?.send({ type: 'user.new_chat' })
   }, [])
 
-  const messages = state.messages
+  const { messages, cards } = state
   const saveChat = useCallback(() => {
-    socketRef.current?.send({ type: 'user.save_chat', messages })
-  }, [messages])
+    socketRef.current?.send({ type: 'user.save_chat', messages, cards })
+  }, [messages, cards])
 
   const loadChat = useCallback((id: string) => {
     socketRef.current?.send({ type: 'user.load_chat', id })

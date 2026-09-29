@@ -26,7 +26,7 @@ from brain.confirm import ConfirmationGate
 from PIL import UnidentifiedImageError
 
 from storage import chat_store, image_store, model_store, upload_store, video_store
-from tools import spotify
+from tools import canvas, spotify
 
 log = logging.getLogger("jarvis")
 
@@ -186,17 +186,32 @@ def chats_event() -> events.Event:
     return events.chats_list(chat_store.summaries(), chat_store.MAX_CHATS)
 
 
-async def save_chat(messages: list) -> None:
+async def save_chat(messages: list, cards: list) -> None:
     if not brain.session_id:
         await hub.emit(events.error("Nothing to save yet: send Jarvis a message first."))
         return
     try:
-        await asyncio.to_thread(chat_store.save, brain.session_id, brain.provider, messages)
+        await asyncio.to_thread(chat_store.save, brain.session_id, brain.provider, messages, cards)
     except ValueError as e:
         await hub.emit(events.error(str(e)))
         return
     await hub.emit(chats_event())
     await hub.emit(events.notice("Chat saved."))
+
+
+def restore_card(card: dict) -> events.Event | None:
+    """A saved canvas card as it is now. Image, 3D and video cards come fresh from their
+    stores (None if the files were deleted since). Jarvis doesn't get them in its
+    context: it opens them with its tools only when a question needs them."""
+    stores = {"image": image_store, "model3d": model_store, "video": video_store}
+    data = card.get("data", {})
+    if card["kind"] in stores:
+        store = stores[card["kind"]]
+        try:
+            data = store.card_data(store.load(card["id"]))
+        except (KeyError, OSError, ValueError, TypeError):
+            return None
+    return events.canvas_card(card["id"], card["kind"], card["title"], data)
 
 
 async def load_chat(chat_id: str) -> None:
@@ -209,8 +224,10 @@ async def load_chat(chat_id: str) -> None:
         # Claude Code can only continue it on the brain it was saved on.
         await hub.emit(events.error(f"That chat was saved on {chat['provider']}. Switch the brain in settings first."))
         return
+    cards = [c for c in map(restore_card, chat.get("cards", [])) if c]
+    canvas.restored([c["id"] for c in cards])
     await brain.new_conversation(resume=chat_id)
-    await hub.emit(events.conversation_loaded(chat["messages"]))
+    await hub.emit(events.conversation_loaded(chat["messages"], cards))
     await hub.emit(jarvis.usage_event())
     await brain.start()
 
@@ -280,7 +297,7 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                 task.add_done_callback(background.discard)
 
             elif kind in ("user.save_chat", "user.load_chat"):
-                job = save_chat(msg.get("messages")) if kind == "user.save_chat" else load_chat(str(msg.get("id")))
+                job = save_chat(msg.get("messages"), msg.get("cards")) if kind == "user.save_chat" else load_chat(str(msg.get("id")))
                 task = asyncio.create_task(job)
                 background.add(task)
                 task.add_done_callback(background.discard)
