@@ -99,6 +99,19 @@ export interface Model3DData {
   exports: { version: number; format: string; url: string; name: string }[]
 }
 
+export interface VideoCardData {
+  video_id: string
+  prompt: string
+  status: 'rendering' | 'done' | 'failed'
+  progress: number // 0–1
+  error: string
+  seconds: number
+  width: number
+  height: number
+  url: string // relative to API_BASE; empty until done
+  download_name: string
+}
+
 export interface ImageSelection {
   id: string
   version: number
@@ -444,8 +457,10 @@ function baseReducer(state: ChatState, action: Action): ChatState {
           }
           // A 3D model opens (or comes back to) its own tab; other cards open the
           // cards tab, unless you're looking at a 3D model.
+          // A video's progress updates don't pull you back to the canvas.
           const onModel = state.cards.some((c) => c.kind === 'model3d' && c.id === state.stageTab)
-          const stageTab = ev.kind === 'model3d' ? ev.id : onModel ? state.stageTab : 'cards'
+          const progressOnly = ev.kind === 'video' && i !== -1 && (ev.data as unknown as VideoCardData).status === 'rendering'
+          const stageTab = ev.kind === 'model3d' ? ev.id : onModel || progressOnly ? state.stageTab : 'cards'
           return { ...state, cards, selectedImage, stageTab }
         }
         case 'settings.state': {

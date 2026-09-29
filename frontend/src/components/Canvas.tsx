@@ -3,9 +3,10 @@
 // or one 3D model per tab. The tabs themselves are in Stage.tsx.
 
 import { lazy, Suspense } from 'react'
-import type { CanvasCard, ImageCardData, ImageSelection, Model3DData } from '../ws'
+import type { CanvasCard, ImageCardData, ImageSelection, Model3DData, VideoCardData } from '../ws'
 import ImageViewer from './ImageViewer'
 import Markdown from './Markdown'
+import VideoCard from './VideoCard'
 
 // three.js is big: only load the 3D viewer when a 3D model first appears.
 const Model3DViewer = lazy(() => import('./Model3DViewer'))
@@ -97,6 +98,8 @@ function CardBody({
           onSelect={onSelectImage}
         />
       )
+    case 'video':
+      return <VideoCard data={card.data as unknown as VideoCardData} />
     case 'text':
       return (
         <div className="card-text">

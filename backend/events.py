@@ -32,6 +32,7 @@ Server -> client:
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
                          kind "image": data = {image_id, current, credit, versions[]}
                          kind "model3d": data = {model_id, current, versions[], exports[]}
+                         kind "video": data = {video_id, status, progress, url, ...} (video_store)
 
 Later phases add user.audio_*, 3D objects, ...
 """

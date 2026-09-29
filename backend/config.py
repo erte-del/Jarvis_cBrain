@@ -17,6 +17,9 @@ PORT = int(os.getenv("JARVIS_PORT", "8000"))
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
+# Local video generation (Wan 2.1 through mlx-video). scripts/setup_video.sh puts its
+# own Python and the model weights here.
+WAN_DIR = Path(os.getenv("JARVIS_WAN_DIR") or STORAGE_DIR / "wan")
 
 # How hard Claude thinks before answering: low | medium | high | xhigh | max.
 # Thinking was the biggest single use of the Pro limit, so the default is medium.

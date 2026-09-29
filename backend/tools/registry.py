@@ -25,6 +25,7 @@ from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
 from .uploads import read_upload
+from .video import generate_video
 
 SERVER_NAME = "jarvis"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
@@ -58,10 +59,12 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(spotify_playlist_tracks, "read"),
     # Only reads files you uploaded yourself.
     JarvisTool(read_upload, "read"),
+    # A video ties up the Mac for minutes, so it asks first.
+    JarvisTool(generate_video, "act"),
 ]
 
 # Friendlier titles for confirmation cards.
-TITLES = {"export_3d": "Build the final 3D file"}
+TITLES = {"export_3d": "Build the final 3D file", "generate_video": "Make a video (takes a few minutes)"}
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
 # ToolSearch lets Claude find connector tools on demand instead of loading

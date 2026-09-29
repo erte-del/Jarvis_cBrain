@@ -32,6 +32,8 @@ export function toolLabel({ name, detail, label }: ActiveTool): string {
       return 'Building the 3D preview…'
     case 'get_3d_spec':
       return 'Reading the 3D model…'
+    case 'generate_video':
+      return 'Starting the video…'
     case 'export_3d':
       return 'Building the final 3D file in Blender…'
     default:

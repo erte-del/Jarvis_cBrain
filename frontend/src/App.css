@@ -1202,6 +1202,50 @@
   color: var(--accent);
 }
 
+.video-main {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  background: #05070a;
+}
+
+.video-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-height: 60vh;
+  background: #05070a;
+  color: var(--text);
+  font-size: 13px;
+}
+.video-pending progress {
+  width: 60%;
+  accent-color: var(--accent);
+}
+.video-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.video-error {
+  padding: 0 16px;
+  color: var(--danger);
+  text-align: center;
+}
+
+.video-prompt {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
 .image-meta {
   display: flex;
   justify-content: space-between;

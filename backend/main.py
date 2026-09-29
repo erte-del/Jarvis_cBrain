@@ -25,7 +25,7 @@ from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
 from PIL import UnidentifiedImageError
 
-from storage import image_store, model_store, upload_store
+from storage import image_store, model_store, upload_store, video_store
 from tools import spotify
 
 log = logging.getLogger("jarvis")
@@ -130,6 +130,17 @@ async def model_file(model_id: str, filename: str, download: bool = False) -> Fi
         name = model_store.download_name(model_store.load(model_id), filename)
         return FileResponse(path, filename=name)
     return FileResponse(path, media_type="model/gltf-binary")
+
+
+@app.get("/videos/{video_id}/{filename}")
+async def video_file(video_id: str, filename: str, download: bool = False) -> FileResponse:
+    """Finished videos. Names are checked strictly."""
+    try:
+        path = video_store.file_path(video_id, filename)
+    except KeyError:
+        raise HTTPException(404) from None
+    name = video_store.download_name(video_store.load(video_id)) if download else None
+    return FileResponse(path, media_type="video/mp4", filename=name)
 
 
 @app.get("/spotify/callback", response_class=PlainTextResponse)

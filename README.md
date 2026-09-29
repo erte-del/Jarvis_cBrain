@@ -27,6 +27,12 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
 - **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
   4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
   the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), after you approve.
+- **Make videos.** Describe a shot and Jarvis makes a short clip (up to 5 seconds,
+  832×480, no sound) with Wan 2.1 running on this Mac: free, and nothing leaves the
+  machine. It's slow (about 13 minutes for 5 seconds on an M5) and runs in the
+  background, with progress on the canvas. It asks you first. Set it up once with
+  `scripts/setup_video.sh` (downloads about 17.6 GB, keeps 14 GB). Text only for
+  now: animating an existing image needs a bigger model.
 - **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac
   and controls playback (pause, next, volume, …). It can also list the songs in your own
   playlists, which needs a Spotify developer app (see `.env.example`).
