@@ -1,7 +1,8 @@
 // Message list, input box, streaming replies, model badge.
 
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { modelFamily, toolLabel } from '../labels'
+import { useNow } from '../useNow'
 import { uploadFile, type ActiveTool, type Attachment, type ChatMessage, type ConnectionState, type Source } from '../ws'
 import ConfirmCard from './ConfirmCard'
 import Markdown from './Markdown'
@@ -115,6 +116,23 @@ function MicIcon() {
   )
 }
 
+// After a minute of work: a note above the indicator and a timer below it, so a long
+// task doesn't look frozen.
+function LongWait({ children }: { children: ReactNode }) {
+  const [since] = useState(() => Date.now())
+  const seconds = Math.max(0, Math.floor((useNow().getTime() - since) / 1000))
+  if (seconds < 60) return children
+  return (
+    <div className="long-wait">
+      <div className="wait-note">{seconds < 180 ? 'Still on it…' : 'Taking a while, but still working…'}</div>
+      {children}
+      <div className="wait-timer" aria-label={`Working for ${seconds} seconds`}>
+        {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
+      </div>
+    </div>
+  )
+}
+
 export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm, voiceOn, onVoice }: ChatProps) {
   const [draft, setDraft] = useState('')
   const [files, setFiles] = useState<Attachment[]>([])
@@ -204,12 +222,18 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
         {messages.map((m) => (
           <Message key={m.id} message={m} onConfirm={onConfirm} />
         ))}
-        {toolMidReply && <div className="activity">{toolLabel(activeTool)}</div>}
+        {toolMidReply && (
+          <LongWait>
+            <div className="activity">{toolLabel(activeTool)}</div>
+          </LongWait>
+        )}
         {waitingForFirstWord && !waitingForYou && (
           <div className="msg msg-assistant">
-            <div className="bubble typing">
-              {activeTool ? toolLabel(activeTool) : <><span /><span /><span /></>}
-            </div>
+            <LongWait>
+              <div className="bubble typing">
+                {activeTool ? toolLabel(activeTool) : <><span /><span /><span /></>}
+              </div>
+            </LongWait>
           </div>
         )}
       </div>
