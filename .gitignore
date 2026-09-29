@@ -17,6 +17,7 @@ backend/storage/models/
 backend/storage/uploads/
 backend/storage/videos/
 backend/storage/wan/
+backend/storage/flux/
 backend/storage/jarvis.log
 backend/storage/jarvis.pid
 

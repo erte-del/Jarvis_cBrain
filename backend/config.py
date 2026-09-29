@@ -20,6 +20,8 @@ BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/Mac
 # Local video generation (Wan 2.1 through mlx-video). scripts/setup_video.sh puts its
 # own Python and the model weights here.
 WAN_DIR = Path(os.getenv("JARVIS_WAN_DIR") or STORAGE_DIR / "wan")
+# Local image generation (FLUX.2 Klein through mflux): scripts/setup_images.sh.
+FLUX_DIR = Path(os.getenv("JARVIS_FLUX_DIR") or STORAGE_DIR / "flux")
 
 # How hard Claude thinks before answering: low | medium | high | xhigh | max.
 # Thinking was the biggest single use of the Pro limit, so the default is medium.

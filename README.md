@@ -27,6 +27,11 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
 - **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
   4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
   the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), after you approve.
+- **Make images with AI.** Describe a picture and Jarvis paints it with FLUX.2 Klein
+  running on this Mac (about 20 seconds, free, nothing leaves the machine). It can also
+  change an image with AI ("make it snowy", "turn it into a watercolour", "put a hat on
+  the dog"), each change as a new version. Set it up once with `scripts/setup_images.sh`
+  (downloads about 16 GB, keeps 8 GB).
 - **Make videos.** Describe a shot and Jarvis makes a short clip (up to 5 seconds,
   832×480, no sound) with Wan 2.1 running on this Mac: free, and nothing leaves the
   machine. It's slow (about 13 minutes for 5 seconds on an M5) and runs in the

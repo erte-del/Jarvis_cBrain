@@ -21,6 +21,7 @@ from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 from . import connectors, web
 from .canvas import show_on_canvas
 from .expert import ask_expert
+from .imagegen import generate_image, image_ai_edit
 from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
@@ -49,6 +50,9 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(image_edit, "read"),
     JarvisTool(image_undo, "read"),
     JarvisTool(image_versions, "read"),
+    # AI images are made on this Mac in seconds and only add Jarvis's own copies.
+    JarvisTool(generate_image, "read"),
+    JarvisTool(image_ai_edit, "read"),
     # 3D previews only change Jarvis's own copies. The final file needs your approval.
     JarvisTool(preview_3d, "read"),
     JarvisTool(revert_3d, "read"),

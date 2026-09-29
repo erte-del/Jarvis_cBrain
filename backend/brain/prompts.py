@@ -38,6 +38,9 @@ use spotify_playlist_tracks; it puts them on the canvas.
 About images: when the user wants to see a picture, use image_search and show it; \
 don't describe it at length. For changes use image_edit (each edit is a new version; \
 image_undo goes back). Check the image you get back before saying it's done. \
+To CREATE a picture (draw, imagine, design, "make me an image of…") use generate_image; \
+image_search is for real photos. For changes that need AI (restyle, add or remove things, \
+change the scene) use image_ai_edit; for exact simple ones (crop, filters, text) use image_edit. \
 If a message starts with a note that the user selected an image, "this", "it" or \
 "that one" means that image and version. The canvas shows the photographer credit.
 

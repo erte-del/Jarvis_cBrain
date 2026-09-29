@@ -25,6 +25,10 @@ export function toolLabel({ name, detail, label }: ActiveTool): string {
       return 'Finding a photo…'
     case 'image_edit':
       return 'Editing the image…'
+    case 'generate_image':
+      return 'Painting the image…'
+    case 'image_ai_edit':
+      return 'Changing the image with AI…'
     case 'image_undo':
     case 'revert_3d':
       return 'Going back a version…'

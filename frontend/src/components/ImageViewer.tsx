@@ -64,6 +64,7 @@ export default function ImageViewer({ data, selected, onSelect }: ImageViewerPro
         <span>
           v{version.version} · {version.note} · {version.width}×{version.height}
         </span>
+        {!credit.photographer && credit.source && <span>{credit.source}</span>}
         {credit.photographer && (
           <span>
             Photo by{' '}
