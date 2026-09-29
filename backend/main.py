@@ -10,7 +10,7 @@ import logging
 from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
@@ -23,7 +23,9 @@ from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
-from storage import image_store, model_store
+from PIL import UnidentifiedImageError
+
+from storage import image_store, model_store, upload_store
 from tools import spotify
 
 log = logging.getLogger("jarvis")
@@ -61,9 +63,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Jarvis", lifespan=lifespan)
 
-# The 3D viewer downloads preview files with fetch(), which browsers only allow
-# across ports if the server says so. Only Jarvis's own page, and only reading.
-app.add_middleware(CORSMiddleware, allow_origins=sorted(ALLOWED_ORIGINS), allow_methods=["GET"])
+# The 3D viewer downloads preview files with fetch(), and the chat uploads files,
+# which browsers only allow across ports if the server says so. Only Jarvis's own page.
+app.add_middleware(
+    CORSMiddleware, allow_origins=sorted(ALLOWED_ORIGINS), allow_methods=["GET", "POST"], allow_headers=["Content-Type"]
+)
 
 
 @app.get("/health")
@@ -81,6 +85,26 @@ async def asset(image_id: str, filename: str, download: bool = False) -> FileRes
     if download:
         return FileResponse(path, media_type="image/jpeg", filename=f"{image_id}_{filename}")
     return FileResponse(path, media_type="image/jpeg", headers={"Cache-Control": "max-age=31536000, immutable"})
+
+
+@app.post("/upload")
+async def upload(request: Request, name: str) -> dict:
+    """A file from your computer (the raw bytes as the body). Images go on the canvas;
+    other files wait in storage/uploads until Jarvis opens them with read_upload."""
+    # CORS alone doesn't stop other websites from sending a simple POST here.
+    if request.headers.get("origin") not in ALLOWED_ORIGINS:
+        raise HTTPException(403)
+    if int(request.headers.get("content-length") or 0) > upload_store.MAX_BYTES:
+        raise HTTPException(413, "File too large (max 25 MB)")
+    data = await request.body()
+    if not data or len(data) > upload_store.MAX_BYTES:
+        raise HTTPException(413 if data else 400, "File too large (max 25 MB)" if data else "Empty file")
+    try:
+        rec = await asyncio.to_thread(image_store.create, name[:80], data, {"source": "Upload"})
+    except (UnidentifiedImageError, OSError, ValueError):
+        return {"id": await asyncio.to_thread(upload_store.save, name, data), "name": name}
+    await hub.emit(events.canvas_card(rec.id, "image", rec.title, image_store.card_data(rec)))
+    return {"id": rec.id, "name": name}
 
 
 def make_sender(ws: WebSocket) -> hub.Sender:
@@ -118,13 +142,13 @@ async def spotify_callback(state: str = "", code: str = "", error: str = "") -> 
 
 
 async def run_turn(
-    send: hub.Sender, text: str, model_override: ModelAlias | None, selected_image: dict | None
+    send: hub.Sender, text: str, model_override: ModelAlias | None, selected_image: dict | None, files: list[str]
 ) -> None:
     """Answer one user message and stream the reply to the browser."""
     await send(events.status("thinking"))
     try:
         # aclosing: if sending fails (browser gone), end the brain turn right away.
-        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image)) as stream:
+        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image, files=files)) as stream:
             async for ev in stream:
                 await send(ev)
     finally:
@@ -194,11 +218,13 @@ async def websocket_endpoint(ws: WebSocket) -> None:
 
             if kind == "user.text":
                 text = str(msg.get("text", "")).strip()
-                if not text:
+                files = [f for f in msg.get("files") or [] if isinstance(f, str)
+                         and (upload_store.UPLOAD_ID.match(f) or image_store.IMAGE_ID.match(f))]
+                if not text and not files:
                     continue
                 # Run the turn in the background so this loop keeps listening
                 # (later: confirmations, barge-in). The brain runs one turn at a time.
-                task = asyncio.create_task(run_turn(send, text, model_override, selected_image))
+                task = asyncio.create_task(run_turn(send, text, model_override, selected_image, files))
                 turns.add(task)
                 task.add_done_callback(turns.discard)
 

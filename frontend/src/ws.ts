@@ -61,7 +61,7 @@ export type ServerEvent =
 
 // Browser -> server
 export type ClientEvent =
-  | { type: 'user.text'; text: string }
+  | { type: 'user.text'; text: string; files?: string[] }
   | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
@@ -122,6 +122,22 @@ export interface ActiveTool {
   name: string
   detail: string // e.g. the search query or the site being read
   label: string // readable name, e.g. "Gmail: Search threads"
+}
+
+export interface Attachment {
+  id: string // upl_003, or img_007 for an image (it goes on the canvas)
+  name: string
+}
+
+/** Send a file from your computer to the backend; attach the result to the next message. */
+export async function uploadFile(file: File): Promise<Attachment> {
+  const res = await fetch(`${API_BASE}/upload?name=${encodeURIComponent(file.name)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    body: file,
+  })
+  if (!res.ok) throw new Error((await res.json().catch(() => null))?.detail ?? `Upload failed (${res.status})`)
+  return res.json()
 }
 
 // ---------------------------------------------------------------------------
@@ -193,6 +209,7 @@ export interface ChatMessage {
   reason?: string // why the router picked the model
   expert?: boolean // Opus was consulted via ask_expert
   sources?: Source[]
+  files?: string[] // role 'user': names of attached files
   done?: boolean
   error?: string
 }
@@ -214,7 +231,7 @@ interface ChatState {
 type Action =
   | { kind: 'server'; ev: ServerEvent }
   | { kind: 'connection'; state: ConnectionState }
-  | { kind: 'user'; text: string }
+  | { kind: 'user'; text: string; files: Attachment[] }
   | { kind: 'override'; model: ModelAlias | null }
   | { kind: 'answer'; id: string; approved: boolean }
   | { kind: 'closeCard'; id: string }
@@ -303,7 +320,10 @@ function baseReducer(state: ChatState, action: Action): ChatState {
       return {
         ...state,
         busy: true,
-        messages: [...state.messages, { id: nextLocalId(), role: 'user', text: action.text }],
+        messages: [
+          ...state.messages,
+          { id: nextLocalId(), role: 'user', text: action.text, files: action.files.map((f) => f.name) },
+        ],
       }
 
     case 'override':
@@ -492,11 +512,11 @@ export function useJarvis() {
     return () => socket.close()
   }, [])
 
-  const sendText = useCallback((text: string) => {
+  const sendText = useCallback((text: string, files: Attachment[] = []) => {
     const trimmed = text.trim()
-    if (!trimmed) return false
-    if (!socketRef.current?.send({ type: 'user.text', text: trimmed })) return false
-    dispatch({ kind: 'user', text: trimmed })
+    if (!trimmed && files.length === 0) return false
+    if (!socketRef.current?.send({ type: 'user.text', text: trimmed, files: files.map((f) => f.id) })) return false
+    dispatch({ kind: 'user', text: trimmed, files })
     return true
   }, [])
 

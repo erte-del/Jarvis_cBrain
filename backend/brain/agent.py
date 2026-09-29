@@ -11,6 +11,7 @@ import gateway
 import hub
 import usage
 from config import NEW_CHAT_AFTER_IDLE_MIN
+from storage import upload_store
 from tools import registry, web
 
 from .base import Brain, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
@@ -40,6 +41,7 @@ class Jarvis:
         model_override: ModelAlias | None = None,
         voice: bool = False,
         selected_image: dict | None = None,
+        files: list[str] | None = None,
     ) -> AsyncIterator[events.Event]:
         """Answer one user message, yielding WebSocket events for the browser."""
         reply_id = uuid.uuid4().hex[:12]
@@ -60,6 +62,9 @@ class Jarvis:
                 f"[On the canvas the user has selected image {selected_image['id']}, "
                 f"showing v{selected_image['version']}.]\n{text}"
             )
+        if files:
+            attached = ", ".join(upload_store.label(f) for f in files)
+            prompt = f"[The user attached {attached}. Open them with read_upload.]\n{prompt}"
 
         consulted_expert = False
         reply_text = ""

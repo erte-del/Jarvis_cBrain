@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { modelFamily, toolLabel } from '../labels'
-import type { ActiveTool, ChatMessage, ConnectionState, Source } from '../ws'
+import { uploadFile, type ActiveTool, type Attachment, type ChatMessage, type ConnectionState, type Source } from '../ws'
 import ConfirmCard from './ConfirmCard'
 import Markdown from './Markdown'
 
@@ -11,7 +11,7 @@ interface ChatProps {
   connection: ConnectionState
   busy: boolean
   activeTool: ActiveTool | null
-  onSend: (text: string) => boolean
+  onSend: (text: string, files: Attachment[]) => boolean
   onConfirm: (id: string, approved: boolean) => void
   voiceOn: boolean
   onVoice: (on: boolean) => void
@@ -76,7 +76,10 @@ function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: Chat
   if (message.role === 'user') {
     return (
       <div className="msg msg-user">
-        <div className="bubble">{message.text}</div>
+        {message.files?.map((name) => (
+          <span key={name} className="file-chip">📎 {name}</span>
+        ))}
+        {message.text && <div className="bubble">{message.text}</div>}
       </div>
     )
   }
@@ -114,6 +117,10 @@ function MicIcon() {
 
 export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm, voiceOn, onVoice }: ChatProps) {
   const [draft, setDraft] = useState('')
+  const [files, setFiles] = useState<Attachment[]>([])
+  const [uploading, setUploading] = useState(0)
+  const [uploadError, setUploadError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const stickToBottom = useRef(true)
@@ -129,14 +136,34 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
     if (list) stickToBottom.current = list.scrollHeight - list.scrollTop - list.clientHeight < 40
   }
 
-  const canSend = connection === 'open' && !busy && draft.trim() !== ''
+  const canSend = connection === 'open' && !busy && !uploading && (draft.trim() !== '' || files.length > 0)
 
   const submit = () => {
     if (!canSend) return
-    if (onSend(draft)) {
+    if (onSend(draft, files)) {
       setDraft('')
+      setFiles([])
       stickToBottom.current = true
     }
+  }
+
+  const addFiles = async (list: FileList | null) => {
+    if (!list?.length) return
+    setUploadError('')
+    setUploading((n) => n + list.length)
+    await Promise.all(
+      Array.from(list).map(async (file) => {
+        try {
+          const uploaded = await uploadFile(file)
+          setFiles((prev) => [...prev, uploaded])
+        } catch (e) {
+          setUploadError(`${file.name}: ${e instanceof Error ? e.message : e}`)
+        } finally {
+          setUploading((n) => n - 1)
+        }
+      }),
+    )
+    inputRef.current?.focus()
   }
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -187,13 +214,52 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
         )}
       </div>
 
+      {(files.length > 0 || uploading > 0 || uploadError) && (
+        <div className="attachments">
+          {files.map((f) => (
+            <span key={f.id} className="file-chip">
+              📎 {f.name}
+              <button type="button" onClick={() => setFiles((prev) => prev.filter((x) => x.id !== f.id))} aria-label={`Remove ${f.name}`}>
+                ×
+              </button>
+            </span>
+          ))}
+          {uploading > 0 && <span className="file-chip">Uploading…</span>}
+          {uploadError && <span className="msg-error">{uploadError}</span>}
+        </div>
+      )}
       <form
         className="composer"
         onSubmit={(e) => {
           e.preventDefault()
           submit()
         }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault()
+          if (connection === 'open') addFiles(e.dataTransfer.files)
+        }}
       >
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          hidden
+          onChange={(e) => {
+            addFiles(e.target.files)
+            e.target.value = '' // picking the same file again still fires
+          }}
+        />
+        <button
+          type="button"
+          className="mic-button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={connection !== 'open'}
+          aria-label="Attach files"
+          title="Attach files (or drop them here)"
+        >
+          📎
+        </button>
         <textarea
           ref={inputRef}
           value={draft}
