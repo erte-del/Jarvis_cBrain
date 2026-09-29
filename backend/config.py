@@ -55,7 +55,7 @@ if not GATEWAY_URL.startswith(("http://", "https://")):
 # OmniRoute's dashboard.
 GATEWAY_MODELS = [
     m.strip()
-    for m in os.getenv("JARVIS_GATEWAY_MODELS", "groq/openai/gpt-oss-120b, gemini/gemini-3.7-flash").split(",")
+    for m in os.getenv("JARVIS_GATEWAY_MODELS", "gemini/gemini-3.1-flash-lite, gemini/gemini-3.8-flash, groq/openai/gpt-oss-120b").split(",")
     if m.strip()
 ]
 if not GATEWAY_MODELS:

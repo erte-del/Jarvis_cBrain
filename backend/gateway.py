@@ -78,10 +78,16 @@ def start() -> str | None:
     return "OmniRoute didn't start. Try running it yourself: omniroute serve"
 
 
+# Words in OmniRoute's errors when no provider could answer.
+_PROVIDER_TROUBLE = ("provider", "credential", "bad_gateway", "api key", "api_key", "quota", "rate limit")
+
+
 def explain_error(message: str) -> str:
     """OmniRoute's errors list every provider it tried. Say what to do about it."""
+    if not any(word in message.lower() for word in _PROVIDER_TROUBLE):
+        return message
     return (
-        f"{message}\n\nOmniRoute couldn't get an answer from any provider. Open {config.GATEWAY_URL}, "
-        "add a provider under Providers (e.g. a free Gemini, Groq or OpenRouter API key), then try again. "
-        "Or switch back to Claude with the gear icon."
+        f"{message}\n\nOmniRoute couldn't get an answer from this model's provider. Check it's connected "
+        f"and active at {config.GATEWAY_URL} (Providers), pick another model, or switch back to Claude "
+        "with the gear icon."
     )

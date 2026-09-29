@@ -39,9 +39,12 @@ class StartTest(unittest.TestCase):
 
 class ExplainTest(unittest.TestCase):
     def test_error_says_what_to_do(self):
-        text = gateway.explain_error("bad_gateway: no provider")
-        self.assertIn("bad_gateway: no provider", text)
+        text = gateway.explain_error("No active credentials for provider: groq.")
+        self.assertIn("No active credentials", text)
         self.assertIn("Providers", text)
+
+    def test_other_errors_are_left_alone(self):
+        self.assertEqual(gateway.explain_error("Request timed out"), "Request timed out")
 
 
 if __name__ == "__main__":

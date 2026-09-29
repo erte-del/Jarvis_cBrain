@@ -61,7 +61,7 @@ class ClaudeCodeBrain:
         self.provider = PROVIDER  # "claude" (Pro login) or "omniroute" (gateway)
         self.gateway_model = GATEWAY_MODEL  # picked in the app (OmniRoute only)
         # A Claude alias (haiku / sonnet / opus), or a gateway model on OmniRoute.
-        self._model: str = model
+        self._model: str = model if self.provider == "claude" else self.gateway_model
         self._can_use_tool = can_use_tool  # the confirmation gate for 'act' tools
         self._client: ClaudeSDKClient | None = None
         self._lock = asyncio.Lock()  # one turn at a time
@@ -185,6 +185,12 @@ class ClaudeCodeBrain:
         async with self._lock:
             finished = False
             try:
+                if model != self._model and self.provider == "omniroute":
+                    # Switching model in a running Claude Code asks the gateway to confirm
+                    # the name, and OmniRoute keeps its model list behind its own key. So
+                    # restart with the new model instead; `resume` keeps the conversation.
+                    await self.close()
+                    self._model = model
                 client = await self._connect()
                 if model != self._model:
                     await client.set_model(model)
@@ -276,12 +282,12 @@ class ClaudeCodeBrain:
                 log.debug("Could not interrupt the reply in progress", exc_info=True)
         async with self._lock:  # the interrupted reply ends first
             await self.close()
-            self._session_id = None
-            self._model = "sonnet"
-            self.context_tokens = 0
-            self.last_active = 0.0
             if provider:
                 self.provider = provider
+            self._session_id = None
+            self._model = "sonnet" if self.provider == "claude" else self.gateway_model
+            self.context_tokens = 0
+            self.last_active = 0.0
         log.info("Started a new conversation (provider=%s)", self.provider)
 
     async def close(self) -> None:
