@@ -8,9 +8,10 @@ Most messages never touch Opus, which keeps the Pro usage limits lasting.
 import logging
 import time
 
-from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query, tool
+from claude_agent_sdk import ClaudeAgentOptions, RateLimitEvent, ResultMessage, query, tool
 
 import hub
+import usage
 from config import EFFORT, STORAGE_DIR
 
 from .canvas import show_text
@@ -69,7 +70,10 @@ async def consult_expert(task: str, context: str = "") -> str:
     started = time.monotonic()
     answer, error = None, None
     async for msg in query(prompt=prompt, options=options):
+        if isinstance(msg, RateLimitEvent):
+            usage.record_limits(msg.rate_limit_info.raw)
         if isinstance(msg, ResultMessage):
+            usage.record_turn(msg.model_usage)
             if msg.is_error:
                 error = "; ".join(msg.errors or []) or msg.result or msg.subtype
             else:

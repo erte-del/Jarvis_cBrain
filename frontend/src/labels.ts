@@ -1,0 +1,40 @@
+// Readable names for models and tools, shared by the chat and the HUD panels.
+
+import type { ActiveTool } from './ws'
+
+/** "claude-haiku-4-5-20251001" -> "haiku" */
+export function modelFamily(modelId: string): 'haiku' | 'sonnet' | 'opus' | 'other' {
+  const id = modelId.toLowerCase()
+  if (id.includes('haiku')) return 'haiku'
+  if (id.includes('sonnet')) return 'sonnet'
+  if (id.includes('opus')) return 'opus'
+  return 'other'
+}
+
+export function toolLabel({ name, detail, label }: ActiveTool): string {
+  switch (name) {
+    case 'ask_expert':
+      return 'Consulting Opus (expert)…'
+    case 'WebSearch':
+      return detail ? `Searching the web for “${detail}”…` : 'Searching the web…'
+    case 'WebFetch':
+      return detail ? `Reading ${detail}…` : 'Reading a web page…'
+    case 'ToolSearch':
+      return 'Looking for the right tool…'
+    case 'image_search':
+      return 'Finding a photo…'
+    case 'image_edit':
+      return 'Editing the image…'
+    case 'image_undo':
+    case 'revert_3d':
+      return 'Going back a version…'
+    case 'preview_3d':
+      return 'Building the 3D preview…'
+    case 'get_3d_spec':
+      return 'Reading the 3D model…'
+    case 'export_3d':
+      return 'Building the final 3D file in Blender…'
+    default:
+      return `${label || name}…`
+  }
+}

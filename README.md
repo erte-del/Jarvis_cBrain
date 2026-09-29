@@ -22,6 +22,11 @@ Frontend (Node 24 via nvm):
 
 Copy `.env.example` to `.env`. Never add an `ANTHROPIC_API_KEY`: Jarvis uses the Claude Pro login.
 
+Optional: [OmniRoute](https://github.com/diegosouzapw/OmniRoute) as a second brain. Install and
+start it (`npm i -g omniroute`, then `omniroute`), then pick it with the gear icon in the app.
+Claude (Pro login, Sonnet) stays the default. The claude.ai connectors and web search are off in
+OmniRoute mode. See `.env.example`.
+
 ## Run
 
 **The easy way: Jarvis.app.** Build it once:

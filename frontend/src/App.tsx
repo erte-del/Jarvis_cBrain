@@ -1,83 +1,66 @@
 import { useState } from 'react'
 import './App.css'
-import Canvas from './components/Canvas'
 import Chat from './components/Chat'
-import { useJarvis, type ModelAlias } from './ws'
+import Panel from './components/Panel'
+import { LogPanel, TerminalPanel, UsagePanel } from './components/SidePanels'
+import Stage from './components/Stage'
+import TopBar from './components/TopBar'
+import { useJarvis } from './ws'
 
-const CONNECTION_LABEL = {
-  open: 'Connected',
-  connecting: 'Connecting…',
-  closed: 'Backend offline',
-} as const
-
+// HUD layout: chat on the left, the core / canvas in the middle, status on the right.
 export default function App() {
   const jarvis = useJarvis()
   const [voiceOn, setVoiceOn] = useState(false) // UI only for now (Phase 5a)
-  // A 3D model is open: its panel gets most of the width (chat stays usable on the left).
-  const showingModel = jarvis.canvasOpen && jarvis.cards.some((c) => c.kind === 'model3d' && c.id === jarvis.canvasTab)
 
   return (
-    <div className="app">
-      <header className="topbar">
-        <div className="brand">
-          <span className="brand-dot" />
-          Jarvis
-        </div>
-        <div className="topbar-right">
-          <button
-            className="new-chat"
-            onClick={jarvis.newChat}
-            disabled={jarvis.busy || jarvis.connection !== 'open' || jarvis.messages.length === 0}
-            title="Start fresh. Long conversations use more of your limit with every message."
-          >
-            New chat
-          </button>
-          <button
-            className={`canvas-toggle${jarvis.canvasOpen ? ' active' : ''}`}
-            onClick={jarvis.toggleCanvas}
-            aria-pressed={jarvis.canvasOpen}
-          >
-            Canvas{jarvis.cards.length > 0 && <span className="count">{jarvis.cards.length}</span>}
-          </button>
-          <label className="model-picker">
-            Model
-            <select
-              value={jarvis.modelOverride ?? 'auto'}
-              onChange={(e) =>
-                jarvis.setModelOverride(e.target.value === 'auto' ? null : (e.target.value as ModelAlias))
-              }
-            >
-              <option value="auto">Auto</option>
-              <option value="haiku">Haiku</option>
-              <option value="sonnet">Sonnet</option>
-              <option value="opus">Opus</option>
-            </select>
-          </label>
-          <span className={`conn conn-${jarvis.connection}`}>{CONNECTION_LABEL[jarvis.connection]}</span>
-        </div>
-      </header>
+    <div className="hud">
+      <TopBar
+        connection={jarvis.connection}
+        busy={jarvis.busy}
+        settings={jarvis.settings}
+        canStartNewChat={!jarvis.busy && jarvis.connection === 'open' && jarvis.messages.length > 0}
+        onNewChat={jarvis.newChat}
+        onProvider={jarvis.setProvider}
+      />
 
-      <main className={`workspace${jarvis.canvasOpen ? ' with-canvas' : ''}${showingModel ? ' with-model' : ''}`}>
-        <Chat
-          messages={jarvis.messages}
-          connection={jarvis.connection}
+      <main className="hud-grid">
+        <Panel title="COMMS" tag="RT-LINK" className="comms-panel">
+          <Chat
+            messages={jarvis.messages}
+            connection={jarvis.connection}
+            busy={jarvis.busy}
+            activeTool={jarvis.activeTool}
+            onSend={jarvis.sendText}
+            onConfirm={jarvis.answerConfirm}
+            voiceOn={voiceOn}
+            onVoice={setVoiceOn}
+          />
+        </Panel>
+
+        <Stage
+          cards={jarvis.cards}
+          tab={jarvis.stageTab}
+          onTab={jarvis.setStageTab}
+          onClose={jarvis.closeCard}
+          selectedImage={jarvis.selectedImage}
+          onSelectImage={jarvis.selectImage}
           busy={jarvis.busy}
           activeTool={jarvis.activeTool}
-          onSend={jarvis.sendText}
-          onConfirm={jarvis.answerConfirm}
+          connection={jarvis.connection}
           voiceOn={voiceOn}
           onVoice={setVoiceOn}
         />
-        {jarvis.canvasOpen && (
-          <Canvas
-            cards={jarvis.cards}
-            onClose={jarvis.closeCard}
-            selectedImage={jarvis.selectedImage}
-            onSelectImage={jarvis.selectImage}
-            tab={jarvis.canvasTab}
-            onTab={jarvis.setCanvasTab}
+
+        <div className="hud-right">
+          <UsagePanel
+            usage={jarvis.usage}
+            settings={jarvis.settings}
+            modelOverride={jarvis.modelOverride}
+            onModel={jarvis.setModelOverride}
           />
-        )}
+          <LogPanel log={jarvis.log} />
+          <TerminalPanel busy={jarvis.busy} activeTool={jarvis.activeTool} connection={jarvis.connection} />
+        </div>
       </main>
     </div>
   )

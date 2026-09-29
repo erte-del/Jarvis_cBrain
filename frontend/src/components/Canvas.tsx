@@ -1,5 +1,6 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Text, table, email list, events and image cards; each 3D model gets its own big tab.
+// Shown in the centre panel: the cards tab (text, table, email list, events, images),
+// or one 3D model per tab. The tabs themselves are in Stage.tsx.
 
 import { lazy, Suspense } from 'react'
 import type { CanvasCard, ImageCardData, ImageSelection, Model3DData } from '../ws'
@@ -13,8 +14,7 @@ interface CanvasProps {
   onClose: (id: string) => void
   selectedImage: ImageSelection | null
   onSelectImage: (selection: ImageSelection | null) => void
-  tab: string
-  onTab: (tab: string) => void
+  tab: string // 'cards' or a 3D model's id
 }
 
 function TableCard({ data }: { data: Record<string, unknown> }) {
@@ -114,57 +114,35 @@ function CardBody({
   }
 }
 
-export default function Canvas({ cards, onClose, selectedImage, onSelectImage, tab, onTab }: CanvasProps) {
-  const models = cards.filter((c) => c.kind === 'model3d')
+export default function Canvas({ cards, onClose, selectedImage, onSelectImage, tab }: CanvasProps) {
+  const model = cards.find((c) => c.kind === 'model3d' && c.id === tab)
   const others = cards.filter((c) => c.kind !== 'model3d')
-  const model = models.find((m) => m.id === tab)
 
+  if (model) {
+    return (
+      <Suspense fallback={<div className="canvas-empty">Loading the 3D viewer…</div>}>
+        <Model3DViewer key={model.id} data={model.data as unknown as Model3DData} />
+      </Suspense>
+    )
+  }
   return (
-    <aside className="canvas" aria-label="Canvas">
-      {models.length > 0 && (
-        <nav className="canvas-tabs" role="tablist">
-          {models.map((m) => (
-            <span key={m.id} className={`canvas-tab${m.id === tab ? ' active' : ''}`}>
-              <button role="tab" aria-selected={m.id === tab} onClick={() => onTab(m.id)}>
-                3D · {m.title}
-              </button>
-              <button className="tab-close" onClick={() => onClose(m.id)} aria-label={`Close ${m.title}`}>
+    <div className="canvas-cards">
+      {others.length === 0 ? (
+        <div className="canvas-empty">Things Jarvis shows you will appear here.</div>
+      ) : (
+        [...others].reverse().map((card) => (
+          <section key={card.id} className="card">
+            <header className="card-head">
+              <span className="card-title">{card.title}</span>
+              <span className="card-id">{card.id}</span>
+              <button className="card-close" onClick={() => onClose(card.id)} aria-label="Close card">
                 ×
               </button>
-            </span>
-          ))}
-          <span className={`canvas-tab${!model ? ' active' : ''}`}>
-            <button role="tab" aria-selected={!model} onClick={() => onTab('cards')}>
-              Cards{others.length > 0 && ` (${others.length})`}
-            </button>
-          </span>
-        </nav>
+            </header>
+            <CardBody card={card} selectedImage={selectedImage} onSelectImage={onSelectImage} />
+          </section>
+        ))
       )}
-
-      {model ? (
-        <Suspense fallback={<div className="canvas-empty">Loading the 3D viewer…</div>}>
-          <Model3DViewer key={model.id} data={model.data as unknown as Model3DData} />
-        </Suspense>
-      ) : (
-        <div className="canvas-cards">
-          {others.length === 0 ? (
-            <div className="canvas-empty">Things Jarvis shows you will appear here.</div>
-          ) : (
-            [...others].reverse().map((card) => (
-              <section key={card.id} className="card">
-                <header className="card-head">
-                  <span className="card-title">{card.title}</span>
-                  <span className="card-id">{card.id}</span>
-                  <button className="card-close" onClick={() => onClose(card.id)} aria-label="Close card">
-                    ×
-                  </button>
-                </header>
-                <CardBody card={card} selectedImage={selectedImage} onSelectImage={onSelectImage} />
-              </section>
-            ))
-          )}
-        </div>
-      )}
-    </aside>
+    </div>
   )
 }

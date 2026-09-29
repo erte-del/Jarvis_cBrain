@@ -16,6 +16,7 @@ from claude_agent_sdk import (
     CanUseToolShadowedWarning,
     ClaudeAgentOptions,
     ClaudeSDKClient,
+    RateLimitEvent,
     ResultMessage,
     StreamEvent,
     SystemMessage,
@@ -24,7 +25,8 @@ from claude_agent_sdk import (
     UserMessage,
 )
 
-from config import CONNECTORS, EFFORT, STORAGE_DIR, use_pro_login
+import usage
+from config import CONNECTORS, EFFORT, PROVIDER, STORAGE_DIR, set_login
 from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
@@ -56,6 +58,7 @@ BLOCKED_TOOLS = [
 
 class ClaudeCodeBrain:
     def __init__(self, model: ModelAlias = "sonnet", can_use_tool: CanUseTool | None = None) -> None:
+        self.provider = PROVIDER  # "claude" (Pro login) or "omniroute" (gateway)
         self._model: ModelAlias = model
         self._can_use_tool = can_use_tool  # the confirmation gate for 'act' tools
         self._client: ClaudeSDKClient | None = None
@@ -74,12 +77,18 @@ class ClaudeCodeBrain:
         return self._model
 
     def _options(self) -> ClaudeAgentOptions:
+        on_claude = self.provider == "claude"
         return ClaudeAgentOptions(
             system_prompt=JARVIS_SYSTEM_PROMPT,  # replaces Claude Code's coding prompt
             model=self._model,
-            effort=EFFORT,  # thinking was the biggest use of the Pro limit (see .env)
-            tools=registry.builtin_tools(),  # only WebSearch / WebFetch / ToolSearch
-            disallowed_tools=BLOCKED_TOOLS,  # belt and braces
+            # Thinking was the biggest use of the Pro limit (see .env). Gateway models
+            # may not understand the setting, so it's only sent to Claude.
+            effort=EFFORT if on_claude else None,
+            # Only WebSearch / WebFetch / ToolSearch. Through a gateway only WebFetch:
+            # WebSearch runs on Anthropic's servers, and there are no connectors to search.
+            tools=registry.builtin_tools() if on_claude else ["WebFetch"],
+            # belt and braces; ask_expert calls Claude Opus, which a gateway doesn't have
+            disallowed_tools=BLOCKED_TOOLS if on_claude else [*BLOCKED_TOOLS, registry.PREFIX + "ask_expert"],
             hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
             mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
             allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
@@ -88,13 +97,16 @@ class ClaudeCodeBrain:
                 "MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000),
                 # Connector tools stay hidden until Claude searches for one. Without
                 # this, ~300 tool descriptions went into every message (~220K tokens).
-                "ENABLE_TOOL_SEARCH": "true",
+                "ENABLE_TOOL_SEARCH": "true" if on_claude else "false",
+                # A gateway that's down or broken: give up after a few seconds, not minutes.
+                **({} if on_claude else {"CLAUDE_CODE_MAX_RETRIES": "2"}),
             },
             include_partial_messages=True,  # stream text word by word
             setting_sources=[],  # ignore ~/.claude settings, CLAUDE.md files, plugins
             # False = also load the claude.ai connectors (Gmail, ...) of the Pro account.
-            # Their tools are labelled read/act in tools/connectors.py.
-            strict_mcp_config=False,
+            # Their tools are labelled read/act in tools/connectors.py. Never through a
+            # gateway: your emails would go to other providers' models.
+            strict_mcp_config=not on_claude,
             skills=[],
             cwd=STORAGE_DIR,
             resume=self._session_id,
@@ -102,11 +114,11 @@ class ClaudeCodeBrain:
 
     async def _connect(self) -> ClaudeSDKClient:
         if self._client is None:
-            use_pro_login()
+            set_login(self.provider)
             client = ClaudeSDKClient(self._options())
             await client.connect()
             self._client = client
-            log.info("Claude Code session started (model=%s)", self._model)
+            log.info("Claude Code session started (provider=%s, model=%s)", self.provider, self._model)
             await self._wait_for_connectors(client)
         return self._client
 
@@ -227,8 +239,12 @@ class ClaudeCodeBrain:
                         self._session_id = msg.data.get("session_id")
                         log.info("Claude Code auth: apiKeySource=%s", self.auth_source)
 
+                    elif isinstance(msg, RateLimitEvent):
+                        usage.record_limits(msg.rate_limit_info.raw)
+
                     elif isinstance(msg, ResultMessage):
                         finished = True
+                        usage.record_turn(msg.model_usage)
                         if msg.is_error:
                             detail = "; ".join(msg.errors or []) or msg.result or msg.subtype
                             yield Error(detail)
@@ -248,15 +264,23 @@ class ClaudeCodeBrain:
                 if not finished:
                     await self.close()
 
-    async def new_conversation(self) -> None:
-        """Forget the conversation: the next message starts a fresh Claude Code session."""
-        async with self._lock:  # waits for a reply in progress to finish
+    async def new_conversation(self, provider: str | None = None) -> None:
+        """Forget the conversation: the next message starts a fresh Claude Code session.
+        Switching provider always does this (the other side can't continue it)."""
+        if self._lock.locked() and self._client is not None:
+            try:  # a reply in progress: stop it rather than wait for it
+                await self._client.interrupt()
+            except Exception:
+                log.debug("Could not interrupt the reply in progress", exc_info=True)
+        async with self._lock:  # the interrupted reply ends first
             await self.close()
             self._session_id = None
             self._model = "sonnet"
             self.context_tokens = 0
             self.last_active = 0.0
-        log.info("Started a new conversation")
+            if provider:
+                self.provider = provider
+        log.info("Started a new conversation (provider=%s)", self.provider)
 
     async def close(self) -> None:
         if self._client is not None:

@@ -11,6 +11,7 @@ import logging
 
 from brain.base import Done, Error, TextDelta, ToolStart
 from brain.brain_claudecode import ClaudeCodeBrain
+from config import GATEWAY_URL
 
 
 async def main() -> None:
@@ -40,7 +41,10 @@ async def main() -> None:
                     print(f"\n  [tool: {ev.name}]", flush=True)
                 elif isinstance(ev, Done):
                     # "none" = no API key in use, i.e. Claude Code is on the Pro login.
-                    auth = "Pro login" if brain.auth_source == "none" else f"API KEY? ({brain.auth_source})"
+                    if brain.provider == "omniroute":
+                        auth = f"gateway {GATEWAY_URL}"
+                    else:
+                        auth = "Pro login" if brain.auth_source == "none" else f"API KEY? ({brain.auth_source})"
                     print(f"\n  [{ev.model} | {auth}]\n")
                 elif isinstance(ev, Error):
                     print(f"\n  [error: {ev.message}]\n")

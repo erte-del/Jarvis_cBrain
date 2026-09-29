@@ -8,11 +8,12 @@ from typing import AsyncIterator
 
 import events
 import hub
-from config import NEW_CHAT_AFTER_IDLE_MIN
+import usage
+from config import GATEWAY_MODEL, NEW_CHAT_AFTER_IDLE_MIN
 from tools import registry, web
 
 from .base import Brain, Done, ModelAlias, TextDelta, ToolResult, ToolStart
-from .router import STICKY_CONTEXT_TOKENS, route
+from .router import STICKY_CONTEXT_TOKENS, Route, route
 
 log = logging.getLogger("jarvis.agent")
 
@@ -20,6 +21,9 @@ log = logging.getLogger("jarvis.agent")
 class Jarvis:
     def __init__(self, brain: Brain) -> None:
         self.brain = brain
+
+    def usage_event(self) -> events.Event:
+        return events.usage_update(usage.snapshot(self.brain.provider, self.brain.context_tokens))
 
     def _idle_too_long(self) -> bool:
         """A big conversation left alone for over an hour: Claude's cached copy has
@@ -41,7 +45,11 @@ class Jarvis:
         if self._idle_too_long():
             await self.brain.new_conversation()
             await hub.emit(events.conversation_new("idle"))
-        r = route(text, model_override, voice, self.brain.model, self.brain.context_tokens)
+        if self.brain.provider == "omniroute":
+            # Every model name goes to the one gateway model (see config.GATEWAY_MODEL).
+            r = Route("sonnet", f"OmniRoute ({GATEWAY_MODEL})")
+        else:
+            r = route(text, model_override, voice, self.brain.model, self.brain.context_tokens)
         log.info("Route -> %s (%s)", r.model, r.reason)
 
         # Tell Claude what "this one" means when you've clicked an image.
@@ -88,6 +96,7 @@ class Jarvis:
                         yield events.done(
                             reply_id, ev.model, r.model, r.reason, consulted_expert, sources
                         )
+                        await hub.emit(self.usage_event())
 
                     case _:
                         yield events.from_brain(ev, reply_id)

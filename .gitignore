@@ -28,3 +28,5 @@ Jarvis.app/
 .DS_Store
 .vscode/
 .idea/
+backend/storage/usage.json
+graphify-out/

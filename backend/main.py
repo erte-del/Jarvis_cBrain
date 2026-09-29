@@ -7,6 +7,8 @@ Run from the backend folder:
 import asyncio
 import json
 import logging
+import urllib.error
+import urllib.request
 from contextlib import aclosing, asynccontextmanager
 
 import uvicorn
@@ -50,7 +52,7 @@ jarvis = Jarvis(brain)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    config.use_pro_login()
+    config.set_login(brain.provider)
     warm_up = asyncio.create_task(brain.start())  # ready before your first message
     yield
     warm_up.cancel()
@@ -126,10 +128,40 @@ async def run_turn(
 background: set[asyncio.Task] = set()  # keeps tasks alive until they finish
 
 
+def settings_event() -> events.Event:
+    return events.settings_state(brain.provider, config.GATEWAY_URL, config.GATEWAY_MODEL)
+
+
 async def start_new_chat() -> None:
     await brain.new_conversation()
     await hub.emit(events.conversation_new("button"))
     await brain.start()  # ready before your next message
+
+
+def gateway_running() -> bool:
+    """Does anything answer at the gateway's address? (Any HTTP reply counts.)"""
+    try:
+        urllib.request.urlopen(config.GATEWAY_URL, timeout=2).close()
+    except urllib.error.HTTPError:
+        pass  # it answered, just not with 200
+    except (urllib.error.URLError, OSError):
+        return False
+    return True
+
+
+async def switch_provider(provider: str) -> None:
+    if provider == brain.provider:
+        return
+    if provider == "omniroute" and not await asyncio.to_thread(gateway_running):
+        await hub.emit(events.error(
+            f"OmniRoute isn't running at {config.GATEWAY_URL}. Start it (run: omniroute) and try again."
+        ))
+        return
+    await brain.new_conversation(provider)
+    await hub.emit(events.conversation_new("provider"))
+    await hub.emit(settings_event())
+    await hub.emit(jarvis.usage_event())
+    await brain.start()
 
 
 @app.websocket("/ws")
@@ -144,6 +176,8 @@ async def websocket_endpoint(ws: WebSocket) -> None:
     log.info("Browser connected")
     send = make_sender(ws)
     hub.connect(send)
+    await send(settings_event())
+    await send(jarvis.usage_event())
     for request in gate.pending_requests():  # questions asked before this tab opened
         await send(request)
     model_override: ModelAlias | None = None
@@ -189,11 +223,20 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                     await send(events.error("Invalid image selection"))
 
             elif kind == "settings.update":
-                override = msg.get("model_override")
-                if override is None or override in MODELS:
-                    model_override = override
-                else:
-                    await send(events.error(f"Unknown model: {override}"))
+                if "provider" in msg:
+                    provider = msg["provider"]
+                    if provider in config.PROVIDERS:
+                        task = asyncio.create_task(switch_provider(provider))
+                        background.add(task)
+                        task.add_done_callback(background.discard)
+                    else:
+                        await send(events.error(f"Unknown provider: {provider}"))
+                if "model_override" in msg:
+                    override = msg.get("model_override")
+                    if override is None or override in MODELS:
+                        model_override = override
+                    else:
+                        await send(events.error(f"Unknown model: {override}"))
 
             else:
                 await send(events.error(f"Unknown message type: {kind}"))

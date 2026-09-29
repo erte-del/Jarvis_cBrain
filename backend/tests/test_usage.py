@@ -1,13 +1,16 @@
-"""Usage-saving behaviour: starting over after a long break, expert answers on the canvas.
+"""Usage: starting over after a long break, expert answers on the canvas, the usage panel numbers.
 Run from the backend folder:
     .venv/bin/python -m unittest discover tests
 """
 
+import tempfile
 import time
 import unittest
+from pathlib import Path
 from unittest import mock
 
 import hub
+import usage
 from brain.agent import Jarvis
 from brain.base import Done
 from tools import expert
@@ -15,6 +18,7 @@ from tools import expert
 
 class FakeBrain:
     def __init__(self, context_tokens: int, idle_min: float) -> None:
+        self.provider = "claude"
         self.model = "sonnet"
         self.context_tokens = context_tokens
         self.last_active = time.time() - idle_min * 60
@@ -23,7 +27,7 @@ class FakeBrain:
     async def send(self, text, images=None, model="sonnet"):
         yield Done("claude-sonnet-5")
 
-    async def new_conversation(self) -> None:
+    async def new_conversation(self, provider=None) -> None:
         self.new_conversations += 1
         self.context_tokens = 0
 
@@ -98,6 +102,49 @@ class ExpertCanvasTest(unittest.IsolatedAsyncioTestCase):
         text = await self.ask("42")
         self.assertEqual(text, "42")
         self.assertFalse([e for e in self.seen if e["type"] == "canvas.card"])
+
+
+class UsageNumbersTest(unittest.TestCase):
+    def setUp(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        patches = [
+            mock.patch.object(usage, "FILE", Path(folder.name) / "usage.json"),
+            mock.patch.object(usage, "windows", {}),
+            mock.patch.object(usage, "_turns", []),
+        ]
+        for p in patches:
+            p.start()
+            self.addCleanup(p.stop)
+
+    def test_plan_windows_from_claude_code(self):
+        resets = int(time.time()) + 3600
+        usage.record_limits({
+            "status": "allowed",
+            "rateLimitType": "five_hour",
+            "unifiedWindows": {
+                "five_hour": {"utilization": 0.16, "resetsAt": resets},
+                "seven_day": {"utilization": 0.02, "resetsAt": resets + 86400},
+            },
+        })
+        snap = usage.snapshot("claude", 1234)
+        self.assertEqual(snap["windows"]["five_hour"], {"used": 0.16, "resets_at": resets})
+        self.assertEqual(snap["windows"]["seven_day"]["used"], 0.02)
+        self.assertEqual(snap["context_tokens"], 1234)
+
+    def test_a_window_that_reset_is_back_to_zero(self):
+        usage.record_limits({"unifiedWindows": {"five_hour": {"utilization": 0.9, "resetsAt": 1000}}})
+        self.assertEqual(usage.snapshot("claude", 0)["windows"]["five_hour"]["used"], 0.0)
+
+    def test_jarvis_tokens_count_only_this_window_and_survive_a_restart(self):
+        usage._turns.append([time.time() - 6 * 3600, "claude-sonnet-5", 999, 999, 999, 999])  # older
+        usage.record_turn({"claude-sonnet-5": {"inputTokens": 10, "cacheCreationInputTokens": 200,
+                                               "cacheReadInputTokens": 3000, "outputTokens": 40}})
+        tokens = usage.snapshot("claude", 0)["tokens"]
+        self.assertEqual(tokens, {"input": 10, "cache_write": 200, "cache_read": 3000, "output": 40})
+        usage._turns.clear()
+        usage._load()  # like a restart
+        self.assertEqual(usage.snapshot("claude", 0)["tokens"]["output"], 40)
 
 
 if __name__ == "__main__":

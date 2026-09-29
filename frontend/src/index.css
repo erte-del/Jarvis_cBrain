@@ -1,22 +1,26 @@
 :root {
-  --bg: #0b0e14;
-  --panel: #121722;
-  --panel-2: #1a2130;
-  --border: #242d3f;
-  --text: #dfe5ef;
-  --text-dim: #8a94a8;
-  --accent: #4cc9f0;
-  --user-bubble: #1d3b53;
+  --bg: #02080c;
+  --panel: #06141b;
+  --panel-2: #0a1d26;
+  --border: #0f3442;
+  --line: #13506a;
+  --text: #cdeef7;
+  --text-dim: #5f8f9e;
+  --accent: #22d3ee;
+  --accent-2: #0ea5c6;
+  --glow: rgba(34, 211, 238, 0.45);
+  --user-bubble: #0a2f3c;
   --danger: #ff6b6b;
+  --warn: #f5b942;
 
   --haiku: #5ad19a;
-  --sonnet: #4cc9f0;
+  --sonnet: #22d3ee;
   --opus: #b388ff;
 
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
 
-  font: 15px/1.55 var(--sans);
+  font: 13px/1.55 var(--mono);
   color-scheme: dark;
   color: var(--text);
   background: var(--bg);
@@ -36,8 +40,13 @@ body,
   margin: 0;
 }
 
+/* Faint grid behind everything, brighter in the middle. */
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(14, 90, 115, 0.18), transparent 65%),
+    linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
+    var(--bg);
 }
 
 a {

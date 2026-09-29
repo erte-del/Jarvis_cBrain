@@ -35,18 +35,51 @@ NEW_CHAT_AFTER_IDLE_MIN = int(os.getenv("JARVIS_NEW_CHAT_AFTER_IDLE_MIN", "60"))
 if HOST not in ("127.0.0.1", "localhost", "::1"):
     raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
 
+# Which brain Jarvis runs on. You can switch in the UI (gear icon); this is the choice
+# at startup.
+#   claude    - Claude on your Pro login (the default)
+#   omniroute - OmniRoute (npm i -g omniroute), a gateway to other providers' models.
+#               Doesn't use your Pro limit. The claude.ai connectors (Gmail, ...) stay
+#               off, so your emails never go to those providers.
+PROVIDERS = ("claude", "omniroute")
+PROVIDER = os.getenv("JARVIS_PROVIDER", "claude").strip().lower()
+if PROVIDER not in PROVIDERS:
+    raise SystemExit(f"JARVIS_PROVIDER={PROVIDER!r}: use {' or '.join(PROVIDERS)}")
+
+GATEWAY_URL = (os.getenv("JARVIS_GATEWAY_URL") or "http://localhost:20128").strip().rstrip("/")
+GATEWAY_KEY = os.getenv("JARVIS_GATEWAY_KEY", "").strip()
+if not GATEWAY_URL.startswith(("http://", "https://")):
+    raise SystemExit(f"JARVIS_GATEWAY_URL={GATEWAY_URL!r}: must start with http:// or https://")
+# The gateway model Claude Code's sonnet / opus / haiku go to ("auto" = OmniRoute picks).
+GATEWAY_MODEL = os.getenv("JARVIS_GATEWAY_MODEL", "auto").strip() or "auto"
+
 # If any of these are set, Claude Code uses them instead of the Pro login.
 _API_AUTH_VARS = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL")
+# Where Claude Code's model names go. Your own values (from .env) are kept for the
+# gateway only: on the Pro login they would ask Claude for a model it doesn't have.
+_MODEL_VARS = ("ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_OPUS_MODEL")
+_GATEWAY_MODELS = {var: os.environ.pop(var) for var in _MODEL_VARS if os.environ.get(var)}
 
 log = logging.getLogger("jarvis.config")
+_gateway_env_set = False  # True while the variables below were put there by Jarvis
 
 
-def use_pro_login() -> None:
-    """Remove API credentials from this process so Claude Code falls back to the Pro login.
+def set_login(provider: str = "claude") -> None:
+    """Point Claude Code at the Pro login (provider "claude") or at the gateway.
 
-    The Claude Code subprocess inherits this process's environment, so
-    clearing them here is enough.
+    The Claude Code subprocesses (Jarvis and ask_expert) inherit this process's
+    environment when they start, so setting it here is enough.
     """
-    for var in _API_AUTH_VARS:
-        if os.environ.pop(var, None) is not None:
+    global _gateway_env_set
+    for var in (*_API_AUTH_VARS, *_MODEL_VARS):
+        removed = os.environ.pop(var, None) is not None
+        if removed and not _gateway_env_set and var in _API_AUTH_VARS:
             log.warning("Removed %s from the environment (Jarvis uses the Pro login).", var)
+    _gateway_env_set = provider == "omniroute"
+    if _gateway_env_set:
+        os.environ["ANTHROPIC_BASE_URL"] = GATEWAY_URL
+        # Always set a token: without one Claude Code would send the Pro login's token
+        # to the gateway. Placeholder for gateways that don't check keys.
+        os.environ["ANTHROPIC_AUTH_TOKEN"] = GATEWAY_KEY or "jarvis-gateway"
+        for var in _MODEL_VARS:
+            os.environ[var] = _GATEWAY_MODELS.get(var, GATEWAY_MODEL)

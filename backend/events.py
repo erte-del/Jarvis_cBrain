@@ -8,6 +8,7 @@ Client -> server:
     user.select_image {id, version} | {id: null}   you clicked an image on the canvas
     settings.update  {model_override: "haiku" | "sonnet" | "opus" | null}
     user.new_chat    {}                   start a fresh conversation
+    settings.update  {provider: "claude" | "omniroute"}   switch brain (starts a new chat)
 
 Server -> client:
     status               {state: "idle" | "thinking"}
@@ -23,7 +24,9 @@ Server -> client:
     error                {message, id?}
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
-    conversation.new     {reason: "button" | "idle"}   Jarvis forgot the conversation
+    conversation.new     {reason: "button" | "idle" | "provider"}   Jarvis forgot the conversation
+    settings.state       {provider, gateway_url, gateway_model}   the brain in use
+    usage.update         {provider, windows, tokens, context_tokens}   see usage.py
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
                          kind "image": data = {image_id, current, credit, versions[]}
                          kind "model3d": data = {model_id, current, versions[], exports[]}
@@ -84,6 +87,14 @@ def confirm_request(request_id: str, title: str, summary: str, details: list[lis
 
 def confirm_resolved(request_id: str, status: str) -> Event:
     return {"type": "confirm.resolved", "id": request_id, "status": status}
+
+
+def settings_state(provider: str, gateway_url: str, gateway_model: str) -> Event:
+    return {"type": "settings.state", "provider": provider, "gateway_url": gateway_url, "gateway_model": gateway_model}
+
+
+def usage_update(snapshot: dict[str, Any]) -> Event:
+    return {"type": "usage.update", **snapshot}
 
 
 def conversation_new(reason: str) -> Event:

@@ -6,6 +6,32 @@ export const API_BASE = 'http://127.0.0.1:8000'
 const WS_URL = 'ws://127.0.0.1:8000/ws'
 
 export type ModelAlias = 'haiku' | 'sonnet' | 'opus'
+export type Provider = 'claude' | 'omniroute'
+
+export interface BrainSettings {
+  provider: Provider
+  gateway_url: string
+  gateway_model: string
+}
+
+export interface UsageWindow {
+  used: number // 0..1 of the plan window
+  resets_at: number // unix seconds, 0 = not reported yet
+}
+
+export interface UsageSnapshot {
+  provider: Provider
+  windows: Record<string, UsageWindow> // five_hour, seven_day, ...
+  tokens: { input: number; cache_write: number; cache_read: number; output: number } // Jarvis, this 5h window
+  context_tokens: number // size of the current conversation
+}
+
+export interface LogLine {
+  id: number
+  time: string // HH:MM:SS
+  text: string
+  tone?: 'ok' | 'warn' | 'error'
+}
 
 // Server -> browser
 export type ServerEvent =
@@ -26,14 +52,16 @@ export type ServerEvent =
   | { type: 'confirm.request'; id: string; title: string; summary: string; details: [string, string][] }
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
-  | { type: 'conversation.new'; reason: 'button' | 'idle' }
+  | { type: 'conversation.new'; reason: 'button' | 'idle' | 'provider' }
+  | ({ type: 'settings.state' } & BrainSettings)
+  | ({ type: 'usage.update' } & UsageSnapshot)
 
 // Browser -> server
 export type ClientEvent =
   | { type: 'user.text'; text: string }
   | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'user.select_image'; id: string | null; version?: number }
-  | { type: 'settings.update'; model_override: ModelAlias | null }
+  | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider }
   | { type: 'user.new_chat' }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
@@ -172,9 +200,11 @@ interface ChatState {
   activeTool: ActiveTool | null
   modelOverride: ModelAlias | null
   cards: CanvasCard[]
-  canvasOpen: boolean
-  canvasTab: string // 'cards', or the id of a 3D model shown in its own tab
+  stageTab: string // centre panel: 'core', 'cards', or the id of a 3D model
   selectedImage: ImageSelection | null
+  settings: BrainSettings | null
+  usage: UsageSnapshot | null
+  log: LogLine[]
 }
 
 type Action =
@@ -184,7 +214,6 @@ type Action =
   | { kind: 'override'; model: ModelAlias | null }
   | { kind: 'answer'; id: string; approved: boolean }
   | { kind: 'closeCard'; id: string }
-  | { kind: 'toggleCanvas' }
   | { kind: 'select'; selection: ImageSelection | null }
   | { kind: 'tab'; tab: string }
 
@@ -205,7 +234,59 @@ function updateMessage(
   return copy
 }
 
+// ---------------------------------------------------------------------------
+// System log (right-hand panel): one line per thing that happened.
+
+const MAX_LOG = 80
+let logId = 0
+
+const clock = () => new Date().toLocaleTimeString([], { hour12: false })
+const clip = (s: string, n = 48) => (s.length > n ? s.slice(0, n - 1) + '…' : s)
+const family = (model: string) => (/haiku|sonnet|opus/i.exec(model)?.[0] ?? model).toUpperCase()
+
+function logLine(state: ChatState, action: Action): Omit<LogLine, 'id' | 'time'> | null {
+  switch (action.kind) {
+    case 'user':
+      return { text: `INPUT RECEIVED › "${clip(action.text)}"` }
+    case 'connection':
+      if (action.state === 'open') return { text: 'LINK ESTABLISHED · BACKEND ONLINE', tone: 'ok' }
+      if (action.state === 'closed' && state.connection === 'open') return { text: 'LINK LOST · BACKEND OFFLINE', tone: 'error' }
+      return null
+    case 'server': {
+      const ev = action.ev
+      switch (ev.type) {
+        case 'tool.started':
+          return { text: `${ev.label.toUpperCase()}${ev.detail ? ` › ${clip(ev.detail, 36)}` : ''}` }
+        case 'assistant.done':
+          return { text: `RESPONSE COMPLETE · ${family(ev.model)}${ev.expert ? ' + OPUS' : ''}`, tone: 'ok' }
+        case 'confirm.request':
+          return { text: `AWAITING APPROVAL · ${ev.title.toUpperCase()}`, tone: 'warn' }
+        case 'confirm.resolved':
+          return { text: `APPROVAL ${ev.status.toUpperCase()}`, tone: ev.status === 'approved' ? 'ok' : undefined }
+        case 'canvas.card':
+          return { text: `CANVAS UPDATED · ${clip(ev.title, 36)}` }
+        case 'conversation.new':
+          return { text: `NEW CONVERSATION${ev.reason === 'idle' ? ' (IDLE OVER 1H)' : ''}`, tone: 'ok' }
+        case 'settings.state':
+          if (state.settings?.provider === ev.provider) return null
+          return { text: `BRAIN · ${ev.provider === 'claude' ? 'CLAUDE (PRO LOGIN)' : `OMNIROUTE (${ev.gateway_model})`}` }
+        case 'error':
+          return { text: `ERROR · ${clip(ev.message, 60)}`, tone: 'error' }
+      }
+      return null
+    }
+  }
+  return null
+}
+
 function reducer(state: ChatState, action: Action): ChatState {
+  const next = baseReducer(state, action)
+  const line = logLine(state, action)
+  if (!line) return next
+  return { ...next, log: [...next.log.slice(-(MAX_LOG - 1)), { ...line, id: ++logId, time: clock() }] }
+}
+
+function baseReducer(state: ChatState, action: Action): ChatState {
   switch (action.kind) {
     case 'user':
       return {
@@ -228,18 +309,17 @@ function reducer(state: ChatState, action: Action): ChatState {
     case 'closeCard': {
       const cards = state.cards.filter((c) => c.id !== action.id)
       const selectedImage = state.selectedImage?.id === action.id ? null : state.selectedImage
-      const canvasTab = state.canvasTab === action.id ? 'cards' : state.canvasTab
-      return { ...state, cards, selectedImage, canvasTab, canvasOpen: state.canvasOpen && cards.length > 0 }
+      const hasCards = cards.some((c) => c.kind !== 'model3d')
+      let stageTab = state.stageTab
+      if (stageTab === action.id || (stageTab === 'cards' && !hasCards)) stageTab = hasCards ? 'cards' : 'core'
+      return { ...state, cards, selectedImage, stageTab }
     }
 
     case 'tab':
-      return { ...state, canvasTab: action.tab }
+      return { ...state, stageTab: action.tab }
 
     case 'select':
       return { ...state, selectedImage: action.selection }
-
-    case 'toggleCanvas':
-      return { ...state, canvasOpen: !state.canvasOpen }
 
     case 'connection': {
       if (action.state !== 'closed' || state.connection === 'closed') {
@@ -331,9 +411,19 @@ function reducer(state: ChatState, action: Action): ChatState {
           if (ev.kind === 'image' && selectedImage?.id === ev.id) {
             selectedImage = { id: ev.id, version: (ev.data as unknown as ImageCardData).current }
           }
-          // A 3D model opens (or comes back to) its own big tab.
-          const canvasTab = ev.kind === 'model3d' ? ev.id : state.canvasTab
-          return { ...state, cards, selectedImage, canvasTab, canvasOpen: true }
+          // A 3D model opens (or comes back to) its own tab; other cards open the
+          // cards tab, unless you're looking at a 3D model.
+          const onModel = state.cards.some((c) => c.kind === 'model3d' && c.id === state.stageTab)
+          const stageTab = ev.kind === 'model3d' ? ev.id : onModel ? state.stageTab : 'cards'
+          return { ...state, cards, selectedImage, stageTab }
+        }
+        case 'settings.state': {
+          const { type: _type, ...settings } = ev
+          return { ...state, settings }
+        }
+        case 'usage.update': {
+          const { type: _type, ...usage } = ev
+          return { ...state, usage }
         }
         case 'error':
           if (ev.id) {
@@ -359,9 +449,11 @@ const initialState: ChatState = {
   activeTool: null,
   modelOverride: null,
   cards: [],
-  canvasOpen: false,
-  canvasTab: 'cards',
+  stageTab: 'core',
   selectedImage: null,
+  settings: null,
+  usage: null,
+  log: [],
 }
 
 export function useJarvis() {
@@ -404,6 +496,10 @@ export function useJarvis() {
     }
   }, [])
 
+  const setProvider = useCallback((provider: Provider) => {
+    socketRef.current?.send({ type: 'settings.update', provider })
+  }, [])
+
   const newChat = useCallback(() => {
     socketRef.current?.send({ type: 'user.new_chat' })
   }, [])
@@ -425,8 +521,7 @@ export function useJarvis() {
         : { type: 'user.select_image', id: null },
     )
   }, [selectedImage, connected])
-  const toggleCanvas = useCallback(() => dispatch({ kind: 'toggleCanvas' }), [])
-  const setCanvasTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
+  const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, newChat, setModelOverride, answerConfirm, closeCard, toggleCanvas, selectImage, setCanvasTab }
+  return { ...state, sendText, newChat, setProvider, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
 }

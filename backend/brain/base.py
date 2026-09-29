@@ -61,6 +61,7 @@ BrainEvent = TextDelta | ToolStart | ToolResult | UIEvent | Done | Error
 
 
 class Brain(Protocol):
+    provider: str  # "claude" (Pro login) or "omniroute" (gateway)
     model: ModelAlias  # the model the conversation is on now
     context_tokens: int  # size of the conversation so far (switching models re-sends it)
     last_active: float  # time.time() of the last message, 0 if none yet
@@ -74,8 +75,8 @@ class Brain(Protocol):
         """Send one user message and stream back events until `Done` or `Error`."""
         ...
 
-    async def new_conversation(self) -> None:
-        """Forget the conversation and start a fresh one."""
+    async def new_conversation(self, provider: str | None = None) -> None:
+        """Forget the conversation and start a fresh one (optionally on another provider)."""
         ...
 
     async def close(self) -> None:
