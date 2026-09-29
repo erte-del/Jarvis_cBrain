@@ -42,9 +42,9 @@ Today: "remind me to…" is the most common voice request and has nowhere to go.
 - [x] Connect TickTick on claude.ai, check real tool names (`filter_tasks` added as read)
 - [x] Add reminder: text, optional due date/time, optional list ("Groceries", "Work") (tested: inbox + time; lists untested)
 - [x] List reminders: today, overdue, by list → task card on the canvas
-- [ ] Complete / uncomplete a reminder ("mark call the bank as done") (complete works; uncomplete untested)
-- [ ] Edit / reschedule a reminder ("move that to Monday")
-- [ ] Delete a reminder (confirm)
+- [x] Complete / uncomplete a reminder ("mark call the bank as done")
+- [x] Edit / reschedule a reminder ("move that to Monday") (keeps the reminder)
+- [x] Delete a reminder (confirm)
 - [ ] Location-based reminders ("when I get home") — later, if the backend supports it
 - [ ] Voice flow: "remind me to X at Y" works end-to-end in one sentence (works typed; not tried by voice)
 - [x] Test: add → list → complete round trip (done live 2026-09-29)

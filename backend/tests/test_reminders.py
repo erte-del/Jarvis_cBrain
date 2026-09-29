@@ -25,6 +25,11 @@ class RemindersTest(unittest.TestCase):
         registry.connectors.remember_items(TT + "list_undone_tasks_by_time_query", result)
         _, _, details = registry.describe_call(TT + "complete_task", {"project_id": "inbox1", "task_id": "t1"})
         self.assertIn(["task", "Call the bank (2026-09-30T05:00:00.000+0000)"], details)
+        # list_undone_tasks_* results spell it due_date.
+        registry.connectors.remember_items(TT + "list_undone_tasks_by_date", [{"type": "text", "text":
+            '{"result":[{"id":"t2","title":"Buy milk","due_date":"2026-10-05T18:00:00+0400"}]}'}])
+        _, _, details = registry.describe_call(TT + "delete_task", {"project_id": "inbox1", "task_id": "t2"})
+        self.assertIn(["task", "Buy milk (2026-10-05T18:00:00+0400)"], details)
 
     def test_create_card_shows_task_fields_as_rows(self):
         _, _, details = registry.describe_call(TT + "create_task", {

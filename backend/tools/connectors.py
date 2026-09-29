@@ -58,7 +58,7 @@ def remember_items(name: str, result: Any) -> None:
     for obj in _dicts(result):
         label = obj.get("summary") or obj.get("title")
         if obj.get("id") and label:
-            when = obj.get("start") or obj.get("dueDate")
+            when = obj.get("start") or obj.get("dueDate") or obj.get("due_date")
             if isinstance(when, dict):
                 when = when.get("dateTime") or when.get("date")
             _seen[str(obj["id"])] = f"{label} ({when})" if when else str(label)
