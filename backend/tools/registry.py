@@ -170,4 +170,6 @@ def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list
         if len(text) > MAX_DETAIL_CHARS:
             text = text[:MAX_DETAIL_CHARS] + "…"
         details.append([key.replace("_", " "), text])
+        if key == "eventId" and (label := connectors.event_label(text)):
+            details.append(["event", label])
     return title, summary, details

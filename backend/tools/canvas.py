@@ -17,7 +17,7 @@ CARD_KINDS = ["text", "table", "email_list", "events"]
 # Fields each list item may have, per kind (all strings; anything else is dropped).
 ITEM_FIELDS = {
     "email_list": ["from", "subject", "date", "snippet", "unread", "id"],
-    "events": ["title", "start", "end", "location", "notes"],
+    "events": ["title", "start", "end", "location", "attendees", "notes"],
 }
 MAX_ITEMS = 50
 
@@ -46,7 +46,7 @@ INPUT_SCHEMA = {
             "enum": CARD_KINDS,
             "description": "text: markdown content. table: columns + rows. "
             "email_list: items with from/subject/date/snippet/unread. "
-            "events: items with title/start/end/location/notes.",
+            "events: items with title/start/end/location/attendees/notes.",
         },
         "title": {"type": "string", "description": "Short card title."},
         "content": {"type": "string", "description": "For kind=text: the markdown to show."},
@@ -74,6 +74,11 @@ INPUT_SCHEMA = {
 }
 
 
+def _text(value: Any) -> str:
+    """A field as text; lists (e.g. attendees) become 'a, b'."""
+    return ", ".join(map(str, value)) if isinstance(value, list) else str(value)
+
+
 def _card_data(args: dict[str, Any]) -> dict[str, Any]:
     kind = args["kind"]
     if kind == "text":
@@ -92,7 +97,7 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
         items = []
         for raw in (args.get("items") or [])[:MAX_ITEMS]:
             if isinstance(raw, dict):
-                items.append({f: str(raw[f]) for f in fields if raw.get(f) not in (None, "")})
+                items.append({f: _text(raw[f]) for f in fields if raw.get(f) not in (None, "", [])})
         if not items:
             raise ValueError(f"kind={kind} needs 'items'")
         return {"items": items}

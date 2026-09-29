@@ -11,7 +11,9 @@ label them by their action verb:
 Unknown verbs are 'act': when in doubt, Jarvis asks.
 """
 
+import json
 import re
+from typing import Any, Iterator
 
 CONNECTOR_PREFIX = "mcp__claude_ai_"
 
@@ -21,6 +23,7 @@ READ_VERBS = {"get", "list", "search", "read", "fetch", "find", "resolve", "desc
 READ_EXTRA: dict[str, set[str]] = {
     "Claude_Docs": {"query", "guide"},
     "Supabase": {"query_logs"},
+    "Google_Calendar": {"suggest_time"},
 }
 
 
@@ -39,3 +42,41 @@ def is_read(name: str) -> bool:
     connector, action = parsed
     verb = re.split(r"[_\-]", action.lower(), maxsplit=1)[0]
     return verb in READ_VERBS or action in READ_EXTRA.get(connector, set())
+
+
+# Calendar events Jarvis has seen in tool results, so a confirmation card that only
+# gets an eventId can still say which event it is.
+_seen_events: dict[str, str] = {}
+
+
+def remember_events(name: str, result: Any) -> None:
+    parsed = parse(name)
+    if parsed is None or parsed[0] != "Google_Calendar":
+        return
+    for obj in _dicts(result):
+        if obj.get("id") and obj.get("summary"):
+            start = obj.get("start")
+            if isinstance(start, dict):
+                start = start.get("dateTime") or start.get("date")
+            _seen_events[str(obj["id"])] = f"{obj['summary']} ({start})" if start else str(obj["summary"])
+
+
+def event_label(event_id: str) -> str | None:
+    """'h5hdgf82...' -> 'Jarvis test (2026-09-30T16:00:00+04:00)', if Jarvis has seen it."""
+    return _seen_events.get(event_id)
+
+
+def _dicts(value: Any) -> Iterator[dict]:
+    """Every dict inside a tool result; JSON text is parsed on the way."""
+    if isinstance(value, str) and value[:1] in "{[":
+        try:
+            value = json.loads(value)
+        except ValueError:
+            return
+    if isinstance(value, dict):
+        yield value
+        for v in value.values():
+            yield from _dicts(v)
+    elif isinstance(value, list):
+        for v in value:
+            yield from _dicts(v)

@@ -77,6 +77,7 @@ function Events({ items }: { items: Item[] }) {
           </div>
           <div className="event-title">{e.title}</div>
           {e.location && <div className="event-meta">{e.location}</div>}
+          {e.attendees && <div className="event-meta">With {e.attendees}</div>}
           {e.notes && <div className="event-meta">{e.notes}</div>}
         </li>
       ))}

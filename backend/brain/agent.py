@@ -4,6 +4,7 @@ import logging
 import time
 import uuid
 from contextlib import aclosing
+from datetime import datetime
 from typing import AsyncIterator
 
 import events
@@ -12,12 +13,17 @@ import hub
 import usage
 from config import NEW_CHAT_AFTER_IDLE_MIN
 from storage import upload_store
-from tools import registry, web
+from tools import connectors, registry, web
 
 from .base import Brain, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
 from .router import STICKY_CONTEXT_TOKENS, Route, route
 
 log = logging.getLogger("jarvis.agent")
+
+
+def now_note() -> str:
+    """'Tuesday 29 September 2026, 20:15 CEST (UTC+0200)': local time with its offset."""
+    return datetime.now().astimezone().strftime("%A %d %B %Y, %H:%M %Z (UTC%z)")
 
 
 class Jarvis:
@@ -65,6 +71,9 @@ class Jarvis:
         if files:
             attached = ", ".join(upload_store.label(f) for f in files)
             prompt = f"[The user attached {attached}. Open them with read_upload.]\n{prompt}"
+        # The system prompt replaces Claude Code's, which carried the date: without this
+        # "tomorrow" or "next Friday" can't be resolved.
+        prompt = f"[Now: {now_note()}]\n{prompt}"
 
         consulted_expert = False
         reply_text = ""
@@ -95,6 +104,7 @@ class Jarvis:
                         call = tool_calls.get(ev.id)
                         if call and not ev.is_error:
                             looked_at += web.sources_from_result(call.name, call.input, ev.data)
+                            connectors.remember_events(call.name, ev.data)
                         yield events.from_brain(ev, reply_id)
 
                     case Done():
