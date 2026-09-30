@@ -122,7 +122,8 @@ Most personal communication isn't email, and "when should I leave?" needs live t
   - [ ] iMessage send (AppleScript via Messages.app) — always confirm
   - [ ] iMessage read recent (needs Full Disk Access to `chat.db`, read-only)
   - [ ] Slack (connector) read/send
-  - [ ] WhatsApp — check what's realistically possible (no official personal API)
+  - [x] WhatsApp send → `whatsapp_send`: after the confirm card, opens the chat via `whatsapp://send` in WhatsApp desktop and presses Enter (only if WhatsApp is in front). Needs Accessibility permission. No reading (unofficial libraries risk a ban)
+  - [ ] WhatsApp: first live send, by the user
 - [ ] **Maps / travel**
   - [ ] Directions + travel time with live traffic (Google Maps / Apple Maps API)
   - [ ] "When should I leave for my 3pm?" = calendar location + travel time

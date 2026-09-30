@@ -28,6 +28,7 @@ from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
 from .uploads import read_upload
 from .video import generate_video
+from .whatsapp import whatsapp_send
 
 SERVER_NAME = "jarvis"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
@@ -68,10 +69,16 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(read_upload, "read"),
     # A video ties up the Mac for minutes, so it asks first.
     JarvisTool(generate_video, "act"),
+    # Sends a message in your name.
+    JarvisTool(whatsapp_send, "act"),
 ]
 
 # Friendlier titles for confirmation cards.
-TITLES = {"export_3d": "Build the final 3D file", "generate_video": "Make a video (takes a few minutes)"}
+TITLES = {
+    "export_3d": "Build the final 3D file",
+    "generate_video": "Make a video (takes a few minutes)",
+    "whatsapp_send": "Send a WhatsApp message",
+}
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
 # ToolSearch lets Claude find connector tools on demand instead of loading
