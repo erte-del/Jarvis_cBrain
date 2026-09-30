@@ -28,6 +28,14 @@ export default function App() {
         onSaveChat={jarvis.saveChat}
         onLoadChat={jarvis.loadChat}
         onDeleteChat={jarvis.deleteChat}
+        memories={jarvis.memories}
+        memoryCategories={jarvis.memoryCategories}
+        onSaveMemory={jarvis.saveMemory}
+        onDeleteMemory={jarvis.deleteMemory}
+        onWipeMemory={jarvis.wipeMemory}
+        jobs={jarvis.jobs}
+        jobRuns={jarvis.jobRuns}
+        onJob={jarvis.updateJob}
       />
 
       <main className="hud-grid">

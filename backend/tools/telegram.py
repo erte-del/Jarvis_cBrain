@@ -47,6 +47,15 @@ def _text(text: str, is_error: bool = False) -> dict[str, Any]:
     return result
 
 
+def configured() -> bool:
+    return bool(config.TELEGRAM_BOT_TOKEN and config.TELEGRAM_CHAT_ID)
+
+
+def send_text(message: str) -> None:
+    """Text your own chat (blocking). RuntimeError with the reason if it didn't go."""
+    _call("sendMessage", {"chat_id": config.TELEGRAM_CHAT_ID, "text": message[:MAX_CHARS]})
+
+
 @tool(
     "text_me",
     "Text the user on their phone, from Jarvis's own Telegram bot. It only ever goes to "
@@ -59,7 +68,7 @@ def _text(text: str, is_error: bool = False) -> dict[str, Any]:
 )
 async def text_me(args: dict[str, Any]) -> dict[str, Any]:
     message = str(args.get("message") or "").strip()
-    if not (config.TELEGRAM_BOT_TOKEN and config.TELEGRAM_CHAT_ID):
+    if not configured():
         return _text("Telegram isn't set up: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env "
                      "(steps in .env.example). Not sent.", True)
     if not message:
@@ -67,7 +76,7 @@ async def text_me(args: dict[str, Any]) -> dict[str, Any]:
     if len(message) > MAX_CHARS:
         return _text(f"Too long for one text ({len(message)} characters, the limit is {MAX_CHARS}); not sent.", True)
     try:
-        await asyncio.to_thread(_call, "sendMessage", {"chat_id": config.TELEGRAM_CHAT_ID, "text": message})
+        await asyncio.to_thread(send_text, message)
     except RuntimeError as e:
         return _text(f"Telegram: {e}. Not sent.", True)
     return _text("Sent to the user's phone.")

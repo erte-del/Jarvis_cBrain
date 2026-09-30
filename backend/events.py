@@ -13,6 +13,10 @@ Client -> server:
     user.save_chat   {messages, cards}    save this chat (at most 5; see storage/chat_store.py)
     user.load_chat   {id}                 continue a saved chat
     user.delete_chat {id}
+    user.memory_save {id?, text, category}   add a memory, or change the one with that id
+    user.memory_delete {id}
+    user.memory_wipe {}                  delete every memory
+    user.job_update  {id, action: "pause" | "resume" | "delete" | "run"}   a scheduled job
 
 Server -> client:
     status               {state: "idle" | "thinking"}
@@ -32,6 +36,12 @@ Server -> client:
     conversation.new     {reason: "button" | "idle" | "provider"}   Jarvis forgot the conversation
     conversation.loaded  {messages, cards}   a saved chat was loaded: show these messages and cards
     chats.list           {chats: [{id, title, provider, saved_at}], max}   saved chats, newest first
+    memory.list          {memories: [{id, category, text, source, created, updated}], categories}
+                         everything Jarvis remembers, most recently changed first
+    jobs.list            {jobs: [{id, title, prompt, at, days, every_min, once, enabled, last_run}],
+                          runs: [{job_id, title, time, status, text}]}   scheduled jobs; runs newest first,
+                         status = told | nothing | skipped | failed
+    notification         {title, text, time}   a scheduled job is telling you something
     settings.state       {provider, gateway_url, gateway_model, gateway_models}   the brain in use
     usage.update         {provider, windows, tokens, context_tokens}   see usage.py
     canvas.card          {id, kind, title, data}  show (or replace) a canvas card;
@@ -45,6 +55,7 @@ Later phases add user.audio_*, 3D objects, ...
 from typing import Any
 
 from brain.base import BrainEvent, Done, Error, TextDelta, ToolResult, ToolStart, UIEvent
+from storage import memory_store
 
 Event = dict[str, Any]
 
@@ -125,6 +136,18 @@ def conversation_loaded(messages: list[dict], cards: list[Event]) -> Event:
 
 def chats_list(chats: list[dict], max_chats: int) -> Event:
     return {"type": "chats.list", "chats": chats, "max": max_chats}
+
+
+def memory_list(memories: list[dict]) -> Event:
+    return {"type": "memory.list", "memories": memories, "categories": list(memory_store.CATEGORIES)}
+
+
+def jobs_list(jobs: list[dict], runs: list[dict]) -> Event:
+    return {"type": "jobs.list", "jobs": jobs, "runs": runs}
+
+
+def notification(title: str, text: str, when: float) -> Event:
+    return {"type": "notification", "title": title, "text": text, "time": when}
 
 
 def canvas_card(card_id: str, kind: str, title: str, data: dict[str, Any]) -> Event:

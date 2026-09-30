@@ -145,9 +145,10 @@ Tests:
     backend/main.py    FastAPI server: the /ws WebSocket, image, 3D and upload endpoints
     backend/brain/     the brain (Claude Code via the Agent SDK), router, prompts,
                        confirmation gate
+    backend/scheduler.py, notify.py   jobs Jarvis runs on its own, and how their results reach you
     backend/tools/     Jarvis's own tools, served to Claude as an in-process MCP server,
                        each labelled read (runs freely) or act (asks you first)
-    backend/storage/   images, 3D models, uploads, usage numbers (all local files)
+    backend/storage/   images, 3D models, uploads, usage numbers, memory, scheduled jobs (all local files)
     scripts/           builds and runs Jarvis.app
 
 ## Status
@@ -164,5 +165,5 @@ Tests:
   - [x] OmniRoute as a second brain
   - [x] file uploads
 - [ ] Phase 5: voice (the mic button and voice mode are only the interface so far)
-- [ ] Phase 6: memory (Jarvis doesn't remember anything between chats yet)
+- [x] Phase 6: memory (`remember` / `recall` / `forget`, and the memory button in the top bar)
 - [ ] Phase 7: polish (wake word, barge-in)

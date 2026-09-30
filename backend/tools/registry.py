@@ -18,11 +18,15 @@ from typing import Any, Literal
 import claude_agent_sdk
 from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 
+from storage import job_store, memory_store
+
 from . import connectors, web
 from .canvas import show_on_canvas
 from .contacts import find_contact
 from .expert import ask_expert
 from .imagegen import generate_image, image_ai_edit
+from .jobs import change_job, list_jobs, schedule_job
+from .memory import forget, recall, remember
 from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
@@ -74,6 +78,14 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(whatsapp_send, "act"),
     # Only ever texts you: the chat is fixed in .env.
     JarvisTool(text_me, "read"),
+    # Memories go into every later conversation, so you approve each one; so does deleting.
+    JarvisTool(remember, "act"),
+    JarvisTool(forget, "act"),
+    JarvisTool(recall, "read"),
+    # A standing job keeps running (and using your Pro limit) until you stop it.
+    JarvisTool(schedule_job, "act"),
+    JarvisTool(change_job, "act"),
+    JarvisTool(list_jobs, "read"),
 ]
 
 # Friendlier titles for confirmation cards.
@@ -81,6 +93,10 @@ TITLES = {
     "export_3d": "Build the final 3D file",
     "generate_video": "Make a video (takes a few minutes)",
     "whatsapp_send": "Send a WhatsApp message",
+    "remember": "Remember this",
+    "forget": "Forget this",
+    "schedule_job": "Schedule a job",
+    "change_job": "Change a scheduled job",
 }
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
@@ -166,8 +182,8 @@ def friendly_name(name: str) -> str:
 
 
 MAX_DETAIL_CHARS = 600
-# Id arguments a card can name: the event or task Jarvis saw earlier.
-ID_KEYS = {"eventId": "event", "task_id": "task"}
+# Id arguments a card can name: the event or task Jarvis saw earlier, a saved memory or a scheduled job.
+ID_KEYS = {"eventId": "event", "task_id": "task", "memory_id": "memory", "job_id": "job"}
 
 
 def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list[list[str]]]:
@@ -189,6 +205,6 @@ def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list
         if len(text) > MAX_DETAIL_CHARS:
             text = text[:MAX_DETAIL_CHARS] + "…"
         details.append([key.replace("_", " "), text])
-        if key in ID_KEYS and (label := connectors.item_label(text)):
+        if key in ID_KEYS and (label := connectors.item_label(text) or memory_store.label(text) or job_store.label(text)):
             details.append([ID_KEYS[key], label])
     return title, summary, details

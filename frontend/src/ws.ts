@@ -35,6 +35,37 @@ export interface SavedChat {
   saved_at: number // unix seconds
 }
 
+export interface Memory {
+  id: string // mem_3
+  category: string // one of the categories the server sends
+  text: string
+  source: string // 'chat' (Jarvis saved it, you approved) or 'you' (added in the panel)
+  created: number // unix seconds
+  updated: number
+}
+
+export interface Job {
+  id: string // job_2
+  title: string
+  prompt: string // what Jarvis does when it runs
+  at: string // 'HH:MM', or '' for a watcher
+  days: string[] // 'mon'...; empty = every day
+  every_min: number // watcher: checks this often; 0 for a time-of-day job
+  once: boolean // watcher: stops after it has told you
+  enabled: boolean
+  last_run: number // unix seconds, 0 = never
+}
+
+export type JobAction = 'pause' | 'resume' | 'delete' | 'run'
+
+export interface JobRun {
+  job_id: string
+  title: string
+  time: number // unix seconds
+  status: 'told' | 'nothing' | 'skipped' | 'failed'
+  text: string // what it told you, or why it was skipped / failed
+}
+
 export interface LogLine {
   id: number
   time: string // HH:MM:SS
@@ -65,6 +96,9 @@ export type ServerEvent =
   | { type: 'conversation.new'; reason: 'button' | 'idle' | 'provider' }
   | { type: 'conversation.loaded'; messages: Pick<ChatMessage, 'role' | 'text' | 'files' | 'model'>[]; cards: CanvasCard[] }
   | { type: 'chats.list'; chats: SavedChat[]; max: number }
+  | { type: 'memory.list'; memories: Memory[]; categories: string[] }
+  | { type: 'jobs.list'; jobs: Job[]; runs: JobRun[] }
+  | { type: 'notification'; title: string; text: string; time: number }
   | ({ type: 'settings.state' } & BrainSettings)
   | ({ type: 'usage.update' } & UsageSnapshot)
 
@@ -78,6 +112,10 @@ export type ClientEvent =
   | { type: 'user.save_chat'; messages: ChatMessage[]; cards: CanvasCard[] }
   | { type: 'user.load_chat'; id: string }
   | { type: 'user.delete_chat'; id: string }
+  | { type: 'user.memory_save'; id?: string; text: string; category: string }
+  | { type: 'user.memory_delete'; id: string }
+  | { type: 'user.memory_wipe' }
+  | { type: 'user.job_update'; id: string; action: JobAction }
 
 export type ConfirmStatus = 'pending' | 'approved' | 'denied' | 'expired'
 
@@ -252,6 +290,10 @@ interface ChatState {
   usage: UsageSnapshot | null
   savedChats: SavedChat[]
   maxSavedChats: number
+  memories: Memory[]
+  memoryCategories: string[]
+  jobs: Job[]
+  jobRuns: JobRun[]
   log: LogLine[]
 }
 
@@ -327,6 +369,8 @@ function logLine(state: ChatState, action: Action): Omit<LogLine, 'id' | 'time'>
           return null
         case 'error':
           return { text: `ERROR · ${clip(ev.message, 60)}`, tone: 'error' }
+        case 'notification':
+          return { text: `JOB REPORT · ${clip(ev.title, 36).toUpperCase()}`, tone: 'ok' }
         case 'notice':
           return { text: ev.message.toUpperCase() }
       }
@@ -475,6 +519,19 @@ function baseReducer(state: ChatState, action: Action): ChatState {
         }
         case 'chats.list':
           return { ...state, savedChats: ev.chats, maxSavedChats: ev.max }
+        case 'memory.list':
+          return { ...state, memories: ev.memories, memoryCategories: ev.categories }
+        case 'jobs.list':
+          return { ...state, jobs: ev.jobs, jobRuns: ev.runs }
+        case 'notification':
+          // A scheduled job is telling you something: it shows up like a reply.
+          return {
+            ...state,
+            messages: [
+              ...state.messages,
+              { id: nextLocalId(), role: 'assistant', text: `**${ev.title}**\n\n${ev.text}`, done: true },
+            ],
+          }
         case 'canvas.card': {
           const card: CanvasCard = { id: ev.id, kind: ev.kind, title: ev.title, data: ev.data }
           const i = state.cards.findIndex((c) => c.id === ev.id)
@@ -535,6 +592,10 @@ const initialState: ChatState = {
   usage: null,
   savedChats: [],
   maxSavedChats: 5,
+  memories: [],
+  memoryCategories: [],
+  jobs: [],
+  jobRuns: [],
   log: [],
 }
 
@@ -603,6 +664,22 @@ export function useJarvis() {
     socketRef.current?.send({ type: 'user.delete_chat', id })
   }, [])
 
+  const saveMemory = useCallback((text: string, category: string, id?: string) => {
+    socketRef.current?.send({ type: 'user.memory_save', id, text, category })
+  }, [])
+
+  const deleteMemory = useCallback((id: string) => {
+    socketRef.current?.send({ type: 'user.memory_delete', id })
+  }, [])
+
+  const wipeMemory = useCallback(() => {
+    socketRef.current?.send({ type: 'user.memory_wipe' })
+  }, [])
+
+  const updateJob = useCallback((id: string, action: JobAction) => {
+    socketRef.current?.send({ type: 'user.job_update', id, action })
+  }, [])
+
   const closeCard = useCallback((id: string) => dispatch({ kind: 'closeCard', id }), [])
   const selectImage = useCallback(
     (selection: ImageSelection | null) => dispatch({ kind: 'select', selection }),
@@ -622,5 +699,5 @@ export function useJarvis() {
   }, [selectedImage, connected])
   const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
 
-  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
+  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, saveMemory, deleteMemory, wipeMemory, updateJob, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
 }

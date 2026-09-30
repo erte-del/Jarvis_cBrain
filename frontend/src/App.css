@@ -179,6 +179,69 @@
 .saved-chat .provider { flex: 1; min-width: 0; }
 .saved-chat .provider-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+.memory-menu { width: 420px; }
+.memory-list {
+  max-height: 46vh;
+  margin: 0 0 8px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.memory-list .provider-name { text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; }
+.memory-list .provider-note { color: var(--text); overflow-wrap: anywhere; }
+.memory-empty { padding: 10px 2px; font: 12px/1.45 var(--sans); color: var(--text-dim); }
+.memory-search,
+.memory-form select,
+.memory-form textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  font: 13px/1.45 var(--sans);
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  outline: none;
+  resize: vertical;
+}
+.memory-search:focus,
+.memory-form select:focus,
+.memory-form textarea:focus { border-color: var(--accent); }
+.memory-form select option { background: #041017; }
+.memory-actions { display: flex; gap: 8px; margin-bottom: 8px; }
+.memory-btn {
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+.memory-btn:hover:not(:disabled) { border-color: var(--accent); }
+.memory-btn:disabled { opacity: 0.4; cursor: default; }
+.memory-btn.danger { margin-left: auto; color: var(--danger); }
+
+.schedule-menu .memory-list { max-height: 28vh; }
+.job {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+}
+.job.paused .job-text { opacity: 0.5; }
+.job-text { flex: 1; min-width: 0; }
+.job .memory-btn { padding: 4px 8px; font-size: 10px; }
+.run { margin-bottom: 8px; padding: 0 2px; }
+.run .provider-note { white-space: pre-wrap; }
+.run-nothing .provider-note,
+.run-skipped .provider-note { color: var(--text-dim); }
+.run-failed .provider-note { color: var(--danger); }
+
 .settings-foot {
   font-size: 10px;
   color: var(--text-dim);

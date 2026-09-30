@@ -36,3 +36,5 @@ backend/storage/usage.json
 backend/storage/spotify_token.json
 graphify-out/
 backend/storage/chats.json
+backend/storage/memory.json
+backend/storage/jobs.json

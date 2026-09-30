@@ -10,6 +10,7 @@ from typing import AsyncIterator
 import events
 import gateway
 import hub
+import notify
 import usage
 from config import NEW_CHAT_AFTER_IDLE_MIN
 from storage import upload_store
@@ -71,6 +72,10 @@ class Jarvis:
         if files:
             attached = ", ".join(upload_store.label(f) for f in files)
             prompt = f"[The user attached {attached}. Open them with read_upload.]\n{prompt}"
+        # What scheduled jobs told the user since their last message: this conversation
+        # didn't write it, and "that email" may be about it.
+        if told := notify.take_unseen():
+            prompt = "[Since the user's last message, your scheduled jobs notified them:\n" + "\n".join(told)[:3000] + "]\n" + prompt
         # The system prompt replaces Claude Code's, which carried the date: without this
         # "tomorrow" or "next Friday" can't be resolved.
         prompt = f"[Now: {now_note()}]\n{prompt}"

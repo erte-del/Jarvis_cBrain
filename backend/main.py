@@ -19,13 +19,14 @@ import config
 import events
 import gateway
 import hub
+import scheduler
 from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
 from PIL import UnidentifiedImageError
 
-from storage import chat_store, image_store, model_store, upload_store, video_store
+from storage import chat_store, image_store, job_store, memory_store, model_store, upload_store, video_store
 from tools import canvas, spotify
 
 log = logging.getLogger("jarvis")
@@ -56,7 +57,10 @@ jarvis = Jarvis(brain)
 async def lifespan(app: FastAPI):
     config.set_login(brain.provider)
     warm_up = asyncio.create_task(brain.start())  # ready before your first message
+    scheduler.current_brain = lambda: (brain.provider, brain.gateway_model)
+    jobs = asyncio.create_task(scheduler.loop())
     yield
+    jobs.cancel()
     warm_up.cancel()
     await brain.close()
 
@@ -199,6 +203,46 @@ async def save_chat(messages: list, cards: list) -> None:
     await hub.emit(events.notice("Chat saved."))
 
 
+def memory_event() -> events.Event:
+    return events.memory_list(memory_store.entries())
+
+
+def change_memory(kind: str, msg: dict) -> None:
+    """An edit you made in the memory panel. ValueError with the reason if it can't be done."""
+    memory_id, text, category = str(msg.get("id") or ""), str(msg.get("text") or ""), str(msg.get("category") or "")
+    try:
+        if kind == "user.memory_wipe":
+            memory_store.wipe()
+        elif kind == "user.memory_delete":
+            memory_store.delete(memory_id)
+        elif memory_id:
+            memory_store.update(memory_id, text, category)
+        else:
+            memory_store.add(text, category, source="you")
+    except KeyError:
+        raise ValueError("That memory no longer exists.") from None
+
+
+def jobs_event() -> events.Event:
+    return events.jobs_list(job_store.jobs(), job_store.runs())
+
+
+def change_job(job_id: str, action: str) -> None:
+    """Something you did in the schedule panel."""
+    try:
+        if action == "delete":
+            job_store.delete(job_id)
+        elif action in ("pause", "resume"):
+            job_store.change(job_id, enabled=action == "resume")
+        elif action == "run":
+            job_store.get(job_id)
+            scheduler.run_soon(job_id)
+        else:
+            raise ValueError(f"Unknown job action: {action}")
+    except KeyError:
+        raise ValueError("That job no longer exists.") from None
+
+
 def restore_card(card: dict) -> events.Event | None:
     """A saved canvas card as it is now. Image, 3D and video cards come fresh from their
     stores (None if the files were deleted since). Jarvis doesn't get them in its
@@ -263,6 +307,8 @@ async def websocket_endpoint(ws: WebSocket) -> None:
     await send(settings_event())
     await send(jarvis.usage_event())
     await send(chats_event())
+    await send(memory_event())
+    await send(jobs_event())
     for request in gate.pending_requests():  # questions asked before this tab opened
         await send(request)
     model_override: ModelAlias | None = None
@@ -305,6 +351,20 @@ async def websocket_endpoint(ws: WebSocket) -> None:
             elif kind == "user.delete_chat":
                 await asyncio.to_thread(chat_store.delete, str(msg.get("id")))
                 await hub.emit(chats_event())
+
+            elif kind in ("user.memory_save", "user.memory_delete", "user.memory_wipe"):
+                try:
+                    await asyncio.to_thread(change_memory, kind, msg)
+                except ValueError as e:
+                    await send(events.error(str(e)))
+                await hub.emit(memory_event())
+
+            elif kind == "user.job_update":
+                try:
+                    change_job(str(msg.get("id")), str(msg.get("action")))
+                except ValueError as e:
+                    await send(events.error(str(e)))
+                await hub.emit(jobs_event())
 
             elif kind == "user.confirm":
                 if not gate.resolve(str(msg.get("id")), msg.get("approved") is True):

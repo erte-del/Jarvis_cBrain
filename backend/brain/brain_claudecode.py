@@ -27,6 +27,7 @@ from claude_agent_sdk import (
 
 import usage
 from config import CONNECTORS, EFFORT, GATEWAY_MODEL, PROVIDER, STORAGE_DIR, set_login
+from storage import memory_store
 from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
@@ -86,7 +87,9 @@ class ClaudeCodeBrain:
     def _options(self) -> ClaudeAgentOptions:
         on_claude = self.provider == "claude"
         return ClaudeAgentOptions(
-            system_prompt=JARVIS_SYSTEM_PROMPT,  # replaces Claude Code's coding prompt
+            # Replaces Claude Code's coding prompt. What Jarvis remembers about you is added
+            # each time a conversation starts.
+            system_prompt=JARVIS_SYSTEM_PROMPT + memory_store.prompt_block(),
             model=self._model,
             # Thinking was the biggest use of the Pro limit (see .env). Gateway models
             # may not understand the setting, so it's only sent to Claude.

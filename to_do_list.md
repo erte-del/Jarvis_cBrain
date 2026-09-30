@@ -57,55 +57,58 @@ Today: "email Sarah" or "call mom" depends on guessing.
 - [x] Setup: Google account in System Settings → Internet Accounts (Contacts on)
 - [x] Lookup by name, nickname, relationship → email / phone / address. Relationships: My Card, then English → Turkish → other languages ("mom" found "Annem…"). Tested live
 - [x] If several matches: ask which one (in chat, tested live; no picker card)
-- [ ] Remember aliases in Memory (item 4): "Sarah" = Sarah K. from work
+- [x] Remember aliases in Memory (item 4): "Sarah" = Sarah K. from work (prompt: saved under people once you've said who; untested live)
 - [ ] Wire into email (to/cc), calendar invites, and messaging (item 8) (prompt: look up before emailing/inviting; needs a test by you, since it sends)
 - [x] Read-only by default (no add/edit tool at all; add one with an "act" label if ever needed)
 
-## 4. Persistent user memory  — *Priority 4* (README Phase 6, `backend/tools/memory.py` is still a stub)
+## 4. Persistent user memory  — *Priority 4* (README Phase 6)
 
 Goal: Jarvis *knows you* between chats. A store you can inspect and edit, not raw chat history.
 
-- [ ] Storage: one file or SQLite table in `backend/storage/` (id, category, text, source, created, updated)
-- [ ] Categories: **preferences**, **people**, **projects**, **decisions**, **facts about me**
-- [ ] Tools: `remember(text, category)`, `recall(query)`, `forget(id)` — `remember`/`forget` go through confirm or at least show a "Saved to memory" toast
-- [ ] Load a short summary of relevant memories into the system prompt at chat start (keep it small — token budget)
-- [ ] Jarvis proposes memories itself ("Should I remember you prefer morning meetings?") instead of saving silently
-- [ ] **Memory panel** in the UI: list, search, edit, delete entries
-- [ ] Never store secrets (passwords, card numbers, tokens) — filter before saving
-- [ ] Export / wipe all memory button
-- [ ] Test: remember → new chat → recall
+- [x] Storage: `backend/storage/memory_store.py` → `storage/memory.json` (id, category, text, source, created, updated)
+- [x] Categories: **preferences**, **people**, **projects**, **decisions**, **facts** (about me)
+- [x] Tools: `remember(text, category)`, `recall(query)`, `forget(memory_id)` — `remember`/`forget` go through the confirm card (memories enter every later system prompt, so an email can't plant one); `recall` is read
+- [x] Load the newest memories into the system prompt at chat start (1,500 characters at most; older ones via `recall`)
+- [x] Jarvis proposes memories itself: the "Remember this" card is the proposal (prompt), nothing is saved silently
+- [x] **Memory panel** in the UI (chip button in the top bar): list, search, add, edit, delete
+- [x] Never store secrets (passwords, card numbers, tokens) — refused by pattern in the store, for Jarvis and the panel alike (a secret spelled out in plain words would get through)
+- [x] Export / wipe all memory buttons
+- [x] Test: remember → new chat → recall (`tests/test_memory.py`; done live 2026-09-30)
+- [ ] Try by voice once voice exists: "remember I prefer…"
 
 ## 5. Scheduled & triggered actions  — *Priority 5*
 
-Today: Jarvis only responds, never initiates.
+Jarvis can now start things itself: `backend/scheduler.py` runs jobs from `storage/jobs.json`.
 
-- [ ] Scheduler inside the backend (asyncio loop or APScheduler) that survives restarts (jobs saved in `storage/`)
-- [ ] **Scheduled jobs** (cron-style)
-  - [ ] Morning briefing: today's calendar, due reminders, important unread email, weather
+- [x] Scheduler inside the backend (asyncio loop, checks every 30 s) that survives restarts (jobs saved in `storage/jobs.json`; a job missed while the Mac slept still runs if it's under 3 hours late)
+- [ ] **Scheduled jobs** (time of day + days) — the mechanism works (tested live with a test job); each of these is one sentence to Jarvis, the prompt has the recipe. Not set up or tried yet:
+  - [ ] Morning briefing: today's calendar, due reminders, important unread email, weather ("give me a briefing every weekday at 8")
   - [ ] Evening wrap-up: what's left, what's tomorrow
   - [ ] Weekly review (Sunday): upcoming week, overdue tasks
-- [ ] **Triggered jobs** (watchers)
-  - [ ] "Tell me when X replies" → poll Gmail for a thread reply
-  - [ ] "Tell me 15 min before meetings" → calendar watcher
+- [ ] **Triggered jobs** (watchers: check every N minutes, at least 15, only speak up when there's news) — mechanism tested with fakes only, no live watcher yet:
+  - [ ] "Tell me when X replies" → checks Gmail, stops after it has told you
+  - [ ] "Tell me 15 min before meetings" → calendar watcher (a 15-minute check can't hit "15 min before" exactly)
   - [ ] "Tell me if the price of X drops" → web check
-- [ ] Create / list / pause / delete jobs by voice or chat ("what have you got scheduled?")
-- [ ] Jobs only run **read** tools on their own; any **act** tool waits for you (queue it, notify, confirm later)
-- [ ] Rate/usage guard so background jobs don't burn the Pro usage limit
-- [ ] Log of past runs (what ran, when, result)
+- [x] Create / list / pause / delete jobs by chat ("what have you got scheduled?"): `schedule_job`, `change_job` (confirm card), `list_jobs`; also the clock button in the top bar (run now, pause, delete)
+- [x] Jobs only run **read** tools on their own; an **act** tool is refused and the job tells you what it suggests instead
+- [ ] Queue a refused act so you can approve it later from the notification (today you ask Jarvis to do it when you're back)
+- [x] Rate/usage guard: jobs are skipped above 80% of the 5-hour limit (`JARVIS_JOBS_MAX_USAGE`), at most 10 jobs, one at a time, watchers on Haiku and paused in quiet hours
+- [x] Log of past runs (what ran, when, result): the last 100, in the clock panel and `list_jobs`
 
 ## 6. Notifications  — *Priority 5 (ships with the scheduler)*
 
-The channel proactive actions need to reach you when the chat isn't open.
+The channel proactive actions need to reach you when the chat isn't open. `backend/notify.py`: every job result goes to the open chat, a macOS notification and your phone (Telegram).
 
-- [ ] macOS notifications (`osascript -e 'display notification ...'` or `terminal-notifier`)
-- [ ] Clicking a notification opens Jarvis on the related card
+- [x] macOS notifications (`osascript display notification`, tested live)
+- [ ] Clicking a notification opens Jarvis on the related card (needs `terminal-notifier`; osascript notifications open Script Editor)
 - [x] Phone text → `text_me`: Jarvis's own Telegram bot, only ever to your chat (fixed in `.env`), no confirm
-- [ ] Telegram: create the bot, fill `.env`, first live text, by the user
+- [x] Job results are texted to the phone too, when Telegram is set up
+- [ ] Telegram: first live text, by the user (from Claude's test run Python couldn't verify Telegram's certificate; check it works when you run Jarvis yourself)
 - [ ] Reply to Jarvis from the phone (long-poll `getUpdates` into a chat; no open port needed)
 - [ ] Phone calls (needs voice): Twilio number; one-way spoken call first, live conversation needs a public tunnel
-- [ ] Spoken alert via TTS when Jarvis is open (`backend/voice/tts.py`)
-- [ ] Quiet hours / do-not-disturb setting
-- [ ] Notification history in the UI
+- [ ] Spoken alert via TTS when Jarvis is open (`backend/voice/tts.py`; needs voice, Phase 5)
+- [x] Quiet hours: watchers don't run 23:00–07:00 (`JARVIS_QUIET_HOURS`); a job you set for a time of day still runs
+- [x] Notification history in the UI (clock button → recent runs); Jarvis also gets what the jobs told you with your next message, so "reply to that" works
 
 ## 7. macOS integration  — *Priority 6*
 
@@ -145,6 +148,6 @@ Most personal communication isn't email, and "when should I leave?" needs live t
 ## Milestone: Daily briefing
 
 Done when all of these work together:
-- [ ] Every weekday at a set time, Jarvis sends a notification
+- [ ] Every weekday at a set time, Jarvis sends a notification (possible now: ask for the briefing job)
 - [ ] Opening it shows: today's events, due/overdue reminders, important emails, weather, leave-by times
 - [ ] Follow-ups by voice: "move my 2pm", "remind me to reply to that tonight", "remember I prefer…"

@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -40,6 +41,15 @@ CONNECTORS = [c.strip().lower() for c in os.getenv("JARVIS_CONNECTORS", "all").s
 # Claude's copy of the conversation (the cache) expires after an hour, so the next
 # message would otherwise send the whole thing again at full price. 0 = never.
 NEW_CHAT_AFTER_IDLE_MIN = int(os.getenv("JARVIS_NEW_CHAT_AFTER_IDLE_MIN", "60"))
+
+# Scheduled jobs (scheduler.py). Watchers ("tell me when…") don't run during quiet hours;
+# jobs you set for a time of day always do. "" = no quiet hours.
+QUIET_HOURS = os.getenv("JARVIS_QUIET_HOURS", "23:00-07:00").strip()
+if QUIET_HOURS and not re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d", QUIET_HOURS):
+    raise SystemExit(f"JARVIS_QUIET_HOURS={QUIET_HOURS!r}: use HH:MM-HH:MM, e.g. 23:00-07:00")
+# Jobs are skipped once this much of the Pro plan's 5-hour window is used (0-1), so
+# background work never locks you out of Jarvis yourself.
+JOBS_MAX_USAGE = float(os.getenv("JARVIS_JOBS_MAX_USAGE", "0.8"))
 
 if HOST not in ("127.0.0.1", "localhost", "::1"):
     raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
