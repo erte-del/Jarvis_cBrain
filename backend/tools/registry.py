@@ -26,6 +26,7 @@ from .imagegen import generate_image, image_ai_edit
 from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
+from .telegram import text_me
 from .uploads import read_upload
 from .video import generate_video
 from .whatsapp import whatsapp_send
@@ -71,6 +72,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(generate_video, "act"),
     # Sends a message in your name.
     JarvisTool(whatsapp_send, "act"),
+    # Only ever texts you: the chat is fixed in .env.
+    JarvisTool(text_me, "read"),
 ]
 
 # Friendlier titles for confirmation cards.

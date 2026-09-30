@@ -99,7 +99,10 @@ The channel proactive actions need to reach you when the chat isn't open.
 
 - [ ] macOS notifications (`osascript -e 'display notification ...'` or `terminal-notifier`)
 - [ ] Clicking a notification opens Jarvis on the related card
-- [ ] Phone push (later): ntfy.sh / Pushover / Telegram bot
+- [x] Phone text → `text_me`: Jarvis's own Telegram bot, only ever to your chat (fixed in `.env`), no confirm
+- [ ] Telegram: create the bot, fill `.env`, first live text, by the user
+- [ ] Reply to Jarvis from the phone (long-poll `getUpdates` into a chat; no open port needed)
+- [ ] Phone calls (needs voice): Twilio number; one-way spoken call first, live conversation needs a public tunnel
 - [ ] Spoken alert via TTS when Jarvis is open (`backend/voice/tts.py`)
 - [ ] Quiet hours / do-not-disturb setting
 - [ ] Notification history in the UI
