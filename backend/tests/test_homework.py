@@ -20,12 +20,13 @@ class HomeworkTest(unittest.TestCase):
         patch.start()
         self.addCleanup(patch.stop)
 
-    def check(self, where, text):
-        async def fake_run(url):
+    def check(self, where, text, **args):
+        async def fake_run(url, javascript, opened="tab"):
+            self.javascript = javascript
             return where, text
 
         with mock.patch.object(homework, "_run", fake_run):
-            return asyncio.run(homework.check_homework.handler({}))
+            return asyncio.run(homework.check_homework.handler(args))
 
     def test_runs_freely(self):
         self.assertEqual(registry.classify("mcp__jarvis__check_homework"), "read")
@@ -38,6 +39,15 @@ class HomeworkTest(unittest.TestCase):
         more = self.check(config.HOMEWORK_URL, "Maths\nAlgebra sheet\nDue Friday\nPhysics\nForces quiz")
         self.assertTrue(more["content"][0]["text"].endswith("since the last check:\nPhysics\nForces quiz"))
 
+    def test_class_posts(self):
+        posts = self.check(config.HOMEWORK_URL, "Assessment on 8th October", class_name='Computer "Science"')
+        self.assertEqual(posts["content"][0]["text"], "Assessment on 8th October")
+        self.assertTrue(self.javascript.endswith(r'("computer \"science\"")'))  # quoted, can't break out
+        self.assertFalse(homework.SEEN_FILE.exists())  # posts don't count as the feed
+        none = self.check(config.HOMEWORK_URL, "NOCLASS\nMaths\nPhysics", class_name="art")["content"][0]["text"]
+        self.assertIn("No class matches 'art'", none)
+        self.assertTrue(none.endswith("Maths\nPhysics"))
+
     def test_signed_out_is_explained(self):
         result = self.check("https://login.microsoftonline.com/common/oauth2", "Sign in")
         self.assertTrue(result["is_error"])
@@ -45,7 +55,7 @@ class HomeworkTest(unittest.TestCase):
         self.assertFalse(homework.SEEN_FILE.exists())  # the login page isn't remembered as homework
 
     def test_chrome_setting_is_explained(self):
-        async def refused(url):
+        async def refused(url, javascript, opened="tab"):
             raise RuntimeError("Chrome doesn't let Jarvis read pages yet.")
 
         with mock.patch.object(homework, "_run", refused):

@@ -43,7 +43,8 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
   playlists, which needs a Spotify developer app (see `.env.example`).
 - **Check your homework.** It reads your school's Microsoft Teams activity feed
   from Chrome on this Mac, where you're already signed in, and can tell you when a
-  teacher sets something new. School accounts don't let apps read assignments, so
+  teacher sets something new. It also reads a class's posts, for assessment dates and
+  topic lists. School accounts don't let apps read assignments, so
   this needs one Chrome setting (see `.env.example`).
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
