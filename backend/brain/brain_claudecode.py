@@ -31,7 +31,7 @@ from storage import memory_store
 from tools import registry
 
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
-from .prompts import JARVIS_SYSTEM_PROMPT
+from .prompts import JARVIS_SYSTEM_PROMPT, school_block
 
 log = logging.getLogger("jarvis.brain")
 
@@ -93,9 +93,9 @@ class ClaudeCodeBrain:
     def _options(self) -> ClaudeAgentOptions:
         on_claude = self.provider == "claude"
         return ClaudeAgentOptions(
-            # Replaces Claude Code's coding prompt. What Jarvis remembers about you is added
-            # each time a conversation starts.
-            system_prompt=JARVIS_SYSTEM_PROMPT + memory_store.prompt_block(),
+            # Replaces Claude Code's coding prompt. Your school notes and what Jarvis remembers
+            # about you are added each time a conversation starts.
+            system_prompt=JARVIS_SYSTEM_PROMPT + school_block() + memory_store.prompt_block(),
             model=self._model,
             # Thinking was the biggest use of the Pro limit (see .env). Gateway models
             # may not understand the setting, so it's only sent to Claude.

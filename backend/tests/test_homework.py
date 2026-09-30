@@ -42,11 +42,19 @@ class HomeworkTest(unittest.TestCase):
     def test_class_posts(self):
         posts = self.check(config.HOMEWORK_URL, "Assessment on 8th October", class_name='Computer "Science"')
         self.assertEqual(posts["content"][0]["text"], "Assessment on 8th October")
-        self.assertTrue(self.javascript.endswith(r'("computer \"science\"")'))  # quoted, can't break out
+        self.assertTrue(self.javascript.endswith(r', "computer \"science\"")'))  # quoted, can't break out
         self.assertFalse(homework.SEEN_FILE.exists())  # posts don't count as the feed
         none = self.check(config.HOMEWORK_URL, "NOCLASS\nMaths\nPhysics", class_name="art")["content"][0]["text"]
         self.assertIn("No class matches 'art'", none)
         self.assertTrue(none.endswith("Maths\nPhysics"))
+
+    def test_school_notes_go_into_the_prompt(self):
+        from brain import prompts
+        notes = homework.SEEN_FILE.with_name("school.md")
+        with mock.patch.object(prompts, "SCHOOL_FILE", notes):
+            self.assertEqual(prompts.school_block(), "")  # no notes yet: nothing added
+            notes.write_text("- 12X = Physics. Homework posts start with 'HW'.\n")
+            self.assertTrue(prompts.school_block().endswith("- 12X = Physics. Homework posts start with 'HW'."))
 
     def test_signed_out_is_explained(self):
         result = self.check("https://login.microsoftonline.com/common/oauth2", "Sign in")

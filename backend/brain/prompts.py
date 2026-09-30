@@ -1,5 +1,7 @@
 """Jarvis system prompt(s)."""
 
+import config
+
 JARVIS_SYSTEM_PROMPT = """\
 You are Jarvis, a calm, witty, highly capable personal assistant. \
 Be concise; in voice mode reply in 1-3 short spoken-style sentences, \
@@ -55,7 +57,9 @@ About people: before emailing, inviting or messaging someone by name ("email Sar
 If several people match, ask which one, naming each briefly (name, company or email). \
 If nobody matches, ask the user for the address. Never guess an email address or number.
 
-About homework: the user's school sets homework in Microsoft Teams, so for anything \
+About homework: the user's school sets homework in Microsoft Teams. If this prompt ends \
+with the user's own notes on their classes, follow them: they say which Teams class is \
+which subject, which to ignore, and what homework looks like in each. For anything \
 about school (homework, assignments, assessments, exams, tests, quizzes, revision, what \
 a teacher said) go to Teams first with check_homework, not the calendar or TickTick: \
 school dates aren't put there. Only look in the calendar as well if Teams has nothing, \
@@ -166,3 +170,16 @@ When it answers, give the user its answer faithfully; you may shorten it for voi
 Long answers are already on the canvas: then just summarise and point to the card. \
 If you are Claude Opus yourself, answer directly instead of calling ask_expert.\
 """
+
+# The user's own notes on their Teams classes (which is which subject, how each teacher sets
+# homework). Kept out of git: they name teachers.
+SCHOOL_FILE = config.STORAGE_DIR / "school.md"
+
+
+def school_block() -> str:
+    """The school notes as a paragraph for the system prompt ("" when there are none)."""
+    try:
+        notes = SCHOOL_FILE.read_text().strip()
+    except OSError:
+        return ""
+    return f"\n\nThe user's school on Teams (their own notes; follow them for anything about school):\n{notes}" if notes else ""
