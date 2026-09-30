@@ -47,8 +47,11 @@ IDLE_TIMEOUT_S = 120
 TOOL_TIMEOUT_S = 600
 # claude.ai connectors connect in the background; wait this long for them at startup.
 CONNECTOR_WAIT_S = 15
-# Jarvis's own server can show up before the claude.ai ones; give those this long to appear.
-CONNECTOR_LIST_WAIT_S = 3
+# Jarvis's own server can show up before the claude.ai ones; give those this long to appear
+# (their list usually arrives after ~5 s).
+CONNECTOR_LIST_WAIT_S = 10
+# A session that still has no claude.ai connectors looks for them again this often.
+CONNECTOR_RETRY_S = 300
 
 # Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
 BLOCKED_TOOLS = [
@@ -73,6 +76,9 @@ class ClaudeCodeBrain:
         self.context_tokens = 0
         # Wall-clock time of the last message (keeps counting while the Mac sleeps).
         self.last_active = 0.0
+        # False when Claude Code started without the claude.ai connectors (Gmail, ...).
+        self._has_connectors = True
+        self._connector_retry_at = 0.0
 
     @property
     def session_id(self) -> str | None:
@@ -151,10 +157,32 @@ class ClaudeCodeBrain:
                 break
             await asyncio.sleep(0.5)
         await self._apply_connector_choice(client, servers)
+        self._has_connectors = self.provider != "claude" or any(
+            s["name"].startswith("claude.ai ") for s in servers
+        )
+        self._connector_retry_at = time.time() + CONNECTOR_RETRY_S
         by_status: dict[str, list[str]] = {}
         for s in servers:
             by_status.setdefault(s.get("status", "?"), []).append(s["name"].removeprefix("claude.ai "))
         log.info("Connectors: %s", "; ".join(f"{k}: {', '.join(v)}" for k, v in by_status.items()) or "none")
+
+    async def _retry_connectors(self) -> None:
+        """Claude Code sometimes starts without the claude.ai connectors (their list comes
+        late or not at all), and then Jarvis says Gmail isn't connected. Look again, and
+        if they're still missing restart Claude Code; `resume` keeps the conversation."""
+        if self._client is None or self._has_connectors or time.time() < self._connector_retry_at:
+            return
+        self._connector_retry_at = time.time() + CONNECTOR_RETRY_S
+        try:
+            servers = (await self._client.get_mcp_status()).get("mcpServers", [])
+        except Exception:
+            servers = []
+        if any(s["name"].startswith("claude.ai ") for s in servers):  # they arrived late
+            await self._apply_connector_choice(self._client, servers)
+            self._has_connectors = True
+            return
+        log.warning("No claude.ai connectors in this session; restarting Claude Code")
+        await self.close()
 
     async def _apply_connector_choice(self, client: ClaudeSDKClient, servers: list) -> None:
         """Switch claude.ai connectors on or off to match JARVIS_CONNECTORS (.env).
@@ -199,6 +227,7 @@ class ClaudeCodeBrain:
                     # restart with the new model instead; `resume` keeps the conversation.
                     await self.close()
                     self._model = model
+                await self._retry_connectors()
                 client = await self._connect()
                 if model != self._model:
                     await client.set_model(model)

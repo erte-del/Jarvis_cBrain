@@ -20,6 +20,8 @@ SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
 # Jarvis's own Telegram bot, for texting you (tools/telegram.py).
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+# Teams on the web, which Jarvis reads in Chrome (tools/homework.py).
+HOMEWORK_URL = os.getenv("JARVIS_HOMEWORK_URL", "").strip() or "https://teams.cloud.microsoft/"
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
 # Local video generation (Wan 2.1 through mlx-video). scripts/setup_video.sh puts its
 # own Python and the model weights here.

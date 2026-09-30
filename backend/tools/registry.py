@@ -24,6 +24,7 @@ from . import connectors, web
 from .canvas import show_on_canvas
 from .contacts import find_contact
 from .expert import ask_expert
+from .homework import check_homework
 from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
 from .memory import forget, recall, remember
@@ -70,6 +71,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(spotify_playlist_tracks, "read"),
     # Looks people up in Contacts; never changes them.
     JarvisTool(find_contact, "read"),
+    # Only reads the school's Assignments page, in a tab it opens and closes itself.
+    JarvisTool(check_homework, "read"),
     # Only reads files you uploaded yourself.
     JarvisTool(read_upload, "read"),
     # A video ties up the Mac for minutes, so it asks first.

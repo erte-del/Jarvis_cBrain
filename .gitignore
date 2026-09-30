@@ -38,3 +38,4 @@ graphify-out/
 backend/storage/chats.json
 backend/storage/memory.json
 backend/storage/jobs.json
+backend/storage/homework_seen.json
