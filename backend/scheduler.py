@@ -5,7 +5,8 @@ conversation, separate from yours, and tells you the result through notify.py.
 
 Safe defaults:
   - a job can only use 'read' tools: anything that sends, creates, changes or deletes is
-    refused, and the job tells you what it would suggest instead
+    refused, and the job tells you what it would suggest instead. The one way round it is
+    a job's "allow" list of tool names in jobs.json, written by hand: Jarvis can't set it
   - one job at a time, and none once JARVIS_JOBS_MAX_USAGE of the Pro 5-hour limit is used
   - watchers don't run during JARVIS_QUIET_HOURS
   - a job that was due while the Mac slept still runs if it's under CATCH_UP late, once
@@ -34,7 +35,7 @@ log = logging.getLogger("jarvis.scheduler")
 CHECK_EVERY_S = 30
 CATCH_UP = timedelta(hours=3)
 JOB_TIMEOUT_S = 300
-NOTHING = "NOTHING"  # a watcher's reply when there's nothing to tell you yet
+NOTHING = "NOTHING"  # a job's reply when there's nothing to tell you
 
 # (provider, gateway model) of the brain in use, set by main.py: jobs run on the same
 # one, so your emails never go to a provider you didn't pick.
@@ -68,14 +69,20 @@ def due(job: dict, now: datetime) -> bool:
     return last < moment.timestamp() and now - moment <= CATCH_UP
 
 
-async def _read_only(
-    tool_name: str, tool_input: dict[str, Any], context: ToolPermissionContext
-) -> PermissionResultAllow | PermissionResultDeny:
-    if registry.classify(tool_name) == "read":
-        return PermissionResultAllow()
-    return PermissionResultDeny(
-        message="Scheduled jobs can only look things up. Tell the user what you'd suggest instead."
-    )
+def _gate(job: dict):
+    """What this job may use: 'read' tools, plus the tools on its own "allow" list."""
+    async def check(
+        tool_name: str, tool_input: dict[str, Any], context: ToolPermissionContext
+    ) -> PermissionResultAllow | PermissionResultDeny:
+        if registry.classify(tool_name) == "read" or tool_name in job.get("allow", ()):
+            return PermissionResultAllow()
+        return PermissionResultDeny(
+            message="Scheduled jobs can only look things up. Tell the user what you'd suggest instead."
+        )
+    return check
+
+
+_read_only = _gate({})
 
 
 def job_prompt(job: dict) -> str:
@@ -87,8 +94,11 @@ def job_prompt(job: dict) -> str:
         "so say what you'd suggest instead. Your final reply is sent to the user's phone as a "
         "notification: plain text, no markdown, short, nothing that needs an answer right now.]",
     ]
+    if job.get("allow"):
+        lines.append(f"[The one exception, approved by the user for this job: {', '.join(job['allow'])}.]")
+    # Any job may stay silent ("text me only if there's homework"), not just watchers.
+    lines.append(f"[If there's nothing to tell the user, reply with exactly {NOTHING}.]")
     if job["every_min"]:
-        lines.append(f"[If there's nothing to tell the user yet, reply with exactly {NOTHING}.]")
         if job["last_text"]:
             lines.append(f"[You already told them this, don't repeat it: {job['last_text']}]")
     return "\n".join([*lines, job["prompt"]])
@@ -99,7 +109,7 @@ async def _ask(job: dict) -> str:
     provider, gateway_model = current_brain()
     # Watchers run often, so they get the cheapest model.
     model = ("haiku" if job["every_min"] else "sonnet") if provider == "claude" else gateway_model
-    brain = ClaudeCodeBrain(can_use_tool=_read_only)
+    brain = ClaudeCodeBrain(can_use_tool=_gate(job))
     brain.provider = provider
     text = ""
     try:
@@ -133,7 +143,7 @@ async def run_job(job_id: str) -> None:
                 return
             log.info("Running job %s (%s)", job["id"], job["title"])
             text = await _ask(job)
-            if not text or (job["every_min"] and text.upper().startswith(NOTHING)):
+            if not text or text.upper().startswith(NOTHING):
                 job_store.log_run(job, "nothing")
                 return
             job_store.log_run(job, "told", text)

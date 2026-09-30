@@ -105,6 +105,13 @@ class JobsTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((allow.behavior, deny.behavior), ("allow", "deny"))
         self.assertEqual((await scheduler._read_only("mcp__jarvis__schedule_job", {}, None)).behavior, "deny")
 
+    async def test_a_job_may_use_the_tools_on_its_allow_list_and_no_others(self):
+        create = "mcp__claude_ai_TickTick__create_task"
+        gate = scheduler._gate({"allow": [create]})
+        self.assertEqual((await gate(create, {}, None)).behavior, "allow")
+        self.assertEqual((await gate("mcp__claude_ai_TickTick__delete_task", {}, None)).behavior, "deny")
+        self.assertEqual((await scheduler._gate(job_store.add("T", "p", at="08:00"))(create, {}, None)).behavior, "deny")
+
     async def test_a_run_notifies_and_is_logged(self):
         made = job_store.add("Morning briefing", "Calendar, tasks.", at="08:00")
         with self.answer("Two meetings today."):
@@ -112,6 +119,13 @@ class JobsTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.pushed, [("Morning briefing", "Two meetings today.")])
         self.assertEqual(job_store.runs()[0]["status"], "told")
         self.assertGreater(job_store.get(made["id"])["last_run"], time.time() - 5)
+
+    async def test_a_daily_job_can_stay_silent(self):
+        made = job_store.add("Homework", "Any homework due?", at="16:00")
+        self.assertIn("reply with exactly NOTHING", scheduler.job_prompt(made))
+        with self.answer("NOTHING"):
+            await scheduler.run_job(made["id"])
+        self.assertEqual((self.pushed, job_store.runs()[0]["status"]), ([], "nothing"))
 
     async def test_a_watcher_stays_silent_until_there_is_news_then_stops(self):
         made = job_store.add("Sarah's reply", "Has Sarah replied?", every_min=30, once=True)
