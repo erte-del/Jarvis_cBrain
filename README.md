@@ -46,6 +46,11 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
   teacher sets something new. It also reads a class's posts, for assessment dates and
   topic lists. School accounts don't let apps read assignments, so
   this needs one Chrome setting (see `.env.example`).
+- **Browse Amazon.** It searches Amazon and reads your orders, cart and wish lists in
+  Chrome on this Mac, where you're already signed in (no password is stored). It can
+  add to or remove from your cart, or add to your wish list, after you approve. It
+  can't place an order: you check out in Chrome yourself. Uses the same Chrome setting
+  as homework; set `JARVIS_AMAZON_URL` if you don't shop on amazon.ae.
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
   as text (up to about 100K characters each). Files are kept in

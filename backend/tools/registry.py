@@ -21,6 +21,7 @@ from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 from storage import job_store, memory_store
 
 from . import connectors, web
+from .amazon import amazon_change, amazon_read
 from .canvas import show_on_canvas
 from .contacts import find_contact
 from .expert import ask_expert
@@ -73,6 +74,10 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(find_contact, "read"),
     # Only reads the school's Assignments page, in a tab it opens and closes itself.
     JarvisTool(check_homework, "read"),
+    # Reading Amazon changes nothing; the cart and wish list change only with your approval.
+    # Neither can place an order.
+    JarvisTool(amazon_read, "read"),
+    JarvisTool(amazon_change, "act"),
     # Only reads files you uploaded yourself.
     JarvisTool(read_upload, "read"),
     # A video ties up the Mac for minutes, so it asks first.
@@ -96,6 +101,7 @@ TITLES = {
     "export_3d": "Build the final 3D file",
     "generate_video": "Make a video (takes a few minutes)",
     "whatsapp_send": "Send a WhatsApp message",
+    "amazon_change": "Change your Amazon cart or list",
     "remember": "Remember this",
     "forget": "Forget this",
     "schedule_job": "Schedule a job",
