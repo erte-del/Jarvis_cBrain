@@ -18,6 +18,7 @@ backend/storage/uploads/
 backend/storage/videos/
 backend/storage/wan/
 backend/storage/flux/
+backend/storage/JarvisLocation.app/
 backend/storage/jarvis.log
 backend/storage/jarvis.pid
 

@@ -30,6 +30,7 @@ from .expert import ask_expert
 from .homework import check_homework
 from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
+from .mac import mac_change, mac_read, run_python
 from .memory import forget, recall, remember
 from .notes import read_note, search_notes, write_note
 from .important import mark_important, unmark_important
@@ -107,6 +108,12 @@ TOOLS: list[JarvisTool] = [
     # Adding only adds protection; lifting it asks (see ASK_TOOLS).
     JarvisTool(mark_important, "act"),
     JarvisTool(unmark_important, "act"),
+    # This Mac: reading is free. Changes stay on this Mac and inside Jarvis's folder, so no card
+    # (files you marked important still ask); scheduled jobs can't use them.
+    JarvisTool(mac_read, "read"),
+    JarvisTool(mac_change, "act"),
+    # Sandboxed: no network or other programs, writes only in Jarvis's Output folder.
+    JarvisTool(run_python, "act"),
 ]
 
 # In chat, an 'act' tool asks you first only when it reaches other people or touches
@@ -132,6 +139,7 @@ TITLES = {
     "schedule_job": "Schedule a job",
     "change_job": "Change a scheduled job",
     "unmark_important": "Stop protecting this",
+    "mac_change": "Change something on this Mac",
 }
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').

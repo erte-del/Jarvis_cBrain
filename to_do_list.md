@@ -112,13 +112,17 @@ The channel proactive actions need to reach you when the chat isn't open. `backe
 
 ## 7. macOS integration  — *Priority 6*
 
-- [ ] Run existing Shortcuts (`shortcuts run "<name>"`), list available Shortcuts
-- [ ] Open / focus apps, open URLs and files
-- [ ] Read clipboard (`pbpaste`), write clipboard (`pbcopy`)
-- [ ] Sandboxed file access: one allowed folder (e.g. `~/Jarvis`), find / move / rename / organize files
-- [ ] Code-execution sandbox for data work (CSV analysis, quick scripts)
-- [ ] System info: battery, volume, dark mode, Wi-Fi (read); volume/do-not-disturb changes need confirm
-- [ ] **Always confirm** destructive actions (delete, overwrite, move out of the sandbox)
+`backend/tools/mac.py`: `mac_read` (read), `mac_change` and `run_python` (act, no card; jobs can't use them). Unit-tested; the changes (open, copy, volume, dark mode, trash) not tried live yet.
+
+- [x] Run existing Shortcuts (`shortcuts run "<name>"`, with text input/output), list available Shortcuts (you have none yet)
+- [x] Open / focus apps (only from the Applications folders), open URLs (http/https only) and files (documents only, so nothing in the folder can run as a program; folders show in Finder)
+- [x] Read clipboard (`pbpaste`), write clipboard (`pbcopy`)
+- [x] Sandboxed file access: one folder (`JARVIS_FILES_DIR`, default `~/Jarvis Files`; `~/Jarvis` was taken by another project), find / move / rename / organize files
+- [x] Code-execution sandbox for data work: Python stdlib in `sandbox-exec` (no network, no other programs or Apple Events, reads only the folder, writes only `Output/`, 60 s). No pandas: add a separate venv if stdlib gets painful
+- [x] System info: battery, volume, dark mode, Wi-Fi (read; macOS hides the Wi-Fi name without Location permission); volume/mute/dark mode changes. Do Not Disturb: through a Shortcut you make ("Set Focus")
+- [x] Location: `scripts/setup_location.sh` builds `JarvisLocation.app` (Swift, CoreLocation; macOS only gives Location to an app), allowed 2026-10-01. `mac_read what=location` → coordinates, place name, time zone (tested live). Ready for weather, "near me" and item 8's travel times
+- [x] Destructive actions: delete = Trash (recoverable), moving out of the folder and overwriting are refused outright. No card, per the approval rule (only other people / important files ask); files marked important still ask
+- [ ] Try live: "open Calculator", "copy this", "set volume to 30", "move X into Y", "trash X", a CSV analysis (first dark mode / trash makes macOS ask for Automation permission)
 
 ## 8. Messaging + maps/travel  — *Priority 7*
 

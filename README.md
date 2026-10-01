@@ -41,6 +41,13 @@ only look things up.
   before changing it. Tag a
   note `#private` and Jarvis never reads or changes it, and it can't reach anything
   outside the vault.
+- **Use this Mac.** It runs your Shortcuts, opens apps, web pages and documents, reads
+  and sets the clipboard, knows where the Mac is (after `scripts/setup_location.sh`, for
+  weather and "near me"), and reads the battery, volume, dark mode and Wi-Fi (it can
+  set volume, mute and dark mode). It finds, moves, renames and trashes files in one
+  folder only (`JARVIS_FILES_DIR`, default `~/Jarvis Files`), never overwrites, and
+  runs Python for data work in a macOS sandbox: no internet, no other programs, reads
+  only that folder, writes only to its `Output` subfolder.
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
   as text (up to about 100K characters each). Files are kept in

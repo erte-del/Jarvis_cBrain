@@ -1,0 +1,368 @@
+"""This Mac: Shortcuts, apps, URLs, the clipboard, a few settings, one folder of files,
+and Python in a sandbox.
+
+  mac_read   (read) battery / volume / dark mode / Wi-Fi, location, the clipboard, your Shortcuts,
+             and the files in Jarvis's folder (JARVIS_FILES_DIR, default ~/Jarvis Files).
+  mac_change (act)  opens apps, web pages and files, runs a Shortcut, copies to the
+             clipboard, sets volume / mute / dark mode, and moves, renames or trashes
+             files in the folder. No card (nothing here reaches other people); files
+             you marked important still ask (registry.needs_ok).
+  run_python (act)  Python for data work (CSV analysis, quick scripts) in a macOS sandbox:
+             no network, no other programs or apps, reads only Jarvis's folder, writes
+             only its Output subfolder.
+
+Files never leave the folder: nothing is moved out of it, nothing is overwritten, and
+"delete" puts the file in the Trash. Only documents open (no apps, scripts or installers
+from the folder), and apps only from the Applications folders.
+"""
+
+import asyncio
+import json
+import re
+import sys
+import tempfile
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from claude_agent_sdk import tool
+
+import config
+
+from .homework import _text
+
+MAX_CHARS = 20_000
+MAX_FILES = 50
+# Built by scripts/setup_location.sh: macOS only gives Location to an app bundle.
+LOCATION_APP = config.STORAGE_DIR / "JarvisLocation.app"
+PYTHON_TIMEOUT_S = 60
+SHORTCUT_TIMEOUT_S = 120
+APP_DIRS = [Path("/Applications"), Path("/Applications/Utilities"), Path("/System/Applications"),
+            Path("/System/Applications/Utilities"), Path.home() / "Applications"]
+# Files mac_change may open: documents only, so nothing in the folder can run as a program.
+DOCUMENTS = {"pdf", "txt", "md", "rtf", "csv", "tsv", "json", "xml", "log", "doc", "docx", "xls", "xlsx",
+             "ppt", "pptx", "pages", "numbers", "key", "odt", "ods", "png", "jpg", "jpeg", "gif", "heic",
+             "webp", "tiff", "bmp", "svg", "mp3", "m4a", "wav", "aac", "flac", "mp4", "mov", "m4v", "zip"}
+ACTIONS = ["open_app", "open_url", "open_file", "run_shortcut", "copy", "volume", "mute", "dark_mode",
+           "move", "trash"]
+
+# The sandbox for run_python. Later rules win: all of your home is unreadable except
+# Jarvis's folder and Python itself.
+PROFILE = """(version 1)
+(allow default)
+(deny network*)
+(deny appleevent-send)
+(deny mach-lookup)
+(deny process-exec)
+(allow process-exec (literal {python}))
+(deny file-write*)
+(allow file-write* (subpath {output}) (literal "/dev/null"))
+(deny file-read* (subpath {home}) (subpath "/Volumes") (subpath "/private/var/folders"))
+(allow file-read* (subpath {folder}) (subpath {base}))
+"""
+
+
+async def _run(*cmd: str, stdin: bytes | None = None, timeout: float = 30, **kw: Any) -> tuple[int, str, str]:
+    """(exit code, stdout, stderr). The command is killed after `timeout` seconds."""
+    proc = await asyncio.create_subprocess_exec(
+        *cmd, stdin=asyncio.subprocess.PIPE if stdin is not None else asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, **kw,
+    )
+    try:
+        out, err = await asyncio.wait_for(proc.communicate(stdin), timeout)
+    except TimeoutError:
+        proc.kill()
+        raise RuntimeError(f"{Path(cmd[0]).name} took over {timeout:g} s and was stopped") from None
+    return proc.returncode or 0, out.decode(errors="replace"), err.decode(errors="replace")
+
+
+async def _out(*cmd: str, **kw: Any) -> str:
+    code, out, err = await _run(*cmd, **kw)
+    if code:
+        msg = err.strip()
+        if "-1743" in msg or "not allowed" in msg.lower():
+            msg = "macOS didn't allow it. Allow Jarvis in System Settings → Privacy & Security → Automation."
+        raise RuntimeError(msg or f"{cmd[0]} failed")
+    return out.strip()
+
+
+def _folder() -> Path:
+    config.FILES_DIR.mkdir(parents=True, exist_ok=True)
+    return config.FILES_DIR.resolve()
+
+
+def in_folder(path: str) -> Path:
+    """The file a path names inside Jarvis's folder. ValueError if it's anywhere else."""
+    root = _folder()
+    full = (root / Path(path.strip()).expanduser()).resolve()  # also follows symlinks out
+    if not full.is_relative_to(root):
+        raise ValueError(f"{path!r} is outside Jarvis's folder ({root}).")
+    return full
+
+
+def _rel(p: Path) -> str:
+    return p.relative_to(_folder()).as_posix() or "."
+
+
+# --- reading -------------------------------------------------------------------------
+
+async def _location() -> str:
+    if not LOCATION_APP.exists():
+        raise RuntimeError("Location isn't set up: run scripts/setup_location.sh once.")
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp, "out")
+        # Through `open`, so macOS sees the app (with its permission) and not Jarvis's Python.
+        await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), timeout=150)
+        found = json.loads(out.read_text() or "{}")
+    if "latitude" not in found:
+        if found.get("error") == "denied":
+            raise RuntimeError("macOS doesn't allow Jarvis's location. Turn on Jarvis Location in System "
+                               "Settings → Privacy & Security → Location Services.")
+        raise RuntimeError(f"no location ({found.get('error') or 'no answer'})")
+    return json.dumps(found, ensure_ascii=False)
+
+
+async def _status() -> str:
+    battery = (await _out("pmset", "-g", "batt")).splitlines()
+    volume = await _out("osascript", "-e", "get volume settings")
+    _, style, _ = await _run("defaults", "read", "-g", "AppleInterfaceStyle")  # fails in light mode
+    ports = await _out("networksetup", "-listallhardwareports")
+    m = re.search(r"Hardware Port: Wi-Fi\nDevice: (\w+)", ports)
+    wifi = "no Wi-Fi"
+    if m:
+        wifi = (await _out("networksetup", "-getairportpower", m[1])).split(":")[-1].strip()
+        _, summary, _ = await _run("ipconfig", "getsummary", m[1])
+        ssid = re.search(r"^\s+SSID : (.+)$", summary, re.M)
+        if wifi == "On":
+            wifi = ("connected to " + ssid[1] if ssid and ssid[1] != "<redacted>" else
+                    "connected (macOS hides the network's name)" if ssid else "on, not connected")
+    return "\n".join([
+        "Battery: " + (" ".join(battery[1].split()[1:]) if len(battery) > 1 else "none"),
+        "Power: " + (battery[0].removeprefix("Now drawing from ").strip("'") if battery else "?"),
+        "Sound: " + volume,
+        "Appearance: " + ("dark" if style.strip() == "Dark" else "light"),
+        "Wi-Fi: " + wifi,
+    ])
+
+
+def find_files(query: str) -> list[dict[str, Any]]:
+    """Files and folders in Jarvis's folder whose path has every word of the query, newest first."""
+    root = _folder()
+    words = query.lower().split()
+    found = []
+    for p in root.rglob("*"):
+        rel = p.relative_to(root)
+        if any(part.startswith(".") for part in rel.parts) or not all(w in rel.as_posix().lower() for w in words):
+            continue
+        st = p.stat()
+        found.append({"path": rel.as_posix() + ("/" if p.is_dir() else ""), "size": st.st_size,
+                      "modified": datetime.fromtimestamp(st.st_mtime).isoformat(timespec="minutes")})
+    return sorted(found, key=lambda f: f["modified"], reverse=True)
+
+
+@tool(
+    "mac_read",
+    "Read things on this Mac. what: 'status' (battery, volume, dark mode, Wi-Fi), 'location' (where "
+    "this Mac is: latitude, longitude, place name, time zone; for weather, directions, things nearby), 'clipboard' "
+    "(the text copied right now), 'shortcuts' (the user's Shortcuts, to run with mac_change), or "
+    "'files' (files in Jarvis's folder whose path has every word of query; empty query lists them all). "
+    "To look inside files, use run_python.",
+    {
+        "type": "object",
+        "properties": {
+            "what": {"type": "string", "enum": ["status", "location", "clipboard", "shortcuts", "files"]},
+            "query": {"type": "string", "description": "For files: words in the name or folder."},
+        },
+        "required": ["what"],
+    },
+)
+async def mac_read(args: dict[str, Any]) -> dict[str, Any]:
+    what = args.get("what")
+    try:
+        if what == "status":
+            return _text(await _status())
+        if what == "location":
+            return _text(await _location())
+        if what == "clipboard":
+            text = await _out("pbpaste")
+            return _text(text[:MAX_CHARS] if text else "The clipboard is empty or holds something that isn't text.")
+        if what == "shortcuts":
+            names = await _out("shortcuts", "list")
+            return _text(names or "The user has no Shortcuts.")
+        if what == "files":
+            found = find_files(str(args.get("query") or ""))
+            more = f" (newest {MAX_FILES} of {len(found)})" if len(found) > MAX_FILES else ""
+            return _text(f"In {_folder()}{more}: " + json.dumps(found[:MAX_FILES]) if found else
+                         f"Nothing matches in {_folder()}.")
+    except (RuntimeError, OSError) as e:
+        return _text(f"mac_read: {e}", True)
+    return _text(f"mac_read: what must be one of status, location, clipboard, shortcuts, files (got {what!r}).", True)
+
+
+# --- changing ------------------------------------------------------------------------
+
+def find_app(name: str) -> Path | None:
+    """'safari' -> /Applications/Safari.app. Only apps in the Applications folders."""
+    want = name.strip().lower().removesuffix(".app")
+    if not want or "/" in want:
+        return None
+    for d in APP_DIRS:
+        for app in d.glob("*.app") if d.is_dir() else []:
+            if app.stem.lower() == want:
+                return app
+    return None
+
+
+async def _shortcut(name: str, text: str) -> str:
+    names = (await _out("shortcuts", "list")).splitlines()
+    real = next((n for n in names if n.lower() == name.strip().lower()), None)
+    if real is None:
+        raise ValueError(f"There's no Shortcut called {name!r}. The user's Shortcuts: {', '.join(names) or 'none'}.")
+    with tempfile.TemporaryDirectory() as tmp:
+        cmd = ["shortcuts", "run", real, "--output-path", f"{tmp}/out"]
+        if text:
+            Path(tmp, "in.txt").write_text(text)
+            cmd += ["--input-path", f"{tmp}/in.txt"]
+        await _out(*cmd, timeout=SHORTCUT_TIMEOUT_S)
+        out = Path(tmp, "out")
+        result = out.read_bytes()[:MAX_CHARS].decode(errors="replace") if out.is_file() else ""
+    return f"Ran the Shortcut {real!r}." + (f" It returned: {result}" if result.strip() else "")
+
+
+def move(path: str, to: str) -> str:
+    src, dest = in_folder(path), in_folder(to)
+    if src == _folder():
+        raise ValueError("Jarvis's folder itself can't be moved.")
+    if not src.exists():
+        raise ValueError(f"{path!r} doesn't exist in Jarvis's folder.")
+    if dest.is_dir():
+        dest = dest / src.name  # "move it into Invoices"
+    if dest.exists():
+        raise ValueError(f"{_rel(dest)!r} already exists; nothing is ever overwritten. Pick another name.")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    src.rename(dest)
+    return f"Moved {_rel(src)} → {_rel(dest)}."
+
+
+async def _trash(path: str) -> str:
+    p = in_folder(path)
+    if p == _folder() or not p.exists():
+        raise ValueError(f"{path!r} isn't a file or folder in Jarvis's folder.")
+    await _out("osascript", "-e", "on run argv", "-e",
+               'tell application "Finder" to delete (POSIX file (item 1 of argv) as alias)', "-e", "end run", str(p))
+    return f"Moved {_rel(p)} to the Trash (it can be put back from there)."
+
+
+@tool(
+    "mac_change",
+    "Do something on this Mac. action: 'open_app' (name), 'open_url' (url, http or https), "
+    "'open_file' (path: a document in Jarvis's folder opens in its app, a folder shows in Finder), "
+    "'run_shortcut' (name, optional text as its input), 'copy' (text to the clipboard), "
+    "'volume' (level 0-100), 'mute' (on), 'dark_mode' (on), 'move' (path → to, also renames; "
+    "into a folder if 'to' is one), 'trash' (path, to the Trash). Paths are relative to Jarvis's folder; "
+    "nothing can be moved out of it or overwritten. For Do Not Disturb or Focus, run a Shortcut "
+    "that sets it.",
+    {
+        "type": "object",
+        "properties": {
+            "action": {"type": "string", "enum": ACTIONS},
+            "name": {"type": "string", "description": "App or Shortcut name."},
+            "url": {"type": "string"},
+            "path": {"type": "string"},
+            "to": {"type": "string", "description": "For move: the new path or folder."},
+            "text": {"type": "string"},
+            "level": {"type": "integer", "minimum": 0, "maximum": 100},
+            "on": {"type": "boolean"},
+        },
+        "required": ["action"],
+    },
+)
+async def mac_change(args: dict[str, Any]) -> dict[str, Any]:
+    action = args.get("action")
+    name, path, text = str(args.get("name") or ""), str(args.get("path") or ""), str(args.get("text") or "")
+    try:
+        if action == "open_app":
+            app = find_app(name)
+            if app is None:
+                return _text(f"No app called {name!r} in the Applications folders.", True)
+            await _out("open", "-a", str(app))
+            return _text(f"Opened {app.stem}.")
+        if action == "open_url":
+            url = str(args.get("url") or "").strip()
+            if not re.match(r"https?://[^\s/]", url):
+                return _text("Only http:// and https:// addresses can be opened.", True)
+            await _out("open", url)
+            return _text(f"Opened {url} in the browser.")
+        if action == "open_file":
+            p = in_folder(path)
+            if p.is_dir():
+                await _out("open", "-R", str(p))  # shows it in Finder; never launches a bundle
+                return _text(f"Showed {_rel(p)} in Finder.")
+            if not p.is_file():
+                return _text(f"{path!r} doesn't exist in Jarvis's folder.", True)
+            if p.suffix.lower().lstrip(".") not in DOCUMENTS:
+                await _out("open", "-R", str(p))
+                return _text(f"Jarvis only opens documents, not {p.suffix or 'files without a type'}; "
+                             f"showed {_rel(p)} in Finder instead.", True)
+            await _out("open", str(p))
+            return _text(f"Opened {_rel(p)}.")
+        if action == "run_shortcut":
+            return _text(await _shortcut(name, text))
+        if action == "copy":
+            await _out("pbcopy", stdin=text.encode())
+            return _text("Copied to the clipboard.")
+        if action == "volume":
+            level = max(0, min(100, int(args.get("level", 50))))
+            await _out("osascript", "-e", f"set volume output volume {level} without output muted")
+            return _text(f"Volume set to {level}.")
+        if action == "mute":
+            on = bool(args.get("on", True))
+            await _out("osascript", "-e", f"set volume {'with' if on else 'without'} output muted")
+            return _text("Muted." if on else "Unmuted.")
+        if action == "dark_mode":
+            on = bool(args.get("on", True))
+            await _out("osascript", "-e",
+                       f'tell application "System Events" to tell appearance preferences to set dark mode to {str(on).lower()}')
+            return _text(f"{'Dark' if on else 'Light'} mode on.")
+        if action == "move":
+            return _text(move(path, str(args.get("to") or "")))
+        if action == "trash":
+            return _text(await _trash(path))
+    except (RuntimeError, OSError, ValueError) as e:
+        return _text(f"mac_change: {e}", True)
+    return _text(f"mac_change: action must be one of {', '.join(ACTIONS)} (got {action!r}).", True)
+
+
+# --- sandboxed Python ----------------------------------------------------------------
+
+def _sb(path: Path) -> str:
+    return json.dumps(str(path.resolve()))  # an SBPL string
+
+
+@tool(
+    "run_python",
+    "Run Python 3 (standard library only: csv, json, statistics, math, re, datetime, ...) for data "
+    "work: analysing a CSV, totals, conversions, quick scripts. It runs in a sandbox: no internet, "
+    "can't start other programs, can only read files in Jarvis's folder (as ../name.csv), and can only "
+    "write in its Output subfolder, which is the working directory. Print the results; at most "
+    f"{PYTHON_TIMEOUT_S} seconds. Find files first with mac_read what=files.",
+    {"type": "object", "properties": {"code": {"type": "string"}}, "required": ["code"]},
+)
+async def run_python(args: dict[str, Any]) -> dict[str, Any]:
+    code = str(args.get("code") or "")
+    if not code.strip():
+        return _text("run_python needs code.", True)
+    folder = _folder()
+    output = folder / "Output"
+    output.mkdir(exist_ok=True)
+    python = Path(sys._base_executable).resolve()  # not the venv: it lives in your home
+    profile = PROFILE.format(python=_sb(python), output=_sb(output), home=_sb(Path.home()),
+                             folder=_sb(folder), base=_sb(Path(sys.base_prefix)))
+    env = {"PATH": "/usr/bin:/bin", "HOME": str(folder), "TMPDIR": str(output), "LANG": "en_US.UTF-8"}
+    try:
+        exit_code, out, err = await _run("/usr/bin/sandbox-exec", "-p", profile, str(python), "-I", "-",
+                                         stdin=code.encode(), timeout=PYTHON_TIMEOUT_S, cwd=output, env=env)
+    except (RuntimeError, OSError) as e:
+        return _text(f"run_python: {e}", True)
+    text = out[-MAX_CHARS:] + (f"\n[stderr]\n{err[-MAX_CHARS // 4:]}" if err.strip() else "")
+    return _text(text.strip() or "(no output; print the results)", is_error=exit_code != 0)
