@@ -134,7 +134,8 @@ PEOPLE_WORDS = {"send", "reply", "forward", "share", "invite", "respond", "broad
                 "publish", "post", "assign", "meeting"}
 # Your everyday connectors, where everything else runs without a card. The rest (Supabase,
 # Vercel, Shopify, ...) can delete live projects or spend money, so they always ask.
-QUIET_CONNECTORS = {"Gmail", "Google_Calendar", "Google_Drive", "TickTick", "Spotify", "Claude_Docs"}
+QUIET_CONNECTORS = {"Gmail", "Google_Calendar", "Google_Drive", "TickTick", "Spotify", "Claude_Docs",
+                    "Canva"}
 
 # Friendlier titles for confirmation cards.
 TITLES = {

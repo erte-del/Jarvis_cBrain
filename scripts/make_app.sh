@@ -11,20 +11,33 @@ trap 'rm -rf "$TMP"' EXIT
 
 chmod +x "$ROOT/scripts/start_jarvis.sh" "$ROOT/scripts/stop_jarvis.sh"
 
-# The app itself: a small AppleScript that stays open while Jarvis runs.
-sed "s|__ROOT__|$ROOT|g" "$ROOT/scripts/Jarvis.applescript" >"$TMP/Jarvis.applescript"
+# The app itself: a menu bar app (scripts/Jarvis.swift; needs the Xcode command line
+# tools: xcode-select --install). LSUIElement keeps it out of the Dock.
 rm -rf "$APP"
-osacompile -s -o "$APP" "$TMP/Jarvis.applescript"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+swiftc -O "$ROOT/scripts/Jarvis.swift" -o "$APP/Contents/MacOS/Jarvis"
+cat >"$APP/Contents/Info.plist" <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key><string>local.jarvis.app</string>
+	<key>CFBundleName</key><string>Jarvis</string>
+	<key>CFBundleExecutable</key><string>Jarvis</string>
+	<key>CFBundleIconFile</key><string>Jarvis</string>
+	<key>CFBundlePackageType</key><string>APPL</string>
+	<key>CFBundleVersion</key><string>1</string>
+	<key>LSUIElement</key><true/>
+</dict>
+</plist>
+EOF
+plutil -insert JarvisRoot -string "$ROOT" "$APP/Contents/Info.plist"
 
-# Its icon: the blue orb. Remove the default icon (Assets.car), which macOS would
-# otherwise prefer over applet.icns.
+# Its icon in Finder: the blue orb.
 "$ROOT/backend/.venv/bin/python" "$ROOT/scripts/make_icon.py" "$TMP/Jarvis.iconset"
-iconutil -c icns "$TMP/Jarvis.iconset" -o "$APP/Contents/Resources/applet.icns"
-rm -f "$APP/Contents/Resources/Assets.car"
-plutil -remove CFBundleIconName "$APP/Contents/Info.plist" 2>/dev/null || true
+iconutil -c icns "$TMP/Jarvis.iconset" -o "$APP/Contents/Resources/Jarvis.icns"
 
-# Changing the app after osacompile signed it breaks the signature, and macOS
-# won't open an app with a broken one. Sign it again (locally, "ad hoc").
+# Sign it locally ("ad hoc"): macOS won't open an unsigned app on Apple silicon.
 codesign --force --sign - "$APP"
 codesign --verify "$APP"
 touch "$APP"  # tells Finder to pick up the new icon

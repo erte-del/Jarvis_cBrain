@@ -83,6 +83,7 @@ class NeedsOkTest(unittest.TestCase):
             ("mcp__claude_ai_Google_Calendar__create_event", {"summary": "Study", "attendees": []}),
             ("mcp__claude_ai_Gmail__create_draft", {"to": ["a@b.com"]}),
             ("mcp__claude_ai_Gmail__update_message_labels", {}),
+            ("mcp__claude_ai_Canva__generate-design", {"query": "revision slides"}),
             ("mcp__jarvis__remember", {"text": "x"}),
             ("mcp__jarvis__write_note", {"path": "Jarvis/Plan.md"}),
             ("mcp__jarvis__mark_important", {"path": "School"}),
@@ -98,6 +99,7 @@ class NeedsOkTest(unittest.TestCase):
             ("mcp__claude_ai_Google_Calendar__create_event", {"attendees": ["a@b.com"]}),
             ("mcp__claude_ai_Google_Drive__share_file", {}),
             ("mcp__claude_ai_TickTick__assign_task", {}),
+            ("mcp__claude_ai_Canva__publish-brand-template", {}),
             ("mcp__jarvis__whatsapp_send", {}),
             ("mcp__jarvis__unmark_important", {"path": "School"}),
             ("mcp__claude_ai_Supabase__execute_sql", {}),  # not an everyday connector

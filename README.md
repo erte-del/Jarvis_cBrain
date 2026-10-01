@@ -201,9 +201,10 @@ settings. Never add an `ANTHROPIC_API_KEY`.
 
     scripts/make_app.sh
 
-Then double-click `Jarvis.app` (drag it to the Dock or Applications if you like). It
-starts Jarvis and opens it in your browser at http://127.0.0.1:8000. Quit it from the
-Dock to stop Jarvis. Logs go to `backend/storage/jarvis.log`. Run `make_app.sh` again
+Then double-click `Jarvis.app` (drag it to Applications if you like). It puts an orb in
+the menu bar, starts Jarvis and opens it in your browser at http://127.0.0.1:8000.
+Click the orb to open the page again, or choose Quit Jarvis to stop Jarvis. For the orb
+at every login, add Jarvis.app in System Settings → General → Login Items. Logs go to `backend/storage/jarvis.log`. Run `make_app.sh` again
 if you move the project folder.
 
 **Always on (optional).** `scripts/autostart.sh on` starts Jarvis when you log in and
