@@ -113,6 +113,7 @@ export type ClientEvent =
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
   | { type: 'user.new_chat' }
+  | { type: 'user.stop' }
   | { type: 'user.save_chat'; messages: ChatMessage[]; cards: CanvasCard[] }
   | { type: 'user.load_chat'; id: string }
   | { type: 'user.delete_chat'; id: string }
@@ -465,7 +466,14 @@ function baseReducer(state: ChatState, action: Action): ChatState {
       const ev = action.ev
       switch (ev.type) {
         case 'status':
-          return { ...state, busy: ev.state !== 'idle', activeTool: null }
+          if (ev.state !== 'idle') return { ...state, busy: true, activeTool: null }
+          // A stopped reply never gets assistant.done: end its cursor here.
+          return {
+            ...state,
+            busy: false,
+            activeTool: null,
+            messages: state.messages.map((m) => (m.role === 'assistant' && !m.done ? { ...m, done: true } : m)),
+          }
         case 'assistant.text_delta':
           return {
             ...state,
@@ -656,6 +664,10 @@ export function useJarvis() {
     return true
   }, [])
 
+  const stop = useCallback(() => {
+    socketRef.current?.send({ type: 'user.stop' })
+  }, [])
+
   const setModelOverride = useCallback((model: ModelAlias | null) => {
     overrideRef.current = model
     dispatch({ kind: 'override', model })
@@ -729,5 +741,5 @@ export function useJarvis() {
   const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
   const closeTerminal = useCallback((id: string) => dispatch({ kind: 'closeTerminal', id }), [])
 
-  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, saveMemory, deleteMemory, wipeMemory, updateJob, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab, closeTerminal }
+  return { ...state, sendText, stop, newChat, saveChat, loadChat, deleteChat, saveMemory, deleteMemory, wipeMemory, updateJob, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab, closeTerminal }
 }

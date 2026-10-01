@@ -345,6 +345,12 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                 turns.add(task)
                 task.add_done_callback(turns.discard)
 
+            elif kind == "user.stop":
+                # Same as closing the tab mid-reply: the brain restarts its session and
+                # keeps the conversation, run_turn still reports idle.
+                for task in turns:
+                    task.cancel()
+
             elif kind == "user.new_chat":
                 # Not tied to this tab: closing it mustn't cut the restart short.
                 task = asyncio.create_task(start_new_chat())

@@ -43,6 +43,7 @@ from .telegram import text_me
 from .uploads import read_upload
 from .video import generate_video
 from .whatsapp import whatsapp_send
+from .youtube import youtube
 
 SERVER_NAME = "jarvis"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
@@ -120,6 +121,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(maps, "read"),
     # Google Flights: only searches, can't book.
     JarvisTool(flights, "read"),
+    # YouTube: only searches.
+    JarvisTool(youtube, "read"),
 ]
 
 # In chat, an 'act' tool asks you first only when it reaches other people or touches

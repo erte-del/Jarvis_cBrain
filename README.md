@@ -76,6 +76,8 @@ only look things up.
 - **Find flights.** It searches Google Flights in Chrome on this Mac and lists the
   options with price, airline, stops and times, plus the link to book. It can't buy a
   ticket: you pick one from the link and pay yourself. Uses the same Chrome setting as homework.
+- **Find videos.** It searches YouTube and plays the best match right on the canvas, with
+  the other results listed underneath (click one to play it). No API key or setup.
 - **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac
   and controls playback (pause, next, volume, …). It can also list the songs in your own
   playlists, which needs a Spotify developer app (see `.env.example`).

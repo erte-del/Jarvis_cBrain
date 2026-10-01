@@ -54,6 +54,7 @@ export default function App() {
             busy={jarvis.busy}
             activeTool={jarvis.activeTool}
             onSend={jarvis.sendText}
+            onStop={jarvis.stop}
             onConfirm={jarvis.answerConfirm}
             voiceOn={voiceOn}
             onVoice={setVoiceOn}

@@ -1,8 +1,8 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Shown in the centre panel: the cards tab (text, table, email list, events, tasks, maps, images),
+// Shown in the centre panel: the cards tab (text, table, email list, events, tasks, maps, YouTube, images),
 // or one 3D model per tab. The tabs themselves are in Stage.tsx.
 
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import type { CanvasCard, ImageCardData, ImageSelection, Model3DData, VideoCardData } from '../ws'
 import ImageViewer from './ImageViewer'
 import Markdown from './Markdown'
@@ -115,6 +115,46 @@ function MapCard({ data }: { data: Record<string, unknown> }) {
   )
 }
 
+// YouTube's own player for the picked video, and the other results to click. Only ids are
+// taken from the card (checked again here), so nothing but YouTube's player is ever framed.
+function YoutubeCard({ items }: { items: Item[] }) {
+  const videos = items.filter((v) => /^[\w-]{11}$/.test(String(v.id)))
+  const [playing, setPlaying] = useState(0)
+  const [clicked, setClicked] = useState(false)
+  const current = videos[playing]
+  if (!current) return null
+  return (
+    <div className="youtube-card">
+      <iframe
+        className="youtube-frame"
+        src={`https://www.youtube-nocookie.com/embed/${current.id}${clicked ? '?autoplay=1' : ''}`}
+        title={String(current.title ?? 'YouTube video')}
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+        allowFullScreen
+      />
+      <ul className="youtube-list">
+        {videos.map((v, i) => (
+          <li key={String(v.id)}>
+            <button
+              className={i === playing ? 'youtube-item active' : 'youtube-item'}
+              onClick={() => {
+                setPlaying(i)
+                setClicked(true)
+              }}
+            >
+              <img src={`https://i.ytimg.com/vi/${v.id}/mqdefault.jpg`} alt="" loading="lazy" />
+              <span>
+                <strong>{v.title}</strong>
+                <small>{[v.channel, v.length, v.views, v.age].filter(Boolean).join(' · ')}</small>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 function CardBody({
   card,
   selectedImage,
@@ -147,6 +187,8 @@ function CardBody({
       return <Tasks items={(card.data.items as Item[]) ?? []} />
     case 'map':
       return <MapCard data={card.data} />
+    case 'youtube':
+      return <YoutubeCard items={(card.data.items as Item[]) ?? []} />
     default:
       return <pre className="card-raw">{JSON.stringify(card.data, null, 2)}</pre>
   }

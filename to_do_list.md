@@ -150,6 +150,8 @@ Most personal communication isn't email, and "when should I leave?" needs live t
 - [ ] **Password manager** — read-only, strict confirm every time, never shown in chat
 - [ ] **Finance / receipt tracking** — parse receipt emails, monthly spend summary
 - [ ] **Google Drive / iCloud documents** — search and read docs, attach to emails
+- [x] **YouTube search** — `youtube` tool (read): YouTube's search page via curl, no key, up to 20 videos with channel/length/views/age/link; shown on the canvas as a `youtube` card: YouTube's player plus the other results with thumbnails, click to play (tested live in chat: "find me rocket league videos")
+  - [ ] Not signed in, so no subscriptions, history or Watch Later; add via Chrome if wanted
 
 ## Milestone: Daily briefing
 

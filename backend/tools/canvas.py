@@ -13,7 +13,7 @@ from claude_agent_sdk import tool
 import events
 import hub
 
-CARD_KINDS = ["text", "table", "email_list", "events", "tasks", "map"]
+CARD_KINDS = ["text", "table", "email_list", "events", "tasks", "map", "youtube"]
 # A map card is Google Maps' own embed (no API key), built here so the page only ever
 # frames this one address.
 MAP_URL = "https://www.google.com/maps?"
@@ -24,7 +24,10 @@ ITEM_FIELDS = {
     "email_list": ["from", "subject", "date", "snippet", "unread", "id"],
     "events": ["title", "start", "end", "location", "attendees", "notes"],
     "tasks": ["title", "due", "list", "notes", "done"],
+    "youtube": ["id", "title", "channel", "length", "views", "age"],
 }
+# A youtube card only ever plays these: the page builds the player's address from the id.
+YOUTUBE_ID = re.compile(r"[\w-]{11}")
 MAX_ITEMS = 50
 
 _last_card = 0
@@ -55,6 +58,8 @@ INPUT_SCHEMA = {
             "events: items with title/start/end/location/attendees/notes. "
             "tasks: items with title/due/list/notes/done (done: true or false). "
             "map: a live map (Google Maps) of place, or the route from -> to; view satellite for the overhead view. "
+            "youtube: videos to watch right on the canvas, items with id (the 11 characters after watch?v=)"
+            "/title/channel/length/views/age; the first one plays, the others are a list to click. "
             "Write dates and times for people, in the user's local time, e.g. 'Wed 30 Sep, 09:00'.",
         },
         "title": {"type": "string", "description": "Short card title."},
@@ -72,7 +77,7 @@ INPUT_SCHEMA = {
         "items": {
             "type": "array",
             "items": {"type": "object"},
-            "description": "For kind=email_list, events or tasks: one object per email / event / task.",
+            "description": "For kind=email_list, events, tasks or youtube: one object per email / event / task / video.",
         },
         "place": {
             "type": "string",
@@ -118,7 +123,7 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
         fields = ITEM_FIELDS[kind]
         items = []
         for raw in (args.get("items") or [])[:MAX_ITEMS]:
-            if isinstance(raw, dict):
+            if isinstance(raw, dict) and (kind != "youtube" or YOUTUBE_ID.fullmatch(str(raw.get("id")))):
                 items.append({f: _text(raw[f]) for f in fields if raw.get(f) not in (None, "", [])})
         if not items:
             raise ValueError(f"kind={kind} needs 'items'")

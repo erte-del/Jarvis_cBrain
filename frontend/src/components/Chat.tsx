@@ -13,6 +13,7 @@ interface ChatProps {
   busy: boolean
   activeTool: ActiveTool | null
   onSend: (text: string, files: Attachment[]) => boolean
+  onStop: () => void
   onConfirm: (id: string, approved: boolean) => void
   voiceOn: boolean
   onVoice: (on: boolean) => void
@@ -64,6 +65,24 @@ function SourceChips({ sources }: { sources: Source[] }) {
   )
 }
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      // clipboard blocked: nothing useful to do
+    }
+  }
+  return (
+    <button type="button" className="copy-button" onClick={copy} aria-label="Copy message" title="Copy">
+      {copied ? '✓' : '⧉'}
+    </button>
+  )
+}
+
 function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: ChatProps['onConfirm'] }) {
   const hasSources = !!message.sources?.length
   const text = hasSources ? stripSourcesBlock(message.text) : message.text
@@ -81,6 +100,7 @@ function Message({ message, onConfirm }: { message: ChatMessage; onConfirm: Chat
           <span key={name} className="file-chip">📎 {name}</span>
         ))}
         {message.text && <div className="bubble">{message.text}</div>}
+        {message.text && <CopyButton text={message.text} />}
       </div>
     )
   }
@@ -133,7 +153,7 @@ function LongWait({ children }: { children: ReactNode }) {
   )
 }
 
-export default function Chat({ messages, connection, busy, activeTool, onSend, onConfirm, voiceOn, onVoice }: ChatProps) {
+export default function Chat({ messages, connection, busy, activeTool, onSend, onStop, onConfirm, voiceOn, onVoice }: ChatProps) {
   const [draft, setDraft] = useState('')
   const [files, setFiles] = useState<Attachment[]>([])
   const [uploading, setUploading] = useState(0)
@@ -309,9 +329,15 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
         >
           <MicIcon />
         </button>
-        <button type="submit" className="send-button" disabled={!canSend} aria-label="Send">
-          ↑
-        </button>
+        {busy ? (
+          <button type="button" className="send-button" onClick={onStop} aria-label="Stop" title="Stop">
+            ■
+          </button>
+        ) : (
+          <button type="submit" className="send-button" disabled={!canSend} aria-label="Send">
+            ↑
+          </button>
+        )}
       </form>
     </div>
   )
