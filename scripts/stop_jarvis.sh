@@ -5,6 +5,10 @@
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PIDFILE="$ROOT/backend/storage/jarvis.pid"
 
+# With autostart on (scripts/autostart.sh), launchd runs Jarvis and starts him again
+# right after this: quitting Jarvis.app is then a restart.
+launchctl kill TERM "gui/$(id -u)/com.jarvis.backend" 2>/dev/null && exit 0
+
 [ -f "$PIDFILE" ] || exit 0
 PID="$(cat "$PIDFILE")"
 rm -f "$PIDFILE"

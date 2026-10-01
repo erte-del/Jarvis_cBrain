@@ -5,12 +5,20 @@ import Panel from './components/Panel'
 import { LogPanel, TerminalPanel, UsagePanel } from './components/SidePanels'
 import Stage from './components/Stage'
 import TopBar from './components/TopBar'
+import { useSwipePanes } from './useSwipePanes'
 import { useJarvis } from './ws'
 
+const PANES = [['chat', 'CHAT'], ['stage', 'CANVAS'], ['status', 'STATUS']] as const
+const PANE_IDS = PANES.map(([id]) => id)
+
 // HUD layout: chat on the left, the core / canvas in the middle, status on the right.
+// A phone shows one of the three at a time (App.css): drag sideways (useSwipePanes), or
+// use the bar at the bottom.
 export default function App() {
   const jarvis = useJarvis()
+  const [pane, setPane] = useState<(typeof PANES)[number][0]>('chat')
   const [voiceOn, setVoiceOn] = useState(false) // UI only for now (Phase 5a)
+  const { ref: gridRef, go, touch } = useSwipePanes(PANE_IDS, pane, setPane)
 
   return (
     <div className="hud">
@@ -38,7 +46,7 @@ export default function App() {
         onJob={jarvis.updateJob}
       />
 
-      <main className="hud-grid">
+      <main className={`hud-grid pane-${pane}`} ref={gridRef} {...touch}>
         <Panel title="COMMS" tag="RT-LINK" className="comms-panel">
           <Chat
             messages={jarvis.messages}
@@ -59,6 +67,8 @@ export default function App() {
           onClose={jarvis.closeCard}
           selectedImage={jarvis.selectedImage}
           onSelectImage={jarvis.selectImage}
+          terminals={jarvis.terminals}
+          onCloseTerminal={jarvis.closeTerminal}
           busy={jarvis.busy}
           activeTool={jarvis.activeTool}
           connection={jarvis.connection}
@@ -78,6 +88,15 @@ export default function App() {
           <TerminalPanel busy={jarvis.busy} activeTool={jarvis.activeTool} connection={jarvis.connection} />
         </div>
       </main>
+
+      <nav className="hud-panes" aria-label="Sections">
+        {PANES.map(([id, label]) => (
+          <button key={id} type="button" className={pane === id ? 'active' : ''} aria-pressed={pane === id} onClick={() => go(id)}>
+            {label}
+            {id === 'stage' && jarvis.cards.length > 0 && <span className="count">{jarvis.cards.length}</span>}
+          </button>
+        ))}
+      </nav>
     </div>
   )
 }

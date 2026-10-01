@@ -2,8 +2,11 @@
 
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-export const API_BASE = 'http://127.0.0.1:8000'
-const WS_URL = 'ws://127.0.0.1:8000/ws'
+// The dev page (npm run dev, port 5173) talks to the backend on port 8000. The built page
+// is served by the backend itself, so it uses the address you opened: 127.0.0.1 on this
+// Mac, or your Tailscale address on your phone.
+export const API_BASE = location.port === '5173' ? 'http://127.0.0.1:8000' : location.origin
+const WS_URL = API_BASE.replace(/^http/, 'ws') + '/ws'
 
 export type ModelAlias = 'haiku' | 'sonnet' | 'opus'
 export type Provider = 'claude' | 'omniroute'
@@ -93,6 +96,7 @@ export type ServerEvent =
   | { type: 'confirm.request'; id: string; title: string; summary: string; details: [string, string][] }
   | { type: 'confirm.resolved'; id: string; status: ConfirmStatus }
   | { type: 'canvas.card'; id: string; kind: string; title: string; data: Record<string, unknown> }
+  | { type: 'terminal.open'; claude: boolean }
   | { type: 'conversation.new'; reason: 'button' | 'idle' | 'provider' }
   | { type: 'conversation.loaded'; messages: Pick<ChatMessage, 'role' | 'text' | 'files' | 'model'>[]; cards: CanvasCard[] }
   | { type: 'chats.list'; chats: SavedChat[]; max: number }
@@ -277,6 +281,12 @@ export interface ChatMessage {
   error?: string
 }
 
+export interface TerminalTab {
+  id: string // 'terminal-1', ...: also its stage tab
+  number: number // shown on the tab
+  claude: boolean // start Claude Code in it
+}
+
 interface ChatState {
   messages: ChatMessage[]
   connection: ConnectionState
@@ -284,7 +294,8 @@ interface ChatState {
   activeTool: ActiveTool | null
   modelOverride: ModelAlias | null
   cards: CanvasCard[]
-  stageTab: string // centre panel: 'core', 'cards', or the id of a 3D model
+  stageTab: string // centre panel: 'core', 'cards', or the id of a 3D model or terminal
+  terminals: TerminalTab[] // open terminal tabs, oldest first
   selectedImage: ImageSelection | null
   settings: BrainSettings | null
   usage: UsageSnapshot | null
@@ -306,8 +317,10 @@ type Action =
   | { kind: 'closeCard'; id: string }
   | { kind: 'select'; selection: ImageSelection | null }
   | { kind: 'tab'; tab: string }
+  | { kind: 'closeTerminal'; id: string }
 
 let localId = 0
+let terminalCount = 0
 const nextLocalId = () => `local-${++localId}`
 
 function updateMessage(
@@ -421,6 +434,12 @@ function baseReducer(state: ChatState, action: Action): ChatState {
 
     case 'tab':
       return { ...state, stageTab: action.tab }
+
+    case 'closeTerminal': {
+      const back = state.cards.some((c) => c.kind !== 'model3d') ? 'cards' : 'core'
+      const terminals = state.terminals.filter((t) => t.id !== action.id)
+      return { ...state, terminals, stageTab: state.stageTab === action.id ? back : state.stageTab }
+    }
 
     case 'select':
       return { ...state, selectedImage: action.selection }
@@ -544,10 +563,19 @@ function baseReducer(state: ChatState, action: Action): ChatState {
           // A 3D model opens (or comes back to) its own tab; other cards open the
           // cards tab, unless you're looking at a 3D model.
           // A video's progress updates don't pull you back to the canvas.
-          const onModel = state.cards.some((c) => c.kind === 'model3d' && c.id === state.stageTab)
+          // Nor do they pull you out of the terminal.
+          const onModel =
+            state.terminals.some((t) => t.id === state.stageTab) ||
+            state.cards.some((c) => c.kind === 'model3d' && c.id === state.stageTab)
           const progressOnly = ev.kind === 'video' && i !== -1 && (ev.data as unknown as VideoCardData).status === 'rendering'
           const stageTab = ev.kind === 'model3d' ? ev.id : onModel || progressOnly ? state.stageTab : 'cards'
           return { ...state, cards, selectedImage, stageTab }
+        }
+        case 'terminal.open':
+        {
+          // Always a fresh shell in a new tab.
+          const terminal = { id: `terminal-${++terminalCount}`, number: terminalCount, claude: ev.claude }
+          return { ...state, terminals: [...state.terminals, terminal], stageTab: terminal.id }
         }
         case 'settings.state': {
           const { type: _type, ...settings } = ev
@@ -587,6 +615,7 @@ const initialState: ChatState = {
   modelOverride: null,
   cards: [],
   stageTab: 'core',
+  terminals: [],
   selectedImage: null,
   settings: null,
   usage: null,
@@ -698,6 +727,7 @@ export function useJarvis() {
     )
   }, [selectedImage, connected])
   const setStageTab = useCallback((tab: string) => dispatch({ kind: 'tab', tab }), [])
+  const closeTerminal = useCallback((id: string) => dispatch({ kind: 'closeTerminal', id }), [])
 
-  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, saveMemory, deleteMemory, wipeMemory, updateJob, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab }
+  return { ...state, sendText, newChat, saveChat, loadChat, deleteChat, saveMemory, deleteMemory, wipeMemory, updateJob, setProvider, setGatewayModel, setModelOverride, answerConfirm, closeCard, selectImage, setStageTab, closeTerminal }
 }

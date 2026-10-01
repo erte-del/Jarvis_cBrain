@@ -134,6 +134,24 @@ starts Jarvis and opens it in your browser at http://127.0.0.1:8000. Quit it fro
 Dock to stop Jarvis. Logs go to `backend/storage/jarvis.log`. Run `make_app.sh` again
 if you move the project folder.
 
+**Always on (optional).** `scripts/autostart.sh on` starts Jarvis when you log in and
+starts him again if he crashes; `scripts/autostart.sh off` undoes it. While it's on,
+quitting `Jarvis.app` restarts Jarvis instead of stopping him (do that after changing
+`.env`), and the log is `~/Library/Logs/Jarvis.log`. If macOS asks whether Python may
+access your Desktop folder, allow it; a project kept outside Desktop and Documents is
+never asked.
+
+**On your phone (optional).** Jarvis has no password, so it never listens on your Wi-Fi.
+Instead, [Tailscale](https://tailscale.com) connects your own devices privately: install
+it on this Mac and your phone, run `tailscale serve --bg 8000` on the Mac, and put the
+address it prints in `.env` as `JARVIS_REMOTE_ORIGIN` (see `.env.example`). Then open
+that address on your phone, from anywhere, while this Mac is awake and Jarvis is running.
+
+**Back up.** `scripts/backup.sh` writes everything of yours that isn't on GitHub (`.env`,
+memory, saved chats, scheduled jobs, school notes, images, 3D models, videos, uploads) to
+`~/Jarvis-backup-<date>.tgz`. `scripts/backup.sh restore FILE` puts it back, in this
+project or in a fresh clone on another Mac. The file holds your keys: keep it to yourself.
+
 **For development**, in two terminals (the page reloads as you edit):
 
     cd backend && .venv/bin/python main.py      # API on http://127.0.0.1:8000
@@ -148,6 +166,60 @@ To test the brain without the UI (`/haiku`, `/sonnet`, `/opus` switch models):
 Tests:
 
     cd backend && .venv/bin/python -m unittest discover tests
+
+## Move to a new Mac
+
+**On the old Mac**
+
+1. `scripts/backup.sh`, then copy `~/Jarvis-backup-<date>.tgz` to the new Mac (AirDrop or
+   a USB stick; it holds your keys, so not by email).
+2. `scripts/autostart.sh off` if autostart is on. Two running Jarvises would both run
+   your scheduled jobs and text you twice.
+
+**On the new Mac**
+
+1. Install Claude Code and sign in with your Pro account, plus uv and Node 24 (see
+   [Setup](#setup)). Install the apps you use Jarvis with: Google Chrome, Spotify,
+   WhatsApp, Blender, Tailscale.
+2. Clone the project into your home folder, not Desktop or Documents (macOS restricts
+   those for background programs):
+
+       git clone https://github.com/erte-del/Jarvis_cBrain.git ~/Jarvis_cBrain
+
+3. Run the backend and frontend commands from [Setup](#setup). Skip copying
+   `.env.example`: the backup brings your `.env`.
+4. `scripts/backup.sh restore ~/Jarvis-backup-<date>.tgz`
+5. `scripts/setup_images.sh` and `scripts/setup_video.sh`, if you want images and videos
+   made on this Mac (about 34 GB of downloads, 22 GB kept).
+6. `scripts/make_app.sh`, then open `Jarvis.app` once. It builds the page and starts Jarvis.
+
+**Sign-ins and switches only you can do**
+
+- **Chrome:** sign in to Teams and Amazon, then View → Developer → Allow JavaScript from
+  Apple Events.
+- **Spotify and WhatsApp:** sign in to the apps. WhatsApp also needs Jarvis allowed under
+  System Settings → Privacy & Security → Accessibility.
+- **Contacts:** add your Google account under System Settings → Internet Accounts, with
+  Contacts on.
+- **Tailscale:** sign in to the same account and run `tailscale serve --bg 8000`. The new
+  Mac gets its own address: put that one in `.env` as `JARVIS_REMOTE_ORIGIN`.
+- **Permission prompts:** the first time Jarvis uses Chrome, Spotify, Contacts or
+  notifications, macOS asks. Allow each once.
+
+Nothing to do for the claude.ai connectors (Gmail, Calendar, TickTick, …) and Telegram:
+they come with your Claude login and your `.env`.
+
+**If the new Mac should stay on all the time** (a Mac mini)
+
+1. `scripts/autostart.sh on`
+2. System Settings → Energy: turn on "Prevent automatic sleeping when the display is
+   off" and "Start up automatically after a power failure".
+3. System Settings → Users & Groups: set "Automatically log in as" to your user, so
+   Jarvis comes back after a restart without anyone typing a password. This needs
+   FileVault off, which means anyone who takes the Mac can read its disk.
+
+**Check it worked.** Ask Jarvis what he remembers about you, open a saved chat and
+continue it, ask for your homework, play a song, and open the page on your phone.
 
 ## How it fits together
 

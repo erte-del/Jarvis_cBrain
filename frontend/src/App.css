@@ -408,7 +408,8 @@
   color: var(--accent);
   border-color: var(--accent);
 }
-.stage-tabs .count {
+.stage-tabs .count,
+.hud-panes .count {
   margin-left: 4px;
   padding: 0 6px;
   border-radius: 999px;
@@ -431,6 +432,19 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* The terminal tab (Terminal.tsx). Hidden, not removed, while another tab shows. */
+.term-tab {
+  flex: 1;
+  min-height: 0;
+  margin: 12px 14px 14px;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.term-tab[hidden] {
+  display: none;
 }
 
 .core {
@@ -1744,17 +1758,88 @@
   .log-panel { max-height: 280px; }
 }
 
-@media (max-width: 800px) {
-  .hud-top { grid-template-columns: 1fr auto; padding: 8px 16px; }
+.hud-panes { display: none; }
+
+/* Phones, upright or sideways: one section at a time (chat, canvas or status). Drag
+   sideways to move between them (useSwipePanes.ts), or use the bar at the bottom. */
+@media (max-width: 800px), (max-height: 500px) {
+  .hud { height: 100dvh; }
+
+  .hud-top { grid-template-columns: 1fr auto; gap: 8px; min-height: 52px; padding: 6px 10px; }
+  .hud-motto,
   .hud-readouts { display: none; }
-  .hud-grid { display: flex; flex-direction: column; padding: 16px; overflow-y: auto; }
-  .comms-panel { min-height: 70vh; }
-  .stage { min-height: 60vh; }
-  .hud-right { flex-direction: column; }
+  /* The status readout is hidden, so the logo turns red when Jarvis is unreachable. */
+  .hud-top.conn-closed .hud-logo {
+    border-color: var(--danger);
+    background: rgba(255, 107, 107, 0.15);
+    box-shadow: 0 0 12px var(--danger);
+  }
+  .hud-actions { gap: 2px; }
+  .icon-btn { width: 40px; height: 40px; }
+  .settings-menu,
+  .memory-menu {
+    position: fixed;
+    top: 56px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+  }
+
+  .hud-grid { position: relative; display: block; padding: 0; overflow: hidden; }
+  .hud-grid > * { display: none; position: absolute; inset: 8px; }
+  .pane-chat > .comms-panel,
+  .pane-stage > .stage,
+  .pane-status > .hud-right {
+    display: flex;
+    transform: translateX(var(--drag, 0px));
+  }
+  /* While you drag (useSwipePanes.ts): the neighbour, one width plus 16px to the side. */
+  [data-peek='chat'] > .comms-panel,
+  [data-peek='stage'] > .stage,
+  [data-peek='status'] > .hud-right {
+    display: flex;
+    transform: translateX(calc(var(--drag, 0px) + var(--peek-side) * (100% + 16px)));
+  }
+  .hud-grid[data-settling] > * { transition: transform 0.25s ease-out; }
+  .comms-panel .panel-head { display: none; }
+  .hud-right { flex-direction: column; gap: 12px; overflow-y: auto; }
+  .hud-right > * { flex: none; }
+  .log-panel { height: 280px; }
+
+  /* 16px: comfortable to read, and iOS zooms the page in on smaller text boxes. */
+  .bubble,
+  .composer textarea { font-size: 16px; }
+  .composer .send-button,
+  .composer .mic-button { width: 40px; height: 40px; }
+
+  .hud-panes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
+    background: rgba(2, 10, 14, 0.85);
+  }
+  .hud-panes button {
+    padding: 13px 0;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-top: 2px solid transparent;
+  }
+  .hud-panes .count { margin-left: 8px; letter-spacing: 0; }
+  .hud-panes button.active {
+    color: var(--accent);
+    border-top-color: var(--accent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reactor *, .waveform span { animation: none !important; }
+  .hud-grid > * { transition: none !important; }
 }
 
 .task-list li.done .event-title {

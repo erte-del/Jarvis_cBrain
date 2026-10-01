@@ -1,11 +1,14 @@
 // The centre of the HUD: the reactor core (Jarvis's state, and the voice orb), or the
 // canvas: cards and 3D models, each in a tab.
 
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { toolLabel } from '../labels'
-import type { ActiveTool, CanvasCard, ConnectionState, ImageSelection } from '../ws'
+import type { ActiveTool, CanvasCard, ConnectionState, ImageSelection, TerminalTab } from '../ws'
 import Canvas from './Canvas'
 import VoiceOrb, { type VoiceState } from './VoiceOrb'
+
+// xterm is only loaded when Jarvis first opens a terminal.
+const Terminal = lazy(() => import('./Terminal'))
 
 const VOICE_STATES: VoiceState[] = ['idle', 'listening', 'thinking', 'speaking']
 
@@ -34,6 +37,8 @@ interface StageProps {
   onClose: (id: string) => void
   selectedImage: ImageSelection | null
   onSelectImage: (selection: ImageSelection | null) => void
+  terminals: TerminalTab[]
+  onCloseTerminal: (id: string) => void
   busy: boolean
   activeTool: ActiveTool | null
   connection: ConnectionState
@@ -51,7 +56,7 @@ function Waveform({ state }: { state: VoiceState }) {
   )
 }
 
-function Core({ busy, activeTool, connection, voiceOn, onVoice }: Omit<StageProps, 'cards' | 'tab' | 'onTab' | 'onClose' | 'selectedImage' | 'onSelectImage'>) {
+function Core({ busy, activeTool, connection, voiceOn, onVoice }: Pick<StageProps, 'busy' | 'activeTool' | 'connection' | 'voiceOn' | 'onVoice'>) {
   const [preview, setPreview] = useState<VoiceState>('listening')
   const state: VoiceState = voiceOn ? preview : busy ? 'thinking' : 'idle'
   const sample = voiceOn ? SAMPLE[preview] : {}
@@ -113,13 +118,13 @@ function Core({ busy, activeTool, connection, voiceOn, onVoice }: Omit<StageProp
 }
 
 export default function Stage(props: StageProps) {
-  const { cards, tab, onTab, onClose, selectedImage, onSelectImage } = props
+  const { cards, tab, onTab, onClose, selectedImage, onSelectImage, terminals, onCloseTerminal } = props
   const models = cards.filter((c) => c.kind === 'model3d')
   const others = cards.filter((c) => c.kind !== 'model3d')
 
   return (
     <section className="stage" aria-label="Core and canvas">
-      {cards.length > 0 && (
+      {(cards.length > 0 || terminals.length > 0) && (
         <nav className="stage-tabs" role="tablist">
           <button role="tab" aria-selected={tab === 'core'} className={tab === 'core' ? 'active' : ''} onClick={() => onTab('core')}>
             CORE
@@ -139,13 +144,32 @@ export default function Stage(props: StageProps) {
               </button>
             </span>
           ))}
+          {terminals.map((t) => (
+            <span key={t.id} className={`stage-tab-3d${tab === t.id ? ' active' : ''}`}>
+              <button role="tab" aria-selected={tab === t.id} onClick={() => onTab(t.id)}>
+                TERMINAL {t.number}
+              </button>
+              <button className="tab-close" onClick={() => onCloseTerminal(t.id)} aria-label={`Close terminal ${t.number}`}>
+                ×
+              </button>
+            </span>
+          ))}
         </nav>
       )}
       <div className="stage-body">
         {tab === 'core' ? (
           <Core {...props} />
         ) : (
-          <Canvas cards={cards} onClose={onClose} selectedImage={selectedImage} onSelectImage={onSelectImage} tab={tab} />
+          !terminals.some((t) => t.id === tab) && (
+            <Canvas cards={cards} onClose={onClose} selectedImage={selectedImage} onSelectImage={onSelectImage} tab={tab} />
+          )
+        )}
+        {terminals.length > 0 && (
+          <Suspense fallback={null}>
+            {terminals.map((t) => (
+              <Terminal key={t.id} visible={tab === t.id} claude={t.claude} />
+            ))}
+          </Suspense>
         )}
       </div>
     </section>

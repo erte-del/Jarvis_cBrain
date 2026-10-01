@@ -58,6 +58,12 @@ JOBS_MAX_USAGE = float(os.getenv("JARVIS_JOBS_MAX_USAGE", "0.8"))
 if HOST not in ("127.0.0.1", "localhost", "::1"):
     raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
 
+# Jarvis on your phone: the address "tailscale serve" gives this Mac. Tailscale passes
+# your own devices through to 127.0.0.1, so Jarvis still only listens on this machine.
+REMOTE_ORIGIN = os.getenv("JARVIS_REMOTE_ORIGIN", "").strip().rstrip("/")
+if REMOTE_ORIGIN and not re.fullmatch(r"https://[a-z0-9-]+(\.[a-z0-9-]+)*\.ts\.net", REMOTE_ORIGIN):
+    raise SystemExit(f"JARVIS_REMOTE_ORIGIN={REMOTE_ORIGIN!r}: use your Tailscale address, e.g. https://mac.tail1234.ts.net")
+
 # Which brain Jarvis runs on. You can switch in the UI (gear icon); this is the choice
 # at startup.
 #   claude    - Claude on your Pro login (the default)
@@ -92,6 +98,8 @@ _API_AUTH_VARS = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_U
 # gateway only: on the Pro login they would ask Claude for a model it doesn't have.
 _MODEL_VARS = ("ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_OPUS_MODEL")
 _GATEWAY_MODELS = {var: os.environ.pop(var) for var in _MODEL_VARS if os.environ.get(var)}
+# All of the above: the terminal tab leaves them out, so `claude` there uses your own login.
+CLAUDE_ENV_VARS = (*_API_AUTH_VARS, *_MODEL_VARS)
 
 log = logging.getLogger("jarvis.config")
 _gateway_env_set = False  # True while the variables below were put there by Jarvis

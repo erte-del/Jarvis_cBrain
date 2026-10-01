@@ -22,7 +22,7 @@ from storage import job_store, memory_store
 
 from . import connectors, web
 from .amazon import amazon_change, amazon_read
-from .canvas import show_on_canvas
+from .canvas import open_terminal, show_on_canvas
 from .contacts import find_contact
 from .expert import ask_expert
 from .homework import check_homework
@@ -54,6 +54,8 @@ class JarvisTool:
 TOOLS: list[JarvisTool] = [
     JarvisTool(ask_expert, "read"),
     JarvisTool(show_on_canvas, "read"),
+    # Only opens the tab: what runs in the shell is up to you, typing in it.
+    JarvisTool(open_terminal, "read"),
     # Image edits only change Jarvis's own copies and can always be undone.
     JarvisTool(image_search, "read"),
     JarvisTool(image_edit, "read"),

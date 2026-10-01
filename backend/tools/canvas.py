@@ -139,3 +139,24 @@ async def show_on_canvas(args: dict[str, Any]) -> dict[str, Any]:
     await hub.emit(events.canvas_card(card_id, args["kind"], str(args["title"]), data))
     note = "" if hub.has_clients() else " (no browser is open, so nobody can see it right now)"
     return {"content": [{"type": "text", "text": f"Shown on the canvas as {card_id}.{note}"}]}
+
+
+@tool(
+    "open_terminal",
+    "Open a fresh terminal (a real shell on this Mac) in a new canvas tab, for the user to "
+    "type in, e.g. to work with Claude Code. Every call opens another one. You can't see or "
+    "type in it. It only works on the Mac itself, not on the phone.",
+    {
+        "type": "object",
+        "properties": {
+            "claude": {
+                "type": "boolean",
+                "description": "Start Claude Code in the new terminal (the `claude` command).",
+            },
+        },
+    },
+)
+async def open_terminal(args: dict[str, Any]) -> dict[str, Any]:
+    await hub.emit(events.terminal_open(args.get("claude") is True))
+    note = "" if hub.has_clients() else " No browser is open, so nobody can see it right now."
+    return {"content": [{"type": "text", "text": f"A new terminal tab is open on the canvas.{note}"}]}

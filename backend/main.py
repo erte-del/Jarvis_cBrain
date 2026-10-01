@@ -20,6 +20,7 @@ import events
 import gateway
 import hub
 import scheduler
+import terminal
 from brain.agent import Jarvis
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
@@ -33,12 +34,10 @@ log = logging.getLogger("jarvis")
 
 # Only Jarvis's own frontend may connect. Without this check, any website open
 # in your browser could talk to ws://127.0.0.1:8000 and use Jarvis.
-ALLOWED_ORIGINS = {
-    "http://127.0.0.1:5173",  # dev server (npm run dev)
-    "http://localhost:5173",
-    "http://127.0.0.1:8000",  # the built page served by this backend (Jarvis.app)
-    "http://localhost:8000",
-}
+# Dev server (npm run dev, :5173) and the built page served by this backend (Jarvis.app, :8000).
+ALLOWED_ORIGINS = set(terminal.LOCAL_ORIGINS)
+if config.REMOTE_ORIGIN:  # the same page, opened on your phone through Tailscale
+    ALLOWED_ORIGINS.add(config.REMOTE_ORIGIN)
 
 # The built frontend (npm run build). When it exists, this backend serves the page too,
 # so Jarvis runs as one server: http://127.0.0.1:8000
@@ -72,6 +71,16 @@ app = FastAPI(title="Jarvis", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware, allow_origins=sorted(ALLOWED_ORIGINS), allow_methods=["GET", "POST"], allow_headers=["Content-Type"]
 )
+
+
+@app.middleware("http")
+async def fresh_page(request: Request, call_next):
+    """The page itself must never come from the browser's cache, or a rebuilt Jarvis keeps
+    running the old code. Its files under /static/ have new names on every build."""
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.endswith(".html"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 @app.get("/health")
@@ -410,6 +419,11 @@ async def websocket_endpoint(ws: WebSocket) -> None:
         hub.disconnect(send)
         for task in turns:
             task.cancel()
+
+
+@app.websocket("/ws/terminal")
+async def terminal_endpoint(ws: WebSocket) -> None:
+    await terminal.serve(ws)
 
 
 # Must come last: everything not matched above is a file of the built page.

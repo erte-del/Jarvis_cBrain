@@ -48,6 +48,8 @@ Server -> client:
                          kind "image": data = {image_id, current, credit, versions[]}
                          kind "model3d": data = {model_id, current, versions[], exports[]}
                          kind "video": data = {video_id, status, progress, url, ...} (video_store)
+    terminal.open        {claude}  open a new terminal tab (a fresh shell at /ws/terminal);
+                         claude = start Claude Code in it
 
 Later phases add user.audio_*, 3D objects, ...
 """
@@ -148,6 +150,10 @@ def jobs_list(jobs: list[dict], runs: list[dict]) -> Event:
 
 def notification(title: str, text: str, when: float) -> Event:
     return {"type": "notification", "title": title, "text": text, "time": when}
+
+
+def terminal_open(claude: bool) -> Event:
+    return {"type": "terminal.open", "claude": claude}
 
 
 def canvas_card(card_id: str, kind: str, title: str, data: dict[str, Any]) -> Event:

@@ -431,7 +431,7 @@ export default function TopBar({
     connection === 'open' ? (busy ? 'PROCESSING' : 'ONLINE') : connection === 'connecting' ? 'CONNECTING' : 'OFFLINE'
 
   return (
-    <header className="hud-top">
+    <header className={`hud-top conn-${connection}`}>
       <div className="hud-brand">
         <span className="hud-logo" aria-hidden="true" />
         <div>
