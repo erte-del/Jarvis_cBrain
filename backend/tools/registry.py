@@ -29,6 +29,7 @@ from .homework import check_homework
 from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
 from .memory import forget, recall, remember
+from .notes import read_note, search_notes, write_note
 from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
@@ -92,6 +93,10 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(remember, "act"),
     JarvisTool(forget, "act"),
     JarvisTool(recall, "read"),
+    # Your Obsidian notes: reading is free (never #private ones), every write asks first.
+    JarvisTool(search_notes, "read"),
+    JarvisTool(read_note, "read"),
+    JarvisTool(write_note, "act"),
     # A standing job keeps running (and using your Pro limit) until you stop it.
     JarvisTool(schedule_job, "act"),
     JarvisTool(change_job, "act"),
@@ -106,6 +111,7 @@ TITLES = {
     "amazon_change": "Change your Amazon cart or list",
     "remember": "Remember this",
     "forget": "Forget this",
+    "write_note": "Save to your notes",
     "schedule_job": "Schedule a job",
     "change_job": "Change a scheduled job",
 }

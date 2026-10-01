@@ -24,6 +24,9 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
 HOMEWORK_URL = os.getenv("JARVIS_HOMEWORK_URL", "").strip() or "https://teams.cloud.microsoft/"
 # The Amazon site Jarvis browses in Chrome (tools/amazon.py).
 AMAZON_URL = (os.getenv("JARVIS_AMAZON_URL", "").strip() or "https://www.amazon.ae").rstrip("/")
+# Your Obsidian vault: the folder Jarvis searches, reads and (with your approval) writes notes in.
+_VAULT = os.getenv("JARVIS_VAULT", "").strip()
+VAULT_DIR = Path(_VAULT).expanduser() if _VAULT else None
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
 # Local video generation (Wan 2.1 through mlx-video). scripts/setup_video.sh puts its
 # own Python and the model weights here.

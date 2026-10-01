@@ -55,6 +55,10 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
   as text (up to about 100K characters each). Files are kept in
   `backend/storage/uploads/`.
+- **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Jarvis
+  searches and reads your notes when you ask about something you wrote down. It saves
+  research, plans and lists as notes (in a `Jarvis` folder unless you say otherwise)
+  after you approve. Tag a note `#private` and Jarvis never reads or changes it.
 - **Consult an expert.** For hard problems (multi-step reasoning, tricky maths, complex
   code, long writing) Sonnet hands the task to Opus with `ask_expert`. Long answers go
   straight onto the canvas.
