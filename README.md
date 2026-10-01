@@ -9,24 +9,82 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
 
 ## What Jarvis can do
 
+Anything that only looks something up runs straight away. Anything that sends, buys,
+deletes, saves or changes something shows a confirmation card first, and nothing happens
+until you approve it.
+
+### Talking and thinking
+
 - **Chat.** Replies stream in word by word. Each reply shows a badge with the model
-  that answered and why it was picked.
+  that answered and why it was picked (see [The brains](#the-brains)).
+- **Consult an expert.** For hard problems (multi-step reasoning, tricky maths, complex
+  code, long writing) Sonnet hands the task to Opus with `ask_expert`. Long answers go
+  straight onto the canvas.
 - **Search the web.** Uses Claude's built-in WebSearch and WebFetch tools. Answers end
   with the pages they came from, shown as clickable source chips. WebFetch can't reach
   this machine or your local network.
 - **Show things on the canvas.** Tables, comparisons, drafts, plans, email lists and
   calendar events go on cards next to the chat, so the chat reply stays short.
-- **Use your claude.ai connectors** (Gmail, Calendar, Drive, Canva, Spotify, …), the
-  same ones enabled on your Claude account. Tools that only read (search, list, get)
-  run freely. Anything that sends, deletes, creates or changes something shows a
-  confirmation card first, and nothing happens until you approve it.
+
+### Knowing you
+
+- **Remember you.** Jarvis keeps short notes about you between chats: preferences, who
+  people are ("Sarah" = Sarah K. from work), projects, decisions. You approve each one,
+  and see or delete them all with the memory button in the top bar. Passwords, card
+  numbers and keys are always refused.
+- **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Jarvis
+  searches and reads your notes when you ask about something you wrote down, before
+  searching the web. It saves research, plans and lists as new notes (in a `Jarvis`
+  folder unless you say otherwise) or adds to an existing one, after you approve. Tag a
+  note `#private` and Jarvis never reads or changes it, and it can't reach anything
+  outside the vault.
+- **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
+  the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
+  as text (up to about 100K characters each). Files are kept in
+  `backend/storage/uploads/`.
+
+### Your accounts
+
+- **Use your claude.ai connectors** (Gmail, Google Calendar, Drive, TickTick, Canva,
+  Spotify, …), the same ones enabled on your Claude account. Reminders go to TickTick,
+  so they reach your phone.
+- **Check your homework.** It reads your school's Microsoft Teams activity feed
+  from Chrome on this Mac, where you're already signed in, and can tell you when a
+  teacher sets something new. It also reads a class's posts, for assessment dates and
+  topic lists. School accounts don't let apps read assignments, so
+  this needs one Chrome setting (see `.env.example`).
+- **Browse Amazon.** It searches Amazon and reads your orders, cart and wish lists in
+  Chrome on this Mac, where you're already signed in (no password is stored). It can
+  add to or remove from your cart, or add to your wish list, after you approve. It
+  can't place an order: you check out in Chrome yourself. Uses the same Chrome setting
+  as homework; set `JARVIS_AMAZON_URL` if you don't shop on amazon.ae.
+- **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac
+  and controls playback (pause, next, volume, …). It can also list the songs in your own
+  playlists, which needs a Spotify developer app (see `.env.example`).
+
+### Messages
+
+- **Text people on WhatsApp.** It finds the number in your Contacts (synced from your
+  Google account) and sends the message from the WhatsApp app on this Mac, after you
+  approve. It can't read your messages. Needs Accessibility permission for Jarvis.
+- **Text you.** Jarvis's own Telegram bot sends things to your phone ("send that list to
+  my phone"). It can only ever reach your own chat. Setup is in `.env.example`.
+
+### Doing things on its own
+
+- **Scheduled jobs.** A job at a time of day ("a briefing every weekday at 7") or a
+  watcher that checks every so often and only speaks up when there's news ("tell me when
+  Sarah replies", "tell me when new homework is set"). Results reach you in the chat, as
+  a notification on this Mac, and on your phone through Telegram. Watchers pause during
+  quiet hours, and jobs stop when most of your 5-hour Pro limit is used, so they never
+  lock you out.
+
+### Making things
+
 - **Find and edit images.** It finds photos on Pexels and edits them locally: crop,
   resize, rotate, flip, brightness, contrast, saturation, sharpen, blur, grayscale,
   sepia, text and borders. Every edit is a new version, so you can always go back.
   Click an image to select it, and "this one" in your next message means that image.
-- **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
-  4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
-  the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), after you approve.
 - **Make images with AI.** Describe a picture and Jarvis paints it with FLUX.2 Klein
   running on this Mac (about 20 seconds, free, nothing leaves the machine). It can also
   change an image with AI ("make it snowy", "turn it into a watercolour", "put a hat on
@@ -38,30 +96,20 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
   background, with progress on the canvas. It asks you first. Set it up once with
   `scripts/setup_video.sh` (downloads about 17.6 GB, keeps 14 GB). Text only for
   now: animating an existing image needs a bigger model.
-- **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac
-  and controls playback (pause, next, volume, …). It can also list the songs in your own
-  playlists, which needs a Spotify developer app (see `.env.example`).
-- **Check your homework.** It reads your school's Microsoft Teams activity feed
-  from Chrome on this Mac, where you're already signed in, and can tell you when a
-  teacher sets something new. It also reads a class's posts, for assessment dates and
-  topic lists. School accounts don't let apps read assignments, so
-  this needs one Chrome setting (see `.env.example`).
-- **Browse Amazon.** It searches Amazon and reads your orders, cart and wish lists in
-  Chrome on this Mac, where you're already signed in (no password is stored). It can
-  add to or remove from your cart, or add to your wish list, after you approve. It
-  can't place an order: you check out in Chrome yourself. Uses the same Chrome setting
-  as homework; set `JARVIS_AMAZON_URL` if you don't shop on amazon.ae.
-- **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
-  the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
-  as text (up to about 100K characters each). Files are kept in
-  `backend/storage/uploads/`.
-- **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Jarvis
-  searches and reads your notes when you ask about something you wrote down. It saves
-  research, plans and lists as notes (in a `Jarvis` folder unless you say otherwise)
-  after you approve. Tag a note `#private` and Jarvis never reads or changes it.
-- **Consult an expert.** For hard problems (multi-step reasoning, tricky maths, complex
-  code, long writing) Sonnet hands the task to Opus with `ask_expert`. Long answers go
-  straight onto the canvas.
+- **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
+  4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
+  the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), after you approve.
+
+### On this Mac
+
+- **Open a terminal.** Ask for a terminal ("open a terminal", or "open Claude Code")
+  and a real shell on this Mac opens as a tab on the canvas, optionally with Claude Code
+  already started. It's for you to type in: Jarvis opens it but can't see or type in it.
+  Each request opens another tab; closing the tab or reloading the page ends its shell.
+  It only works on the Mac itself, never on your phone.
+- **Use it from your phone.** Through Tailscale, Jarvis opens on your phone from
+  anywhere, one section at a time: swipe sideways between chat, canvas and panels (see
+  [Run](#run)).
 - **Track your usage.** The right-hand panel shows how much of your Pro plan's 5-hour and
   weekly limits is used, when they reset, and how many tokens Jarvis itself used.
 
