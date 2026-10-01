@@ -30,7 +30,7 @@ cat >"$APP/Contents/Info.plist" <<'EOF'
 EOF
 codesign --force --sign - "$APP"
 
-echo "== Asking macOS for Location (click Allow)…"
+echo "== Asking macOS for Location (click Allow if it asks)…"
 OUT="$(mktemp)"
 open -W -n --stdout "$OUT" "$APP"
 cat "$OUT"; echo

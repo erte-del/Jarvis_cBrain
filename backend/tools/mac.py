@@ -106,20 +106,21 @@ def _rel(p: Path) -> str:
 
 # --- reading -------------------------------------------------------------------------
 
-async def _location() -> str:
+async def locator(*args: str) -> dict[str, Any]:
+    """Ask JarvisLocation.app (where am I / search / directions). RuntimeError if it can't answer."""
     if not LOCATION_APP.exists():
         raise RuntimeError("Location isn't set up: run scripts/setup_location.sh once.")
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp, "out")
         # Through `open`, so macOS sees the app (with its permission) and not Jarvis's Python.
-        await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), timeout=150)
-        found = json.loads(out.read_text() or "{}")
-    if "latitude" not in found:
-        if found.get("error") == "denied":
-            raise RuntimeError("macOS doesn't allow Jarvis's location. Turn on Jarvis Location in System "
-                               "Settings → Privacy & Security → Location Services.")
-        raise RuntimeError(f"no location ({found.get('error') or 'no answer'})")
-    return json.dumps(found, ensure_ascii=False)
+        await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), "--args", *args, timeout=150)
+        found = json.loads(out.read_text() or '{"error": "no answer"}')
+    if found.get("error") == "denied":
+        raise RuntimeError("macOS doesn't allow Jarvis's location. Turn on Jarvis Location in System "
+                           "Settings → Privacy & Security → Location Services.")
+    if "error" in found:
+        raise RuntimeError(found["error"])
+    return found
 
 
 async def _status() -> str:
@@ -182,7 +183,7 @@ async def mac_read(args: dict[str, Any]) -> dict[str, Any]:
         if what == "status":
             return _text(await _status())
         if what == "location":
-            return _text(await _location())
+            return _text(json.dumps(await locator(), ensure_ascii=False))
         if what == "clipboard":
             text = await _out("pbpaste")
             return _text(text[:MAX_CHARS] if text else "The clipboard is empty or holds something that isn't text.")

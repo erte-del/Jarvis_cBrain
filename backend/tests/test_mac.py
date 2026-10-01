@@ -4,13 +4,14 @@ Nothing is opened, copied or changed outside a temp folder.
 """
 
 import asyncio
+import json
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
 import config
-from tools import mac, registry
+from tools import mac, maps, registry
 
 
 def call(handler, **args):
@@ -80,6 +81,7 @@ class MacTest(unittest.TestCase):
     def test_location(self):
         def fake_open(answer):
             async def run(*cmd, **kw):
+                self.calls.append(cmd)
                 Path(cmd[cmd.index("--stdout") + 1]).write_text(answer)
                 return ""
             return run
@@ -94,6 +96,24 @@ class MacTest(unittest.TestCase):
                 self.assertEqual("is_error" in result, expect != "Dubai")
         with mock.patch.object(mac, "LOCATION_APP", self.root / "missing.app"):
             self.assertIn("setup_location.sh", call(mac.mac_read, what="location")["content"][0]["text"])
+
+    def test_maps(self):
+        self.assertEqual(registry.classify("mcp__jarvis__maps"), "read")
+
+        async def fake_run(*cmd, **kw):
+            self.calls.append(cmd)
+            Path(cmd[cmd.index("--stdout") + 1]).write_text('{"minutes": 20, "to": {"name": "Dubai Mall"}}')
+            return 0, "", ""
+
+        with mock.patch.object(mac, "LOCATION_APP", self.root), mock.patch.object(mac, "_run", fake_run):
+            self.root.mkdir()
+            result = call(maps.maps, action="directions", to="Dubai Mall", arrive_by="2026-10-02T09:00:00+04:00")
+            self.assertIn('"minutes": 20', result["content"][0]["text"])
+            args = self.calls[-1][self.calls[-1].index("--args") + 1:]
+            self.assertEqual(args[0], "directions")
+            self.assertEqual(json.loads(args[1]), {"to": "Dubai Mall", "arrive_by": "2026-10-02T09:00:00+04:00"})
+            self.assertTrue(call(maps.maps, action="directions")["is_error"])  # no destination
+            self.assertTrue(call(maps.maps, action="search", query="x", mode="flying")["is_error"])
 
     @unittest.skipUnless(Path("/usr/bin/sandbox-exec").exists(), "macOS only")
     def test_python_sandbox(self):

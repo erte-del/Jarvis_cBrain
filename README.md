@@ -48,6 +48,9 @@ only look things up.
   folder only (`JARVIS_FILES_DIR`, default `~/Jarvis Files`), never overwrites, and
   runs Python for data work in a macOS sandbox: no internet, no other programs, reads
   only that folder, writes only to its `Output` subfolder.
+- **Maps and travel.** Places near you ("coffee near me"), travel times by car (with
+  traffic), on foot or by transit, when to leave for a meeting, and travel time blocked in
+  your calendar. Uses Apple Maps on this Mac, no API key (needs `scripts/setup_location.sh`).
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
   as text (up to about 100K characters each). Files are kept in

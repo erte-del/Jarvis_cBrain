@@ -31,6 +31,7 @@ from .homework import check_homework
 from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
 from .mac import mac_change, mac_read, run_python
+from .maps import maps
 from .memory import forget, recall, remember
 from .notes import read_note, search_notes, write_note
 from .important import mark_important, unmark_important
@@ -114,6 +115,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(mac_change, "act"),
     # Sandboxed: no network or other programs, writes only in Jarvis's Output folder.
     JarvisTool(run_python, "act"),
+    # Apple Maps: looking places and travel times up changes nothing.
+    JarvisTool(maps, "read"),
 ]
 
 # In chat, an 'act' tool asks you first only when it reaches other people or touches

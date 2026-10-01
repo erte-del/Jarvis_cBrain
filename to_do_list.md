@@ -129,16 +129,17 @@ The channel proactive actions need to reach you when the chat isn't open. `backe
 Most personal communication isn't email, and "when should I leave?" needs live traffic.
 
 - [ ] **Messaging**
-  - [ ] iMessage send (AppleScript via Messages.app) — always confirm
-  - [ ] iMessage read recent (needs Full Disk Access to `chat.db`, read-only)
+  - [-] iMessage send / read: skipped, you don't use iMessage
   - [ ] Slack (connector) read/send
   - [x] WhatsApp send → `whatsapp_send`: after the confirm card, opens the chat via `whatsapp://send` in WhatsApp desktop and presses Enter (only if WhatsApp is in front). Needs Accessibility permission. No reading (unofficial libraries risk a ban)
   - [ ] WhatsApp: first live send, by the user
-- [ ] **Maps / travel**
-  - [ ] Directions + travel time with live traffic (Google Maps / Apple Maps API)
-  - [ ] "When should I leave for my 3pm?" = calendar location + travel time
-  - [ ] Nearby places search ("coffee near me")
-  - [ ] Add travel time as a buffer to calendar events
+- [x] **Maps / travel** → `maps` tool (read): Apple MapKit through `JarvisLocation.app` (`scripts/locate.swift`), no API key. Chosen over the TomTom connector (needs a TomTom account)
+  - [x] Directions + travel time with live traffic: driving / walking / transit, distance, depart/arrive times, Apple Maps link (tested live in Dubai)
+  - [x] "When should I leave for my 3pm?" = calendar location + `arrive_by` (prompt recipe; maps part tested live, the whole flow not tried in chat yet)
+  - [x] Nearby places search ("coffee near me"), nearest first, also "near <place>" (tested live)
+  - [x] Add travel time as a buffer to calendar events: a "Travel to X" event, when asked; offered once for events with a location (prompt)
+  - [ ] Try in chat: "when should I leave for my next meeting", "block travel time for it", "pharmacy near me"
+  - [ ] Turn-by-turn steps aren't returned (just time, distance, link); add if wanted
 
 ---
 
@@ -153,5 +154,5 @@ Most personal communication isn't email, and "when should I leave?" needs live t
 
 Done when all of these work together:
 - [ ] Every weekday at a set time, Jarvis sends a notification (possible now: ask for the briefing job)
-- [ ] Opening it shows: today's events, due/overdue reminders, important emails, weather, leave-by times
+- [ ] Opening it shows: today's events, due/overdue reminders, important emails, weather, leave-by times (leave-by now possible: the prompt asks for it in briefings)
 - [ ] Follow-ups by voice: "move my 2pm", "remind me to reply to that tonight", "remember I prefer…"
