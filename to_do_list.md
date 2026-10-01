@@ -139,6 +139,7 @@ Most personal communication isn't email, and "when should I leave?" needs live t
   - [x] Nearby places search ("coffee near me"), nearest first, also "near <place>" (tested live)
   - [x] Add travel time as a buffer to calendar events: a "Travel to X" event, when asked; offered once for events with a location (prompt)
   - [ ] Try in chat: "when should I leave for my next meeting", "block travel time for it", "pharmacy near me"
+  - [x] Map on the canvas: `show_on_canvas` kind `map` = Google Maps' embed (no key), a place or a route, map or satellite view, pan/zoom, "Open in Google Maps" link (tested live: satellite route to Dubai Mall)
   - [ ] Turn-by-turn steps aren't returned (just time, distance, link); add if wanted
 
 ---

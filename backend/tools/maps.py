@@ -31,7 +31,7 @@ MODES = ["driving", "walking", "transit"]
             "action": {"type": "string", "enum": ["search", "directions"]},
             "query": {"type": "string", "description": "search: what to look for."},
             "near": {"type": "string", "description": "search: around this place instead of the user."},
-            "radius_m": {"type": "number", "description": "search: how far to look, default 5000."},
+            "radius_m": {"type": "number", "description": "search: the area to search around, default 5000 (results can be further)."},
             "to": {"type": "string", "description": "directions: a place name or address."},
             "from": {"type": "string", "description": "directions: start, if not where the user is."},
             "mode": {"type": "string", "enum": MODES},

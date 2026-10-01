@@ -125,8 +125,7 @@ final class Locator: NSObject, CLLocationManagerDelegate {
             self.find(query, around: c, radius: radius) { items in
                 // Nearest first; Apple's own order is relevance, which can put the far side of town first.
                 let sorted = items.sorted { self.distance($0, from: c) < self.distance($1, from: c) }
-                let inside = sorted.filter { self.distance($0, from: c) <= radius }
-                self.finish(["near": self.describe(center), "places": (inside.isEmpty ? sorted : inside).prefix(10).map(self.describe)])
+                self.finish(["near": self.describe(center), "places": sorted.prefix(10).map(self.describe)])
             }
         }
     }

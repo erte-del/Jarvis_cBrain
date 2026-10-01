@@ -3,12 +3,17 @@
 #   scripts/setup_location.sh
 # Builds backend/storage/JarvisLocation.app from scripts/locate.swift (needs the Xcode
 # command line tools: xcode-select --install), then runs it once so macOS asks you to
-# allow Location. Rebuilding makes macOS ask again.
+# allow Location. It's only rebuilt when locate.swift changed: a rebuilt app is a new app
+# to macOS, so you have to allow it again (System Settings → Location Services).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP="$ROOT/backend/storage/JarvisLocation.app"
+BIN="$APP/Contents/MacOS/JarvisLocation"
 
+if [ -x "$BIN" ] && [ "$BIN" -nt "$ROOT/scripts/locate.swift" ] && [ "$BIN" -nt "$0" ]; then
+  echo "== JarvisLocation.app is up to date (not rebuilt, so macOS keeps its permission)."
+else
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 swiftc -O "$ROOT/scripts/locate.swift" -o "$APP/Contents/MacOS/JarvisLocation"
@@ -29,6 +34,7 @@ cat >"$APP/Contents/Info.plist" <<'EOF'
 </plist>
 EOF
 codesign --force --sign - "$APP"
+fi
 
 echo "== Asking macOS for Location (click Allow if it asks)…"
 OUT="$(mktemp)"

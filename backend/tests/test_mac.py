@@ -115,6 +115,15 @@ class MacTest(unittest.TestCase):
             self.assertTrue(call(maps.maps, action="directions")["is_error"])  # no destination
             self.assertTrue(call(maps.maps, action="search", query="x", mode="flying")["is_error"])
 
+    def test_map_card_only_frames_google_maps(self):
+        from tools import canvas
+        route = canvas.map_data({"from": "25.08,55.25", "to": "25.19,55.27", "mode": "walking", "view": "satellite"})
+        self.assertEqual(route["url"], "https://www.google.com/maps?saddr=25.08%2C55.25&daddr=25.19%2C55.27&dirflg=w&t=k&output=embed")
+        place = canvas.map_data({"place": "coffee near 25.08,55.25&output=x", "zoom": 14})
+        self.assertTrue(place["url"].startswith(canvas.MAP_URL + "q=coffee+near+25.08%2C55.25%26output%3Dx&z=14"))
+        with self.assertRaises(ValueError):
+            canvas.map_data({})
+
     @unittest.skipUnless(Path("/usr/bin/sandbox-exec").exists(), "macOS only")
     def test_python_sandbox(self):
         self.root.mkdir()

@@ -6,13 +6,18 @@ pushed to every open tab through the hub. Later steps add images and 3D objects.
 
 import re
 from typing import Any
+from urllib.parse import urlencode
 
 from claude_agent_sdk import tool
 
 import events
 import hub
 
-CARD_KINDS = ["text", "table", "email_list", "events", "tasks"]
+CARD_KINDS = ["text", "table", "email_list", "events", "tasks", "map"]
+# A map card is Google Maps' own embed (no API key), built here so the page only ever
+# frames this one address.
+MAP_URL = "https://www.google.com/maps?"
+MAP_MODES = {"driving": "d", "walking": "w", "transit": "r"}
 
 # Fields each list item may have, per kind (all strings; anything else is dropped).
 ITEM_FIELDS = {
@@ -49,6 +54,7 @@ INPUT_SCHEMA = {
             "email_list: items with from/subject/date/snippet/unread. "
             "events: items with title/start/end/location/attendees/notes. "
             "tasks: items with title/due/list/notes/done (done: true or false). "
+            "map: a live map (Google Maps) of place, or the route from -> to; view satellite for the overhead view. "
             "Write dates and times for people, in the user's local time, e.g. 'Wed 30 Sep, 09:00'.",
         },
         "title": {"type": "string", "description": "Short card title."},
@@ -68,6 +74,17 @@ INPUT_SCHEMA = {
             "items": {"type": "object"},
             "description": "For kind=email_list, events or tasks: one object per email / event / task.",
         },
+        "place": {
+            "type": "string",
+            "description": "For kind=map: what to show: 'lat,lon', an address or place name, or a search "
+            "like 'coffee near 25.08,55.25'. Use the name and address the maps tool returned "
+            "(bare coordinates get labelled with the nearest shop).",
+        },
+        "from": {"type": "string", "description": "For kind=map routes: start, 'lat,lon' (e.g. the user's location)."},
+        "to": {"type": "string", "description": "For kind=map routes: destination, by name and address."},
+        "mode": {"type": "string", "enum": list(MAP_MODES), "description": "For kind=map routes, default driving."},
+        "view": {"type": "string", "enum": ["map", "satellite"], "description": "For kind=map, default map."},
+        "zoom": {"type": "integer", "minimum": 1, "maximum": 21, "description": "For kind=map: 15 is streets."},
         "replace_card_id": {
             "type": "string",
             "description": "To update a card you showed earlier, pass its id (e.g. card_2).",
@@ -95,6 +112,8 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
         if not columns:
             raise ValueError("kind=table needs 'columns'")
         return {"columns": columns, "rows": rows}
+    if kind == "map":
+        return map_data(args)
     if kind in ITEM_FIELDS:
         fields = ITEM_FIELDS[kind]
         items = []
@@ -105,6 +124,24 @@ def _card_data(args: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(f"kind={kind} needs 'items'")
         return {"items": items}
     raise ValueError(f"Unknown card kind {kind!r}; use one of {CARD_KINDS}")
+
+
+def map_data(args: dict[str, Any]) -> dict[str, str]:
+    """{url: the embed for the card, link: the same map in Google Maps}."""
+    place, start, end = (str(args.get(k) or "").strip() for k in ("place", "from", "to"))
+    if end:
+        query = {"saddr": start, "daddr": end, "dirflg": MAP_MODES.get(str(args.get("mode")), "d")}
+    elif place:
+        query = {"q": place}
+    else:
+        raise ValueError("kind=map needs 'place', or 'to' (and 'from') for a route")
+    query = {k: v for k, v in query.items() if v}
+    if args.get("view") == "satellite":
+        query["t"] = "k"
+    if isinstance(args.get("zoom"), int) and 1 <= args["zoom"] <= 21:
+        query["z"] = str(args["zoom"])
+    link = MAP_URL + urlencode(query)
+    return {"url": link + "&output=embed", "link": link}
 
 
 async def show_text(title: str, content: str) -> str:

@@ -51,6 +51,8 @@ only look things up.
 - **Maps and travel.** Places near you ("coffee near me"), travel times by car (with
   traffic), on foot or by transit, when to leave for a meeting, and travel time blocked in
   your calendar. Uses Apple Maps on this Mac, no API key (needs `scripts/setup_location.sh`).
+  Routes and places show as a live map on the canvas (Google Maps' embed), with a
+  satellite view.
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
   the canvas, where they can be edited. Text, code, CSV, JSON and PDF files are read
   as text (up to about 100K characters each). Files are kept in
@@ -71,6 +73,9 @@ only look things up.
   add to or remove from your cart, or add to your wish list. It
   can't place an order: you check out in Chrome yourself. Uses the same Chrome setting
   as homework; set `JARVIS_AMAZON_URL` if you don't shop on amazon.ae.
+- **Find flights.** It searches Google Flights in Chrome on this Mac and lists the
+  options with price, airline, stops and times, plus the link to book. It can't buy a
+  ticket: you pick one from the link and pay yourself. Uses the same Chrome setting as homework.
 - **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac
   and controls playback (pause, next, volume, …). It can also list the songs in your own
   playlists, which needs a Spotify developer app (see `.env.example`).

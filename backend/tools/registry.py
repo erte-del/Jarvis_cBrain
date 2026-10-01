@@ -27,6 +27,7 @@ from .amazon import amazon_change, amazon_read
 from .canvas import open_terminal, show_on_canvas
 from .contacts import find_contact
 from .expert import ask_expert
+from .flights import flights
 from .homework import check_homework
 from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
@@ -117,6 +118,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(run_python, "act"),
     # Apple Maps: looking places and travel times up changes nothing.
     JarvisTool(maps, "read"),
+    # Google Flights: only searches, can't book.
+    JarvisTool(flights, "read"),
 ]
 
 # In chat, an 'act' tool asks you first only when it reaches other people or touches

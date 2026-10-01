@@ -1,5 +1,5 @@
 // Canvas: images, 3D objects and cards. (Phase 4a)
-// Shown in the centre panel: the cards tab (text, table, email list, events, tasks, images),
+// Shown in the centre panel: the cards tab (text, table, email list, events, tasks, maps, images),
 // or one 3D model per tab. The tabs themselves are in Stage.tsx.
 
 import { lazy, Suspense } from 'react'
@@ -101,6 +101,20 @@ function Tasks({ items }: { items: Item[] }) {
   )
 }
 
+// Google Maps' embed, built by the backend (tools/canvas.py); nothing else is ever framed.
+function MapCard({ data }: { data: Record<string, unknown> }) {
+  const url = String(data.url ?? '')
+  if (!url.startsWith('https://www.google.com/maps?')) return null
+  return (
+    <div className="map-card">
+      <iframe className="map-frame" src={url} title="Map" loading="lazy" allowFullScreen referrerPolicy="no-referrer-when-downgrade" />
+      <a className="map-link" href={String(data.link ?? url)} target="_blank" rel="noreferrer">
+        Open in Google Maps ↗
+      </a>
+    </div>
+  )
+}
+
 function CardBody({
   card,
   selectedImage,
@@ -131,6 +145,8 @@ function CardBody({
       return <Events items={(card.data.items as Item[]) ?? []} />
     case 'tasks':
       return <Tasks items={(card.data.items as Item[]) ?? []} />
+    case 'map':
+      return <MapCard data={card.data} />
     default:
       return <pre className="card-raw">{JSON.stringify(card.data, null, 2)}</pre>
   }
