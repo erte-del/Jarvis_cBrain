@@ -4,7 +4,9 @@
 If a tool is labelled 'read' it runs without asking you, so these tests matter.
 """
 
+import tempfile
 import unittest
+from pathlib import Path
 
 from tools import registry
 
@@ -62,6 +64,55 @@ class ClassifyTest(unittest.TestCase):
         )
         self.assertEqual(title, "Gmail: Create draft")
         self.assertEqual(details, [["to", "a@b.com, c@d.com"], ["subject", "Hi"]])
+
+
+class NeedsOkTest(unittest.TestCase):
+    """In chat, only what reaches other people or important files shows a card."""
+
+    def setUp(self):
+        self._file = registry.important.IMPORTANT_FILE
+        registry.important.IMPORTANT_FILE = Path(tempfile.mkdtemp()) / "important.json"
+
+    def tearDown(self):
+        registry.important.IMPORTANT_FILE = self._file
+
+    def test_simple_actions_just_run(self):
+        for name, args in [
+            ("mcp__claude_ai_TickTick__create_task", {"task": {"title": "Timer"}}),
+            ("mcp__claude_ai_TickTick__delete_task", {"task_id": "t1"}),
+            ("mcp__claude_ai_Google_Calendar__create_event", {"summary": "Study", "attendees": []}),
+            ("mcp__claude_ai_Gmail__create_draft", {"to": ["a@b.com"]}),
+            ("mcp__claude_ai_Gmail__update_message_labels", {}),
+            ("mcp__jarvis__remember", {"text": "x"}),
+            ("mcp__jarvis__write_note", {"path": "Jarvis/Plan.md"}),
+            ("mcp__jarvis__mark_important", {"path": "School"}),
+        ]:
+            self.assertFalse(registry.needs_ok(name, args), name)
+
+    def test_people_and_unknown_tools_ask(self):
+        for name, args in [
+            ("mcp__claude_ai_Gmail__send_message", {}),
+            ("mcp__claude_ai_Gmail__reply", {}),
+            ("mcp__claude_ai_Gmail__forward", {}),
+            ("mcp__claude_ai_Google_Calendar__respond_to_event", {}),
+            ("mcp__claude_ai_Google_Calendar__create_event", {"attendees": ["a@b.com"]}),
+            ("mcp__claude_ai_Google_Drive__share_file", {}),
+            ("mcp__claude_ai_TickTick__assign_task", {}),
+            ("mcp__jarvis__whatsapp_send", {}),
+            ("mcp__jarvis__unmark_important", {"path": "School"}),
+            ("mcp__claude_ai_Supabase__execute_sql", {}),  # not an everyday connector
+            ("Bash", {}),
+        ]:
+            self.assertTrue(registry.needs_ok(name, args), name)
+
+    def test_important_files_ask(self):
+        registry.important._save(["school/chemistry", "coursework"])
+        self.assertTrue(registry.needs_ok("mcp__jarvis__write_note", {"path": "School/Chemistry/Test.md"}))
+        self.assertTrue(registry.needs_ok("mcp__jarvis__write_note", {"path": "school/chemistry.md"}))
+        self.assertFalse(registry.needs_ok("mcp__jarvis__write_note", {"path": "School/Chemistry 2.md"}))
+        # a Drive file by id, named in an earlier result
+        registry.connectors.remember_items("mcp__claude_ai_Google_Drive__search_files", {"files": [{"id": "f9", "name": "Coursework"}]})
+        self.assertTrue(registry.needs_ok("mcp__claude_ai_Google_Drive__trash_file", {"fileId": "f9"}))
 
 
 if __name__ == "__main__":

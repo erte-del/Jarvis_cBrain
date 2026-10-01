@@ -9,9 +9,12 @@ See `JARVIS_BUILD_PROMPT.md` for the original plan.
 
 ## What Jarvis can do
 
-Anything that only looks something up runs straight away. Anything that sends, buys,
-deletes, saves or changes something shows a confirmation card first, and nothing happens
-until you approve it.
+Looking things up and everyday actions (reminders, events just for you, notes, memory,
+music, your Amazon cart) run straight away. Anything that reaches other people (emails,
+WhatsApp, calendar invites, sharing, publishing), touches a file or folder you told
+Jarvis is important, or uses a developer connector (Supabase, Vercel, ...) shows a
+confirmation card first, and nothing happens until you approve it. Scheduled jobs can
+only look things up.
 
 ### Talking and thinking
 
@@ -29,13 +32,13 @@ until you approve it.
 ### Knowing you
 
 - **Remember you.** Jarvis keeps short notes about you between chats: preferences, who
-  people are ("Sarah" = Sarah K. from work), projects, decisions. You approve each one,
-  and see or delete them all with the memory button in the top bar. Passwords, card
+  people are ("Sarah" = Sarah K. from work), projects, decisions. You see or delete them all with the memory button in the top bar. Passwords, card
   numbers and keys are always refused.
 - **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Jarvis
   searches and reads your notes when you ask about something you wrote down, before
   searching the web. It saves research, plans and lists as new notes (in a `Jarvis`
-  folder unless you say otherwise) or adds to an existing one, after you approve. Tag a
+  folder unless you say otherwise) or adds to an existing one. Tell Jarvis a note or folder is important and it asks
+  before changing it. Tag a
   note `#private` and Jarvis never reads or changes it, and it can't reach anything
   outside the vault.
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
@@ -55,7 +58,7 @@ until you approve it.
   this needs one Chrome setting (see `.env.example`).
 - **Browse Amazon.** It searches Amazon and reads your orders, cart and wish lists in
   Chrome on this Mac, where you're already signed in (no password is stored). It can
-  add to or remove from your cart, or add to your wish list, after you approve. It
+  add to or remove from your cart, or add to your wish list. It
   can't place an order: you check out in Chrome yourself. Uses the same Chrome setting
   as homework; set `JARVIS_AMAZON_URL` if you don't shop on amazon.ae.
 - **Play music.** It plays songs, albums and playlists in the Spotify app on this Mac

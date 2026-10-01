@@ -1,11 +1,13 @@
 """Confirmation gate for 'act' tools. (Phase 4a)
 
 Claude Code runs 'read' tools freely (they're in `allowed_tools`). For any other
-tool it asks us first, through `can_use_tool`. The gate then shows a card in the
+tool it asks us first, through `can_use_tool`. Simple ones (a reminder, a calendar
+event just for you, a note) run straight away; for anything that reaches other people
+or touches a file you marked important (registry.needs_ok) the gate shows a card in the
 browser ("Send this email to X? [Approve] [Deny]") and waits for your answer.
 
 Safe defaults:
-  - a tool that isn't labelled 'read' always asks, even one we've never seen
+  - a tool we've never seen always asks
   - no browser open  -> denied
   - no answer within CONFIRM_TIMEOUT_S -> denied
 """
@@ -40,8 +42,8 @@ class ConfirmationGate:
         self, tool_name: str, tool_input: dict[str, Any], context: ToolPermissionContext
     ) -> PermissionResultAllow | PermissionResultDeny:
         """Called by Claude Code before any tool that isn't auto-allowed."""
-        if registry.classify(tool_name) == "read":
-            log.info("Allowed (read): %s", registry.friendly_name(tool_name))
+        if not registry.needs_ok(tool_name, tool_input):
+            log.info("Allowed: %s", registry.friendly_name(tool_name))
             return PermissionResultAllow()
 
         if not hub.has_clients():

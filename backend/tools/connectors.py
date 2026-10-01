@@ -45,9 +45,10 @@ def is_read(name: str) -> bool:
     return verb in READ_VERBS or action in READ_EXTRA.get(connector, set())
 
 
-# Calendar events and tasks Jarvis has seen in tool results, so a confirmation card
-# that only gets an id (eventId, task_id) can still say which one it is.
-REMEMBER_FROM = {"Google_Calendar", "TickTick"}
+# Calendar events, tasks and Drive files Jarvis has seen in tool results, so a confirmation
+# card that only gets an id (eventId, task_id) can still say which one it is, and a change
+# to an important Drive file by its id is still recognised.
+REMEMBER_FROM = {"Google_Calendar", "TickTick", "Google_Drive"}
 _seen: dict[str, str] = {}
 
 
@@ -56,7 +57,7 @@ def remember_items(name: str, result: Any) -> None:
     if parsed is None or parsed[0] not in REMEMBER_FROM:
         return
     for obj in _dicts(result):
-        label = obj.get("summary") or obj.get("title")
+        label = obj.get("summary") or obj.get("title") or obj.get("name")
         if obj.get("id") and label:
             when = obj.get("start") or obj.get("dueDate") or obj.get("due_date")
             if isinstance(when, dict):

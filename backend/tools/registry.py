@@ -1,8 +1,9 @@
 """All Jarvis tools + read/act labels, SDK MCP server.
 
 Every tool is labelled:
-  read — runs freely (searching, looking things up, thinking)
-  act  — sends, deletes, buys or changes something; needs your confirmation (Phase 4a)
+  read — runs freely, even in scheduled jobs (searching, looking things up, thinking)
+  act  — sends, deletes, buys or changes something. Scheduled jobs can't use it; in chat
+         it asks you first only if needs_ok says so (other people, important files)
 
 To add a tool: write it with the SDK's @tool decorator, then add it to TOOLS.
 claude.ai connector tools are labelled by their action verb (see connectors.py).
@@ -10,6 +11,7 @@ Any other tool Claude Code offers goes through the confirmation gate.
 """
 
 import json
+import re
 from contextlib import contextmanager
 
 from dataclasses import dataclass
@@ -20,7 +22,7 @@ from claude_agent_sdk import HookMatcher, SdkMcpTool, create_sdk_mcp_server
 
 from storage import job_store, memory_store
 
-from . import connectors, web
+from . import connectors, important, web
 from .amazon import amazon_change, amazon_read
 from .canvas import open_terminal, show_on_canvas
 from .contacts import find_contact
@@ -30,6 +32,7 @@ from .imagegen import generate_image, image_ai_edit
 from .jobs import change_job, list_jobs, schedule_job
 from .memory import forget, recall, remember
 from .notes import read_note, search_notes, write_note
+from .important import mark_important, unmark_important
 from .images import image_edit, image_search, image_undo, image_versions
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
@@ -101,7 +104,21 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(schedule_job, "act"),
     JarvisTool(change_job, "act"),
     JarvisTool(list_jobs, "read"),
+    # Adding only adds protection; lifting it asks (see ASK_TOOLS).
+    JarvisTool(mark_important, "act"),
+    JarvisTool(unmark_important, "act"),
 ]
+
+# In chat, an 'act' tool asks you first only when it reaches other people or touches
+# something you marked important. These are the ones of Jarvis's own that always ask.
+ASK_TOOLS = {"whatsapp_send", "unmark_important"}
+# Connector actions whose name has one of these words reach other people (send_message,
+# reply, share, respond_to_event, publish_app, ...). Drafts don't: they wait for you.
+PEOPLE_WORDS = {"send", "reply", "forward", "share", "invite", "respond", "broadcast",
+                "publish", "post", "assign", "meeting"}
+# Your everyday connectors, where everything else runs without a card. The rest (Supabase,
+# Vercel, Shopify, ...) can delete live projects or spend money, so they always ask.
+QUIET_CONNECTORS = {"Gmail", "Google_Calendar", "Google_Drive", "TickTick", "Spotify", "Claude_Docs"}
 
 # Friendlier titles for confirmation cards.
 TITLES = {
@@ -114,6 +131,7 @@ TITLES = {
     "write_note": "Save to your notes",
     "schedule_job": "Schedule a job",
     "change_job": "Change a scheduled job",
+    "unmark_important": "Stop protecting this",
 }
 
 # Claude Code's own built-in tools that Jarvis may use (all 'read').
@@ -136,6 +154,36 @@ def classify(name: str) -> str:
     if connectors.is_read(name):
         return "read"
     return "act"
+
+
+def needs_ok(name: str, tool_input: dict[str, Any]) -> bool:
+    """Whether to show you an approval card in chat before this tool runs."""
+    if classify(name) == "read":
+        return False
+    if _touches_important(tool_input):
+        return True
+    own = name.removeprefix(PREFIX)
+    if name.startswith(PREFIX) and any(t.tool.name == own for t in TOOLS):
+        return own in ASK_TOOLS
+    parsed = connectors.parse(name)
+    if parsed is None or parsed[0] not in QUIET_CONNECTORS:
+        return True  # unknown tools still ask
+    words = set(re.split(r"[_\-]", parsed[1].lower()))
+    # ponytail: a calendar event is "with people" only if this call lists attendees, so
+    # deleting an event others were invited to doesn't ask. Upgrade: look the event up first.
+    return bool(words & PEOPLE_WORDS) or bool(tool_input.get("attendees"))
+
+
+def _touches_important(value: Any) -> bool:
+    """Any text in the call (or the file an id stands for) names an important entry."""
+    if isinstance(value, dict):
+        return any(_touches_important(v) for v in value.values())
+    if isinstance(value, list):
+        return any(_touches_important(v) for v in value)
+    if isinstance(value, str):
+        label = connectors.item_label(value)
+        return important.matches(value) or bool(label and important.matches(label))
+    return False
 
 
 def hooks() -> dict[str, list[HookMatcher]]:

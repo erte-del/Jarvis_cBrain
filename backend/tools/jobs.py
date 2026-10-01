@@ -1,7 +1,7 @@
 """schedule_job / list_jobs / change_job: things Jarvis does on its own, later.
 
 The jobs live in storage/job_store.py and are run by scheduler.py. Scheduling, pausing
-and deleting are 'act' (a standing job keeps using your Pro limit, so you approve it);
+and deleting are 'act' (a scheduled job can't schedule more jobs);
 listing only reads.
 """
 
@@ -37,7 +37,7 @@ async def _changed() -> None:
     "replies'); set once=true if it should stop after it has told them. The job runs in a "
     "fresh conversation that can't see this one and can only look things up, so write the "
     "prompt as complete instructions to yourself: what to check, with which tools, what to "
-    "report, names and details included. The user approves the job on a card. Each watcher "
+    "report, names and details included. Each watcher "
     f"run uses their Pro limit: keep every_minutes as large as the task allows (minimum {job_store.MIN_EVERY_MIN}).",
     {
         "type": "object",
@@ -84,8 +84,8 @@ async def list_jobs(args: dict[str, Any]) -> dict[str, Any]:
 
 @tool(
     "change_job",
-    "Pause, resume or delete a scheduled job by its id (job_2). The user approves it on a "
-    "card. Find the id with list_jobs first. To change what a job does or when, delete it "
+    "Pause, resume or delete a scheduled job by its id (job_2). Find the id with list_jobs "
+    "first. To change what a job does or when, delete it "
     "and schedule a new one.",
     {
         "type": "object",

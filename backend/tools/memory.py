@@ -1,9 +1,8 @@
 """remember / recall / forget: what Jarvis knows about you between chats.
 
-The notes live in storage/memory_store.py. remember and forget are 'act' tools: the
-approval card is how you agree to a memory, so nothing is saved silently, and an email or
-web page can't plant one (memories go into every later conversation's system prompt).
-recall only reads.
+The notes live in storage/memory_store.py. remember and forget are 'act' tools, so
+scheduled jobs can't use them; in chat they run without a card (you asked for that), and you
+see and delete memories in the memory panel. recall only reads.
 """
 
 import json
@@ -40,7 +39,7 @@ CATEGORY = {
 @tool(
     "remember",
     "Save one lasting fact about the user to memory, so you know it in later chats. "
-    "The user approves it on a card. One short, self-contained sentence per call, in the "
+    "One short, self-contained sentence per call, in the "
     "user's language. Never passwords, card numbers, keys or other secrets (they're refused).",
     {
         "type": "object",
@@ -83,7 +82,7 @@ async def recall(args: dict[str, Any]) -> dict[str, Any]:
 
 @tool(
     "forget",
-    "Delete one memory by its id (mem_3). The user approves it on a card. Find the id "
+    "Delete one memory by its id (mem_3). Find the id "
     "with recall first if you don't have it.",
     {
         "type": "object",

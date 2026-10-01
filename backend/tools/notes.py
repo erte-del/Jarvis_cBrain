@@ -2,7 +2,7 @@
 
 A vault is a folder of Markdown files, so these are plain file tools. Jarvis only sees
 .md files inside the vault, skips hidden folders (.obsidian, .trash) and never reads a
-note tagged #private. Writing is an 'act' tool: you approve every change on a card.
+note tagged #private. Writing is an 'act' tool: it asks you first only for notes you marked important.
 """
 
 import asyncio
@@ -141,7 +141,7 @@ def write(path: str, content: str, mode: str) -> str:
 
 @tool(
     "write_note",
-    "Save to the user's Obsidian notes. The user approves it on a card. mode create makes a "
+    "Save to the user's Obsidian notes. mode create makes a "
     "new note (fails if it exists), append adds to the end of a note, replace rewrites a "
     "whole note (read it first). Write Markdown; link other notes with [[Note name]].",
     {

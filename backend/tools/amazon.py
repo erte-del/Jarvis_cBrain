@@ -132,7 +132,7 @@ async def amazon_read(args: dict[str, Any]) -> dict[str, Any]:
 
 @tool(
     "amazon_change",
-    "Change the user's Amazon cart or wish list (the user approves each one first). action: "
+    "Change the user's Amazon cart or wish list. action: "
     "add_to_cart, remove_from_cart or add_to_list (their default list). asin: the product, from "
     "amazon_read. title: the product's name, for the confirmation card. quantity: for "
     "add_to_cart, default 1. It returns what Amazon's page says afterwards: read it, and if it "

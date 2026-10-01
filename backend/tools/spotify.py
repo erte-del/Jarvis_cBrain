@@ -82,13 +82,15 @@ def _text(text: str, is_error: bool = False) -> dict[str, Any]:
     "Control the Spotify app on this Mac. action=play needs uri: a spotify: URI (track, "
     "album, playlist, artist, episode) or open.spotify.com link, e.g. the 'uri' of a "
     "Spotify connector search result. Other actions: pause, resume, next, previous, "
-    "volume (with volume 0-100). Returns what's playing now.",
+    "volume (with volume 0-100), shuffle (with on true/false; leave on out to toggle). "
+    "Returns what's playing now.",
     {
         "type": "object",
         "properties": {
-            "action": {"type": "string", "enum": ["play", "pause", "resume", "next", "previous", "volume"]},
+            "action": {"type": "string", "enum": ["play", "pause", "resume", "next", "previous", "volume", "shuffle"]},
             "uri": {"type": "string", "description": "For play: what to play."},
             "volume": {"type": "integer", "minimum": 0, "maximum": 100},
+            "on": {"type": "boolean", "description": "For shuffle: true or false. Omit to toggle."},
         },
         "required": ["action"],
     },
@@ -102,6 +104,11 @@ async def spotify_control(args: dict[str, Any]) -> dict[str, Any]:
         body = f'play track "{uri}"\n{NOW_PLAYING}'
     elif action == "volume":
         body = f'set sound volume to {max(0, min(100, int(args.get("volume", 50))))}\nreturn "Volume set."'
+    elif action == "shuffle":
+        on = args.get("on")
+        value = "not shuffling" if on is None else ("true" if on else "false")
+        # read back the value we set: Spotify reports the old 'shuffling' for a moment after a change
+        body = f'set s to {value}\nset shuffling to s\nif s then\nreturn "Shuffle on."\nend if\nreturn "Shuffle off."'
     elif action in SCRIPTS:
         body = SCRIPTS[action]
     else:
