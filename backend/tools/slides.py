@@ -323,8 +323,9 @@ async def make_slides(args: dict[str, Any]) -> dict[str, Any]:
     return {"content": content}
 
 
-def _sheets(pictures: list[Path], width: int = 600) -> list[bytes]:
-    """The slide pictures, numbered, nine to a JPEG, so a deck is a few pictures to look over."""
+def _sheets(pictures: list[Path], width: int = 500) -> list[bytes]:
+    """The slide pictures, numbered, nine to a JPEG, so a deck is a few pictures to look over.
+    1500px wide: Claude scales anything bigger down anyway."""
     font = ImageFont.load_default(size=28)
     out = []
     for first in range(0, len(pictures), SHEET):
@@ -340,7 +341,7 @@ def _sheets(pictures: list[Path], width: int = 600) -> list[bytes]:
             draw.text((8, 4), str(first + i + 1), fill="red", font=font)
             sheet.paste(cell, (i % 3 * width, i // 3 * height))
         buf = io.BytesIO()
-        sheet.save(buf, "JPEG", quality=80)
+        sheet.save(buf, "JPEG", quality=70)
         out.append(buf.getvalue())
     return out
 

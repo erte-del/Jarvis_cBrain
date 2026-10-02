@@ -118,6 +118,9 @@ class ClaudeCodeBrain:
                 **({} if on_claude else {"CLAUDE_CODE_MAX_RETRIES": "2"}),
             },
             include_partial_messages=True,  # stream text word by word
+            # Tool results with pictures (slides, photos) come as one JSON line; the SDK's
+            # default 1 MB cap failed on 6 lecture slides ("CLIJSONDecodeError").
+            max_buffer_size=32 * 1024 * 1024,
             setting_sources=[],  # ignore ~/.claude settings, CLAUDE.md files, plugins
             # False = also load the claude.ai connectors (Gmail, ...) of the Pro account.
             # Their tools are labelled read/act in tools/connectors.py. Never through a
