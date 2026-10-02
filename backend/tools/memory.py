@@ -31,7 +31,7 @@ CATEGORY = {
     "type": "string",
     "enum": list(memory_store.CATEGORIES),
     "description": "preferences: how they like things. people: who someone is, aliases "
-    "('Sarah' = Sarah K. from work). projects: what they're working on. decisions: things "
+    "('Sarah' = Sarah K. from work). projects: what they're working on or plan to do (with when). decisions: things "
     "they decided. facts: about the user themselves.",
 }
 
