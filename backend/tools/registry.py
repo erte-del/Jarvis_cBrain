@@ -40,7 +40,7 @@ from .images import image_edit, image_search, image_undo, image_versions
 from .phone import phone_taxi, phone_volume
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
-from .slides import make_slides
+from .slides import lectures, make_slides
 from .syllabus import syllabus
 from .telegram import text_me
 from .textbook import textbook
@@ -97,6 +97,8 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(textbook, "read"),
     # Only adds a new deck to Jarvis's Output folder; never overwrites one.
     JarvisTool(make_slides, "read"),
+    # Reads the teacher's lesson decks on this Mac.
+    JarvisTool(lectures, "read"),
     # Reading Amazon changes nothing; changing the cart or wish list runs without a card.
     # Neither can place an order.
     JarvisTool(amazon_read, "read"),

@@ -7,6 +7,7 @@ Decks are saved in the Output folder of Jarvis's files and opened.
 """
 
 import asyncio
+import base64
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -19,12 +20,16 @@ from pptx.util import Emu, Pt
 import config
 
 TEMPLATE = config.STORAGE_DIR / "slides" / "template.pptx"
+LECTURES = Path.home() / "Desktop" / "school" / "computing" / "class lectures"
+RENDERS = config.STORAGE_DIR / "lectures"
+MAX_SEEN = 6  # slide pictures per call
 COURSE = ["AQA", "AS Level", "Computer Science", "Paper 2"]
 # slide kind: the teacher's layout for it
 LAYOUTS = {"hook": "4_Custom Layout", "objectives": "7_Custom Layout", "content": "3_Custom Layout",
            "practice": "2_Custom Layout"}
 LINE = Emu(420_000)  # height of one line of 24pt body text
 ROW = Emu(380_000)
+_keynote = asyncio.Lock()
 
 
 def _fill(frame, points: list[str]) -> None:
@@ -163,3 +168,94 @@ async def make_slides(args: dict[str, Any]) -> dict[str, Any]:
         return {"content": [{"type": "text", "text": f"Couldn't build the deck: {e!r}"}], "is_error": True}
     subprocess.run(["open", str(path)], check=False)
     return {"content": [{"type": "text", "text": f"Saved and opened {path} ({count} slides)."}]}
+
+
+def read_deck(path: Path) -> list[str]:
+    """Each slide's text: titles and bullets, tables as rows, then speaker notes."""
+    out = []
+    for n, slide in enumerate(Presentation(str(path)).slides, 1):
+        hidden = " hidden" if slide._element.get("show") == "0" else ""
+        lines = [f"--- Slide {n} ({slide.slide_layout.name}{hidden})"]
+        for shape in slide.shapes:
+            if shape.has_text_frame and shape.text_frame.text.strip():
+                lines += ["  " * p.level + p.text for p in shape.text_frame.paragraphs if p.text.strip()]
+            elif shape.has_table:
+                lines += [" | ".join(c.text for c in row.cells) for row in shape.table.rows]
+            elif shape.shape_type == 13:  # picture
+                lines.append("[picture]")
+        if slide.has_notes_slide and slide.notes_slide.notes_text_frame.text.strip():
+            lines.append("Notes: " + slide.notes_slide.notes_text_frame.text.strip())
+        out.append("\n".join(lines))
+    return out
+
+
+EXPORT = """on run argv
+  tell application "Keynote"
+    repeat 60 times
+      if exists document (item 1 of argv) then exit repeat
+      delay 1
+    end repeat
+    set d to document (item 1 of argv)
+    export d to POSIX file (item 2 of argv) as slide images with properties ¬
+      {image format:JPEG, compression factor:0.8}
+    close d saving no
+  end tell
+end run"""
+
+
+def render(path: Path) -> list[Path]:
+    """Every shown slide as a picture (Keynote leaves hidden ones out), drawn by Keynote once
+    and kept in storage/lectures/.
+    Keynote opens the deck by itself (AppleScript's own open can't read the Desktop)."""
+    out = RENDERS / path.stem
+    if not out.exists() or out.stat().st_mtime < path.stat().st_mtime:
+        out.mkdir(parents=True, exist_ok=True)
+        for old in out.glob("*.jpeg"):
+            old.unlink()
+        subprocess.run(["open", "-g", "-a", "Keynote", str(path)], check=True)
+        subprocess.run(["osascript", "-", path.stem, str(out)], input=EXPORT.encode(),
+                       capture_output=True, check=True, timeout=180)
+        out.touch()
+    return sorted(out.glob("*.jpeg"))
+
+
+@tool(
+    "lectures",
+    "The user's computing teacher's own lesson decks (AQA Computer Science, PowerPoint). Without "
+    "deck: the list. With deck (part of a file name, e.g. 'Topic 3' or 'sound'): the text of every "
+    "slide, with its layout, tables and speaker notes. With slides too (slide numbers, up to "
+    f"{MAX_SEEN}): those slides as pictures, to see their diagrams, images and layout; the first "
+    "time for a deck takes a minute. Read one before make_slides as the example to follow.",
+    {
+        "type": "object",
+        "properties": {
+            "deck": {"type": "string"},
+            "slides": {"type": "array", "items": {"type": "integer"}},
+        },
+    },
+)
+async def lectures(args: dict[str, Any]) -> dict[str, Any]:
+    decks = sorted(LECTURES.glob("*.pptx"))
+    want = str(args.get("deck") or "").strip().lower()
+    hits = [d for d in decks if want in d.stem.lower()] if want else []
+    if not hits:
+        names = "\n".join(d.stem for d in decks) or f"none in {LECTURES}"
+        return {"content": [{"type": "text", "text": f"The teacher's decks:\n{names}"}]}
+    deck, seen = hits[0], [int(n) for n in args.get("slides") or []][:MAX_SEEN]
+    try:
+        texts = await asyncio.to_thread(read_deck, deck)
+        if not seen:
+            return {"content": [{"type": "text", "text": deck.stem + "\n" + "\n".join(texts)}]}
+        seen = [n for n in seen if 1 <= n <= len(texts)]
+        async with _keynote:
+            pictures = await asyncio.to_thread(render, deck)
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError) as e:
+        return {"content": [{"type": "text", "text": f"Couldn't read {deck.name}: {e!r}"}], "is_error": True}
+    content: list[dict[str, Any]] = [{"type": "text", "text": deck.stem}]
+    shown = [n for n, text in enumerate(texts, 1) if " hidden)" not in text.split("\n")[0]]
+    for n in seen:
+        content.append({"type": "text", "text": texts[n - 1]})
+        if n in shown and shown.index(n) < len(pictures):
+            data = base64.b64encode(pictures[shown.index(n)].read_bytes()).decode()
+            content.append({"type": "image", "data": data, "mimeType": "image/jpeg"})
+    return {"content": content}

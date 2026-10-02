@@ -58,6 +58,33 @@ class SlidesTest(unittest.TestCase):
         self.make()
         self.assertTrue((self.out / "Logic gates 2.pptx").exists())
 
+    def test_lectures_reads_a_deck(self):
+        self.make()
+        with mock.patch.object(slides, "LECTURES", self.out):
+            listing = asyncio.run(slides.lectures.handler({}))["content"][0]["text"]
+            text = asyncio.run(slides.lectures.handler({"deck": "logic"}))["content"][0]["text"]
+        self.assertIn("Logic gates", listing)
+        self.assertIn("--- Slide 3 (3_Custom Layout)", text)
+        self.assertIn("A | B | Q", text)
+        self.assertIn("Notes: What happens with 1 and 0?", text)
+        self.assertEqual(registry.classify("mcp__jarvis__lectures"), "read")
+
+    def test_lectures_pictures_skip_hidden_slides(self):
+        self.make()
+        path = self.out / "Logic gates.pptx"
+        deck = Presentation(str(path))
+        deck.slides[1]._element.set("show", "0")  # Keynote draws no picture for it
+        deck.save(str(path))
+        pictures = []
+        for n in (1, 3, 4, 5):
+            pictures.append(self.out / f"{n}.jpeg")
+            pictures[-1].write_bytes(bytes([n]))
+        with mock.patch.object(slides, "LECTURES", self.out), mock.patch.object(slides, "render", return_value=pictures):
+            content = asyncio.run(slides.lectures.handler({"deck": "logic", "slides": [2, 3]}))["content"]
+        self.assertEqual([c["type"] for c in content], ["text", "text", "text", "image"])
+        self.assertIn("hidden", content[1]["text"])
+        self.assertEqual(content[3]["data"], "Aw==")  # slide 3's picture
+
 
 if __name__ == "__main__":
     unittest.main()

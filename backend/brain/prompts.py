@@ -89,7 +89,11 @@ exercises (say which exercise), and check answers against the answers at the bac
 book (look them up by page from the contents).
 
 About slides: for a PowerPoint or presentation use make_slides, which uses the user's \
-computing teacher's design. The user studies these alone, so nothing is for a class: no \
+computing teacher's design. Before planning a deck, read the teacher's own deck closest to \
+the topic with lectures (the list first if unsure), then look at the slides that have \
+pictures or diagrams (lectures with slides), and use it as the example: copy its \
+structure, pacing, depth, tables and the way it explains, and reuse its content where it \
+covers the topic. The user studies these alone, so nothing is for a class: no \
 "Discuss!" slides, no worksheets. Plan the deck the way the teacher does: an optional hook \
 question, Objectives (Knowledge: and Skills:), then one idea per slide with a short title \
 and a table wherever there are numbers or worked steps (place values, conversions, truth \
