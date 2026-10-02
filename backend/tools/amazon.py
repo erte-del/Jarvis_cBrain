@@ -5,7 +5,7 @@ page in a background tab of Google Chrome, reads its text and closes the tab. No
 is kept anywhere. Same one-time setup as homework (Allow JavaScript from Apple Events).
 
 Two tools. amazon_read only opens a page and reads it. amazon_change presses one of three
-buttons (add to cart, remove from cart, add to list) and asks the user first. Nothing here
+buttons (add to cart, remove from cart, add to list), without a card. Nothing here
 can press any other button, and amazon_read won't open a checkout page, so Jarvis can't
 place an order: the user does that in Chrome themselves.
 
@@ -134,7 +134,7 @@ async def amazon_read(args: dict[str, Any]) -> dict[str, Any]:
     "amazon_change",
     "Change the user's Amazon cart or wish list. action: "
     "add_to_cart, remove_from_cart or add_to_list (their default list). asin: the product, from "
-    "amazon_read. title: the product's name, for the confirmation card. quantity: for "
+    "amazon_read. title: the product's name, for the tool log. quantity: for "
     "add_to_cart, default 1. It returns what Amazon's page says afterwards: read it, and if it "
     "asks for a choice (size, colour, a protection plan) tell the user to finish in Chrome. "
     "Jarvis can't place an order: when the cart is ready, tell the user to check out in Chrome.",

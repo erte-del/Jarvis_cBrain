@@ -6,9 +6,10 @@ There are hundreds and connectors add new ones, so instead of listing them we
 label them by their action verb:
 
   read — the action starts with a read verb (get_, list_, search_, ...) -> runs freely
-  act  — anything else (send, reply, create, delete, trash, execute, ...) -> asks you first
+  act  — anything else (send, reply, create, delete, trash, execute, ...) -> goes through
+         the gate, which asks only when it reaches other people (registry.needs_ok)
 
-Unknown verbs are 'act': when in doubt, Jarvis asks.
+Unknown verbs are 'act': when in doubt, the gate decides.
 """
 
 import json

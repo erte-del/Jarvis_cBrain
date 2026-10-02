@@ -7,7 +7,7 @@ It's weak at the core of personal assistance: **time, memory, people, and acting
 Together these four enable a **daily briefing with follow-ups**, the thing that makes Jarvis feel like a real assistant.
 
 **Ground rules for every item**
-- Reads run freely; writes/sends/deletes go through the existing confirm gate (`backend/brain/confirm.py`, `tools/connectors.py` read/act labels).
+- Reads run freely; writes/sends/deletes go through the existing confirm gate (`backend/brain/confirm.py`, `tools/connectors.py` read/act labels), which shows a card only for other people or important files (`registry.needs_ok`).
 - Prefer a claude.ai connector when one exists; only write a local tool (`backend/tools/`) when there isn't one.
 - Every new tool gets one small test in `backend/tests/`.
 - Show lists (events, tasks, contacts) on canvas cards, keep the chat reply short.
@@ -23,7 +23,7 @@ Today: events can be displayed on the canvas, but Jarvis can't create, move, or 
   - [ ] "What's on my calendar today / tomorrow / this week" → event cards on the canvas
   - [ ] Free/busy lookup: "Am I free Thursday at 3?" / "Find me a free hour tomorrow afternoon"
   - [ ] Handle time zones and all-day events correctly
-- [ ] **Write** (all through the confirm card)
+- [ ] **Write** (a card only when the event has attendees)
   - [x] Create event: title, start/end, location, attendees, notes, video link
   - [x] Move / reschedule an event ("push my 3pm to 4")
   - [x] Cancel / delete an event (card shows the event's title + time, from events Jarvis has seen)
@@ -67,9 +67,9 @@ Goal: Jarvis *knows you* between chats. A store you can inspect and edit, not ra
 
 - [x] Storage: `backend/storage/memory_store.py` → `storage/memory.json` (id, category, text, source, created, updated)
 - [x] Categories: **preferences**, **people**, **projects**, **decisions**, **facts** (about me)
-- [x] Tools: `remember(text, category)`, `recall(query)`, `forget(memory_id)` — `remember`/`forget` go through the confirm card (memories enter every later system prompt, so an email can't plant one); `recall` is read
+- [x] Tools: `remember(text, category)`, `recall(query)`, `forget(memory_id)` — `remember`/`forget` are act tools, so scheduled jobs can't use them, but in chat they run without a card; `recall` is read
 - [x] Load the newest memories into the system prompt at chat start (1,500 characters at most; older ones via `recall`)
-- [x] Jarvis proposes memories itself: the "Remember this" card is the proposal (prompt), nothing is saved silently
+- [x] Jarvis saves memories itself (prompt: only what the user says, never what an email or web page says); the memory panel shows them all
 - [x] **Memory panel** in the UI (chip button in the top bar): list, search, add, edit, delete
 - [x] Never store secrets (passwords, card numbers, tokens) — refused by pattern in the store, for Jarvis and the panel alike (a secret spelled out in plain words would get through)
 - [x] Export / wipe all memory buttons
@@ -89,7 +89,7 @@ Jarvis can now start things itself: `backend/scheduler.py` runs jobs from `stora
   - [ ] "Tell me when X replies" → checks Gmail, stops after it has told you
   - [ ] "Tell me 15 min before meetings" → calendar watcher (a 15-minute check can't hit "15 min before" exactly)
   - [ ] "Tell me if the price of X drops" → web check
-- [x] Create / list / pause / delete jobs by chat ("what have you got scheduled?"): `schedule_job`, `change_job` (confirm card), `list_jobs`; also the clock button in the top bar (run now, pause, delete)
+- [x] Create / list / pause / delete jobs by chat ("what have you got scheduled?"): `schedule_job`, `change_job` (act, no card), `list_jobs`; also the clock button in the top bar (run now, pause, delete)
 - [x] Jobs only run **read** tools on their own; an **act** tool is refused and the job tells you what it suggests instead
 - [ ] Queue a refused act so you can approve it later from the notification (today you ask Jarvis to do it when you're back)
 - [x] Rate/usage guard: jobs are skipped above 80% of the 5-hour limit (`JARVIS_JOBS_MAX_USAGE`), at most 10 jobs, one at a time, watchers on Haiku and paused in quiet hours

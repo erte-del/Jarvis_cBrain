@@ -119,12 +119,12 @@ only look things up.
 - **Make videos.** Describe a shot and Jarvis makes a short clip (up to 5 seconds,
   832×480, no sound) with Wan 2.1 running on this Mac: free, and nothing leaves the
   machine. It's slow (about 13 minutes for 5 seconds on an M5) and runs in the
-  background, with progress on the canvas. It asks you first. Set it up once with
+  background, with progress on the canvas. Set it up once with
   `scripts/setup_video.sh` (downloads about 17.6 GB, keeps 14 GB). Text only for
   now: animating an existing image needs a bigger model.
 - **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
   4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
-  the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), after you approve.
+  the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), never before you say so.
 
 ### On this Mac
 
@@ -308,7 +308,8 @@ continue it, ask for your homework, play a song, and open the page on your phone
                        confirmation gate
     backend/scheduler.py, notify.py   jobs Jarvis runs on its own, and how their results reach you
     backend/tools/     Jarvis's own tools, served to Claude as an in-process MCP server,
-                       each labelled read (runs freely) or act (asks you first)
+                       each labelled read (runs freely) or act (asks only for other
+                       people or important files)
     backend/storage/   images, 3D models, uploads, usage numbers, memory, scheduled jobs (all local files)
     scripts/           builds and runs Jarvis.app
 

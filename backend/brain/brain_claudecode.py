@@ -108,7 +108,7 @@ class ClaudeCodeBrain:
             hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
             mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
             allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
-            can_use_tool=self._can_use_tool,  # every other tool asks you first
+            can_use_tool=self._can_use_tool,  # every other tool goes through the gate
             env={
                 "MCP_TOOL_TIMEOUT": str(TOOL_TIMEOUT_S * 1000),
                 # Connector tools stay hidden until Claude searches for one. Without

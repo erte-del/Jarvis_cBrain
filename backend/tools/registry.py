@@ -97,23 +97,23 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(textbook, "read"),
     # Only adds a new deck to Jarvis's Output folder; never overwrites one.
     JarvisTool(make_slides, "read"),
-    # Reading Amazon changes nothing; the cart and wish list change only with your approval.
+    # Reading Amazon changes nothing; changing the cart or wish list runs without a card.
     # Neither can place an order.
     JarvisTool(amazon_read, "read"),
     JarvisTool(amazon_change, "act"),
     # Only reads files you uploaded yourself.
     JarvisTool(read_upload, "read"),
-    # A video ties up the Mac for minutes, so it asks first.
+    # A video ties up the Mac for minutes, but only makes Jarvis's own copy: no card.
     JarvisTool(generate_video, "act"),
     # Sends a message in your name.
     JarvisTool(whatsapp_send, "act"),
     # Only ever texts you: the chat is fixed in .env.
     JarvisTool(text_me, "read"),
-    # Memories go into every later conversation, so you approve each one; so does deleting.
+    # Memories go into every later conversation; you see and delete them in the memory panel.
     JarvisTool(remember, "act"),
     JarvisTool(forget, "act"),
     JarvisTool(recall, "read"),
-    # Your Obsidian notes: reading is free (never #private ones), every write asks first.
+    # Your Obsidian notes: reading is free (never #private ones), a write asks only for notes you marked important.
     JarvisTool(search_notes, "read"),
     JarvisTool(read_note, "read"),
     JarvisTool(write_note, "act"),
