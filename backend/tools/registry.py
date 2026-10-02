@@ -40,7 +40,10 @@ from .images import image_edit, image_search, image_undo, image_versions
 from .phone import phone_taxi, phone_volume
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
+from .slides import make_slides
+from .syllabus import syllabus
 from .telegram import text_me
+from .textbook import textbook
 from .uploads import read_upload
 from .video import generate_video
 from .whatsapp import whatsapp_send
@@ -88,6 +91,12 @@ TOOLS: list[JarvisTool] = [
     JarvisTool(find_contact, "read"),
     # Only reads the school's Assignments page, in a tab it opens and closes itself.
     JarvisTool(check_homework, "read"),
+    # Reads the exam boards' public spec PDFs (downloaded once).
+    JarvisTool(syllabus, "read"),
+    # Reads the user's own textbook scans on this Mac.
+    JarvisTool(textbook, "read"),
+    # Only adds a new deck to Jarvis's Output folder; never overwrites one.
+    JarvisTool(make_slides, "read"),
     # Reading Amazon changes nothing; the cart and wish list change only with your approval.
     # Neither can place an order.
     JarvisTool(amazon_read, "read"),

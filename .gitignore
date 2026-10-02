@@ -41,3 +41,6 @@ backend/storage/memory.json
 backend/storage/jobs.json
 backend/storage/homework_seen.json
 backend/storage/school.md
+backend/storage/syllabus/
+backend/storage/textbooks/
+backend/storage/slides/
