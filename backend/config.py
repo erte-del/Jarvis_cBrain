@@ -1,8 +1,11 @@
 """Settings loaded from .env."""
 
+import functools
 import logging
 import os
 import re
+import ssl
+import subprocess
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -132,3 +135,24 @@ def set_login(provider: str = "claude") -> None:
         os.environ["ANTHROPIC_AUTH_TOKEN"] = GATEWAY_KEY or "jarvis-gateway"
         for var in _MODEL_VARS:
             os.environ[var] = _GATEWAY_MODELS.get(var, GATEWAY_MODEL)
+
+
+@functools.cache
+def ssl_context() -> ssl.SSLContext:
+    """For urlopen to HTTPS sites: Python's own certificates plus the Mac keychain's, like curl.
+
+    Networks that re-sign HTTPS (a school firewall) put their own certificate in the keychain;
+    without it every HTTPS call fails with "self-signed certificate in certificate chain".
+    """
+    ctx = ssl.create_default_context()
+    try:
+        pem = subprocess.run(["security", "find-certificate", "-a", "-p"],
+                             capture_output=True, text=True, timeout=10).stdout
+        if pem:
+            ctx.load_verify_locations(cadata=pem)
+    except (OSError, subprocess.SubprocessError, ssl.SSLError) as e:
+        log.warning("Couldn't load the keychain's certificates: %s", e)
+    # Python 3.13's strict check rejects firewall CAs that don't mark Basic Constraints
+    # critical; curl and Python 3.12 accept them. The chain is still verified.
+    ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
+    return ctx

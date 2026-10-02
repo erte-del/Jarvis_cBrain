@@ -33,7 +33,7 @@ MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024
 
 def _http_get(url: str, headers: dict[str, str]) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "Jarvis/0.1", **headers})
-    with urllib.request.urlopen(req, timeout=20) as r:
+    with urllib.request.urlopen(req, timeout=20, context=config.ssl_context()) as r:
         data = r.read(MAX_DOWNLOAD_BYTES + 1)
     if len(data) > MAX_DOWNLOAD_BYTES:
         raise RuntimeError("image too large")

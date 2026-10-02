@@ -28,13 +28,14 @@ def _call(method: str, params: dict[str, Any]) -> Any:
     req = Request(API.format(token=config.TELEGRAM_BOT_TOKEN, method=method),
                   data=json.dumps(params).encode(), headers={"Content-Type": "application/json"})
     try:
-        with urlopen(req, timeout=20) as r:
+        with urlopen(req, timeout=20, context=config.ssl_context()) as r:
             return json.load(r)["result"]
     except HTTPError as e:
         try:
             why = json.load(e)["description"]
         except (ValueError, KeyError):
-            why = f"HTTP {e.code}"
+            # Telegram's own errors are JSON; a 403 web page is a network filter (a school firewall).
+            why = "this network blocks Telegram" if e.code == 403 else f"HTTP {e.code}"
         raise RuntimeError(why) from None
     except (URLError, TimeoutError) as e:
         raise RuntimeError(f"couldn't reach Telegram ({getattr(e, 'reason', e)})") from None

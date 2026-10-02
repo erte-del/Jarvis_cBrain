@@ -9,10 +9,9 @@ A web page can't touch the phone, so MacroDroid macros do it: Jarvis calls a mac
 """
 
 import asyncio
+import subprocess
 from typing import Any
-from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
-from urllib.request import urlopen
 
 from claude_agent_sdk import tool
 
@@ -38,14 +37,12 @@ def url_for(identifier: str, **params: Any) -> str:
 
 
 def _call(url: str) -> None:
-    # The address holds the phone's device id: errors must never include it.
-    try:
-        with urlopen(url, timeout=20) as r:
-            r.read()
-    except HTTPError as e:
-        raise RuntimeError(f"MacroDroid answered HTTP {e.code}") from None
-    except (URLError, TimeoutError) as e:
-        raise RuntimeError(f"couldn't reach MacroDroid ({getattr(e, 'reason', e)})") from None
+    # macOS's curl, not urllib: it trusts the Mac's keychain, so it works on networks that
+    # re-sign HTTPS (see youtube.py). The address holds the phone's device id: errors never do.
+    r = subprocess.run(["curl", "-sSf", "--max-time", "20", "-o", "/dev/null", url], capture_output=True, text=True)
+    if r.returncode:
+        why = r.stderr.strip().replace(url, "MacroDroid") or f"curl failed ({r.returncode})"
+        raise RuntimeError(f"couldn't reach MacroDroid ({why})")
 
 
 @tool(

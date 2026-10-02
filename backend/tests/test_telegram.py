@@ -49,6 +49,13 @@ class TelegramTest(unittest.TestCase):
         self.assertIn("Unauthorized", result["content"][0]["text"])
         self.assertNotIn("secret", result["content"][0]["text"])
 
+    def test_a_network_block_page_says_so(self):
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        error = HTTPError(url, 403, "Forbidden", {}, io.BytesIO(b"<html>Web Filter Violation</html>"))
+        result, _ = send({"message": "hi"}, mock.MagicMock(side_effect=error))
+        self.assertIn("this network blocks Telegram", result["content"][0]["text"])
+        self.assertNotIn("secret", result["content"][0]["text"])
+
 
 if __name__ == "__main__":
     unittest.main()

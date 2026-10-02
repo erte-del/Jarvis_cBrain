@@ -172,7 +172,7 @@ def _token_request(form: dict[str, str]) -> dict[str, Any]:
         data=urlencode({**form, "client_id": CLIENT_ID}).encode(),
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
-    with urlopen(req, timeout=15) as r:
+    with urlopen(req, timeout=15, context=config.ssl_context()) as r:
         tok = json.load(r)
     tok["expires_at"] = time.time() + int(tok.get("expires_in", 3600)) - 60
     tok.setdefault("refresh_token", _load_token().get("refresh_token"))
@@ -214,7 +214,7 @@ def _call(token: str, method: str, path: str, body: dict | None = None, **params
     url = f"{API}{path}" + (f"?{urlencode(params)}" if params else "")
     data = json.dumps(body).encode() if body is not None else (None if method == "GET" else b"")
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    with urlopen(Request(url, data=data, method=method, headers=headers), timeout=15) as r:
+    with urlopen(Request(url, data=data, method=method, headers=headers), timeout=15, context=config.ssl_context()) as r:
         raw = r.read()
     return json.loads(raw) if raw else {}  # player calls answer 204, no body
 
