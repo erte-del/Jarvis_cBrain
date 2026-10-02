@@ -5,6 +5,9 @@ so Jarvis adds two tools of its own:
 
   spotify_control         drives the Spotify desktop app with AppleScript. No login,
                           no Premium. The connector's search finds the spotify: URIs.
+                          With device=phone it drives the Spotify app on the user's phone
+                          through the Web API (Spotify Connect) instead: needs Premium,
+                          the login below, and Spotify open on the phone.
   spotify_playlist_tracks the songs in one of your playlists, via Spotify's Web API.
                           Needs SPOTIFY_CLIENT_ID in .env and a one-time login (Jarvis
                           shows the link). Since February 2026 Spotify only gives the
@@ -79,11 +82,11 @@ def _text(text: str, is_error: bool = False) -> dict[str, Any]:
 
 @tool(
     "spotify_control",
-    "Control the Spotify app on this Mac. action=play needs uri: a spotify: URI (track, "
+    "Control Spotify on this Mac, or with device=phone on the user's phone. action=play needs uri: a spotify: URI (track, "
     "album, playlist, artist, episode) or open.spotify.com link, e.g. the 'uri' of a "
     "Spotify connector search result. Other actions: pause, resume, next, previous, "
     "volume (with volume 0-100), shuffle (with on true/false; leave on out to toggle). "
-    "Returns what's playing now.",
+    "Returns what's playing now. device=phone fails if Spotify isn't open on the phone.",
     {
         "type": "object",
         "properties": {
@@ -91,16 +94,21 @@ def _text(text: str, is_error: bool = False) -> dict[str, Any]:
             "uri": {"type": "string", "description": "For play: what to play."},
             "volume": {"type": "integer", "minimum": 0, "maximum": 100},
             "on": {"type": "boolean", "description": "For shuffle: true or false. Omit to toggle."},
+            "device": {"type": "string", "enum": ["mac", "phone"], "description": "Where to play. Default mac."},
         },
         "required": ["action"],
     },
 )
 async def spotify_control(args: dict[str, Any]) -> dict[str, Any]:
     action = args["action"]
+    uri = to_uri(str(args.get("uri") or ""))
+    if action == "play" and not uri:
+        return _text("play needs a spotify: URI or open.spotify.com link; search Spotify first.", True)
+    if action not in ("play", "volume", "shuffle", *SCRIPTS):
+        return _text(f"Unknown action {action!r}", True)
+    if args.get("device") == "phone":
+        return await _phone_control(action, uri, args)
     if action == "play":
-        uri = to_uri(str(args.get("uri") or ""))
-        if not uri:
-            return _text("play needs a spotify: URI or open.spotify.com link; search Spotify first.", True)
         body = f'play track "{uri}"\n{NOW_PLAYING}'
     elif action == "volume":
         body = f'set sound volume to {max(0, min(100, int(args.get("volume", 50))))}\nreturn "Volume set."'
@@ -109,10 +117,8 @@ async def spotify_control(args: dict[str, Any]) -> dict[str, Any]:
         value = "not shuffling" if on is None else ("true" if on else "false")
         # read back the value we set: Spotify reports the old 'shuffling' for a moment after a change
         body = f'set s to {value}\nset shuffling to s\nif s then\nreturn "Shuffle on."\nend if\nreturn "Shuffle off."'
-    elif action in SCRIPTS:
-        body = SCRIPTS[action]
     else:
-        return _text(f"Unknown action {action!r}", True)
+        body = SCRIPTS[action]
     try:
         out = await _osascript(body)
     except (RuntimeError, OSError) as e:
@@ -124,7 +130,8 @@ async def spotify_control(args: dict[str, Any]) -> dict[str, Any]:
 
 CLIENT_ID = config.SPOTIFY_CLIENT_ID
 TOKEN_FILE = config.STORAGE_DIR / "spotify_token.json"
-SCOPES = "playlist-read-private playlist-read-collaborative"
+PLAYBACK_SCOPES = {"user-read-playback-state", "user-modify-playback-state"}
+SCOPES = " ".join(["playlist-read-private", "playlist-read-collaborative", *sorted(PLAYBACK_SCOPES)])
 API = "https://api.spotify.com/v1"
 MAX_TRACKS = 200
 _pending: dict[str, str] = {}  # login state -> PKCE verifier
@@ -169,6 +176,7 @@ def _token_request(form: dict[str, str]) -> dict[str, Any]:
         tok = json.load(r)
     tok["expires_at"] = time.time() + int(tok.get("expires_in", 3600)) - 60
     tok.setdefault("refresh_token", _load_token().get("refresh_token"))
+    tok.setdefault("scope", _load_token().get("scope", ""))
     TOKEN_FILE.touch(mode=0o600)
     TOKEN_FILE.write_text(json.dumps(tok))
     return tok
@@ -202,10 +210,17 @@ def _access_token() -> str | None:
         raise
 
 
-def _get(token: str, path: str, **params: Any) -> dict[str, Any]:
+def _call(token: str, method: str, path: str, body: dict | None = None, **params: Any) -> dict[str, Any]:
     url = f"{API}{path}" + (f"?{urlencode(params)}" if params else "")
-    with urlopen(Request(url, headers={"Authorization": f"Bearer {token}"}), timeout=15) as r:
-        return json.load(r)
+    data = json.dumps(body).encode() if body is not None else (None if method == "GET" else b"")
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    with urlopen(Request(url, data=data, method=method, headers=headers), timeout=15) as r:
+        raw = r.read()
+    return json.loads(raw) if raw else {}  # player calls answer 204, no body
+
+
+def _get(token: str, path: str, **params: Any) -> dict[str, Any]:
+    return _call(token, "GET", path, **params)
 
 
 def _my_playlists(token: str) -> list[dict[str, Any]]:
@@ -294,3 +309,71 @@ async def spotify_playlist_tracks(args: dict[str, Any]) -> dict[str, Any]:
     card = await show_table(result["title"], ["#", "Title", "Artist", "Album", "Length"], result["rows"])
     more = f" (first {len(result['rows'])} of {result['total']})" if result["total"] > len(result["rows"]) else ""
     return _text(f"{len(result['rows'])} songs{more}, shown on the canvas as {card}.\n" + "\n".join(result["lines"]))
+
+
+# --- Playback on the phone (Web API, Spotify Connect) ---
+
+
+def phone_of(devices: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The phone among Spotify's devices: the active one if several."""
+    phones = [d for d in devices if d.get("type") == "Smartphone" and d.get("id")]
+    return next((d for d in phones if d.get("is_active")), phones[0] if phones else None)
+
+
+def play_body(uri: str) -> dict[str, Any]:
+    """Tracks and episodes play as a list; albums, playlists, artists and shows as a context."""
+    return {"uris": [uri]} if uri.split(":")[1] in ("track", "episode") else {"context_uri": uri}
+
+
+def _phone(token: str, action: str, uri: str | None, args: dict[str, Any]) -> str:
+    """Blocking: do one action on the phone's Spotify. Returns what happened."""
+    phone = phone_of(_get(token, "/me/player/devices").get("devices") or [])
+    if not phone:
+        return ""
+    q, name = {"device_id": phone["id"]}, phone.get("name", "the phone")
+    if action == "play":
+        _call(token, "PUT", "/me/player/play", play_body(uri or ""), **q)
+        return f"Playing on {name}."
+    if action == "resume":
+        _call(token, "PUT", "/me/player/play", **q)
+    elif action == "pause":
+        _call(token, "PUT", "/me/player/pause", **q)
+    elif action in ("next", "previous"):
+        _call(token, "POST", f"/me/player/{action}", **q)
+    elif action == "volume":
+        _call(token, "PUT", "/me/player/volume", volume_percent=max(0, min(100, int(args.get("volume", 50)))), **q)
+    elif action == "shuffle":
+        on = args.get("on")
+        if on is None:
+            on = not _get(token, "/me/player").get("shuffle_state", False)
+        _call(token, "PUT", "/me/player/shuffle", state="true" if on else "false", **q)
+        return f"Shuffle {'on' if on else 'off'} on {name}."
+    return f"Done: {action} on {name}."
+
+
+async def _phone_control(action: str, uri: str | None, args: dict[str, Any]) -> dict[str, Any]:
+    if not CLIENT_ID:
+        return _text("Spotify on the phone isn't set up: SPOTIFY_CLIENT_ID is missing from .env (see .env.example).", True)
+    try:
+        token = await asyncio.to_thread(_access_token)
+        if not token or not PLAYBACK_SCOPES <= set(_load_token().get("scope", "").split()):
+            card = await show_text("Connect Spotify", f"[Log in to Spotify]({login_url()}) on the Mac, then ask me again.")
+            return _text(
+                f"Spotify needs a one-time login to control the phone. A login link is on the canvas ({card}); "
+                "it only works when opened on the Mac. Meanwhile, give the user the open.spotify.com link.",
+                True,
+            )
+        out = await asyncio.to_thread(_phone, token, action, uri, args)
+    except HTTPError as e:
+        if e.code == 403:
+            return _text("Spotify refused: controlling playback needs Premium.", True)
+        return _text(f"Spotify API error {e.code}: {e.reason}", True)
+    except OSError as e:
+        return _text(f"Couldn't reach Spotify: {e}", True)
+    if not out:
+        return _text(
+            "The phone isn't showing up in Spotify: ask the user to open Spotify on their phone, "
+            "and give them the open.spotify.com link meanwhile.",
+            True,
+        )
+    return _text(out)

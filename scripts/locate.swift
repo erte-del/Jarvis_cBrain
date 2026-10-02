@@ -4,6 +4,7 @@
 // (built by scripts/setup_location.sh). The first run shows macOS's "Allow location?" question.
 //
 //   JarvisLocation                         where am I
+//   JarvisLocation where '{"here": [lat, lon]}'   any mode: start from here, not this Mac's GPS
 //   JarvisLocation search '{"query": "coffee", "near": "Dubai Mall", "radius_m": 3000}'
 //   JarvisLocation directions '{"to": "Dubai Mall", "from": "...", "mode": "driving|walking|transit",
 //                               "depart_at": ISO 8601, "arrive_by": ISO 8601}'
@@ -32,6 +33,10 @@ final class Locator: NSObject, CLLocationManagerDelegate {
     var here = CLLocation()
 
     func start() {
+        if let h = params["here"] as? [Double], h.count == 2 {  // the user's phone, not this Mac
+            here = CLLocation(latitude: h[0], longitude: h[1])
+            return go()
+        }
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         manager.delegate = self  // calls locationManagerDidChangeAuthorization right away
     }
@@ -52,6 +57,10 @@ final class Locator: NSObject, CLLocationManagerDelegate {
         guard let loc = locations.last else { return }
         m.delegate = nil  // once is enough
         here = loc
+        go()
+    }
+
+    func go() {
         switch mode {
         case "search": search()
         case "directions": directions()

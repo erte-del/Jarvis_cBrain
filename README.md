@@ -51,6 +51,7 @@ only look things up.
 - **Maps and travel.** Places near you ("coffee near me"), travel times by car (with
   traffic), on foot or by transit, when to leave for a meeting, and travel time blocked in
   your calendar. Uses Apple Maps on this Mac, no API key (needs `scripts/setup_location.sh`).
+  On your phone, "near me" uses the phone's GPS (allow location when the page asks).
   Routes and places show as a live map on the canvas (Google Maps' embed), with a
   satellite view.
 - **Read your files.** Click 📎 in the chat box or drop files onto it. Images go on
@@ -87,6 +88,11 @@ only look things up.
 - **Text people on WhatsApp.** It finds the number in your Contacts (synced from your
   Google account) and sends the message from the WhatsApp app on this Mac, after you
   approve. It can't read your messages. Needs Accessibility permission for Jarvis.
+- **Your phone's volume.** On your phone, "turn it down" or "mute" sets the phone's media
+  volume through a MacroDroid macro (free Android app; setup in `.env.example`).
+- **Taxis.** "Get me a Careem to Dubai Mall" opens Careem on your phone with the
+  destination copied: paste it into "Where to?", check the price and book. Jarvis never
+  books or pays (Careem has no API). A second MacroDroid macro; setup in `.env.example`.
 - **Text you.** Jarvis's own Telegram bot sends things to your phone ("send that list to
   my phone"). It can only ever reach your own chat. Setup is in `.env.example`.
 

@@ -49,6 +49,7 @@ class Jarvis:
         voice: bool = False,
         selected_image: dict | None = None,
         files: list[str] | None = None,
+        device: str | None = None,
     ) -> AsyncIterator[events.Event]:
         """Answer one user message, yielding WebSocket events for the browser."""
         reply_id = uuid.uuid4().hex[:12]
@@ -79,6 +80,8 @@ class Jarvis:
         # The system prompt replaces Claude Code's, which carried the date: without this
         # "tomorrow" or "next Friday" can't be resolved.
         prompt = f"[Now: {now_note()}]\n{prompt}"
+        if device:  # Mac tools act on the Mac, wherever the user is talking from
+            prompt = f"[Device: {device}]\n{prompt}"
 
         consulted_expert = False
         reply_text = ""

@@ -37,6 +37,7 @@ from .memory import forget, recall, remember
 from .notes import read_note, search_notes, write_note
 from .important import mark_important, unmark_important
 from .images import image_edit, image_search, image_undo, image_versions
+from .phone import phone_taxi, phone_volume
 from .models3d import export_3d, get_3d_spec, preview_3d, revert_3d
 from .spotify import spotify_control, spotify_playlist_tracks
 from .telegram import text_me
@@ -80,6 +81,9 @@ TOOLS: list[JarvisTool] = [
     # Playing music and reading your own playlists change nothing that matters.
     JarvisTool(spotify_control, "read"),
     JarvisTool(spotify_playlist_tracks, "read"),
+    # Only your own phone's media volume. The taxi only opens Careem: you book and pay.
+    JarvisTool(phone_volume, "read"),
+    JarvisTool(phone_taxi, "read"),
     # Looks people up in Contacts; never changes them.
     JarvisTool(find_contact, "read"),
     # Only reads the school's Assignments page, in a tab it opens and closes itself.

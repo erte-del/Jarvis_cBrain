@@ -7,6 +7,8 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 // Mac, or your Tailscale address on your phone.
 export const API_BASE = location.port === '5173' ? 'http://127.0.0.1:8000' : location.origin
 const WS_URL = API_BASE.replace(/^http/, 'ws') + '/ws'
+// Opened through Tailscale (your phone) rather than on this Mac.
+const onPhone = !['127.0.0.1', 'localhost'].includes(location.hostname)
 
 export type ModelAlias = 'haiku' | 'sonnet' | 'opus'
 export type Provider = 'claude' | 'omniroute'
@@ -108,7 +110,7 @@ export type ServerEvent =
 
 // Browser -> server
 export type ClientEvent =
-  | { type: 'user.text'; text: string; files?: string[] }
+  | { type: 'user.text'; text: string; files?: string[]; location?: [number, number]; status?: PhoneStatus }
   | { type: 'user.confirm'; id: string; approved: boolean }
   | { type: 'user.select_image'; id: string | null; version?: number }
   | { type: 'settings.update'; model_override?: ModelAlias | null; provider?: Provider; gateway_model?: string }
@@ -210,6 +212,21 @@ export async function uploadFile(file: File): Promise<Attachment> {
 
 // ---------------------------------------------------------------------------
 // Socket: one connection that reconnects by itself if the backend restarts.
+
+// What the phone's browser can tell about the phone (Chrome on Android has all three).
+// Volume and the Wi-Fi network's name aren't readable from a web page.
+export interface PhoneStatus {
+  battery?: number // 0..1
+  charging?: boolean
+  network?: string // wifi, cellular, ethernet, none, ...
+  dark: boolean
+}
+
+interface BatteryManager { level: number; charging: boolean }
+type PhoneNavigator = Navigator & {
+  getBattery?: () => Promise<BatteryManager>
+  connection?: { type?: string }
+}
 
 export class JarvisSocket {
   private ws: WebSocket | null = null
@@ -640,6 +657,22 @@ export function useJarvis() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const socketRef = useRef<JarvisSocket | null>(null)
   const overrideRef = useRef<ModelAlias | null>(null)
+  const hereRef = useRef<[number, number] | undefined>(undefined)
+  const batteryRef = useRef<BatteryManager | undefined>(undefined) // live: always the current level
+
+  // Off this Mac (your phone, through Tailscale's https), "near me" means near the phone:
+  // keep its GPS fix and send it with each message. The first time, the browser asks.
+  useEffect(() => {
+    if (!onPhone) return
+    ;(navigator as PhoneNavigator).getBattery?.().then((b) => { batteryRef.current = b }).catch(() => {})
+    if (!navigator.geolocation) return
+    const id = navigator.geolocation.watchPosition(
+      (p) => { hereRef.current = [p.coords.latitude, p.coords.longitude] },
+      () => { hereRef.current = undefined }, // denied or no fix: Jarvis asks where you are
+      { enableHighAccuracy: true, maximumAge: 60_000 },
+    )
+    return () => navigator.geolocation.clearWatch(id)
+  }, [])
 
   useEffect(() => {
     const socket = new JarvisSocket()
@@ -659,7 +692,16 @@ export function useJarvis() {
   const sendText = useCallback((text: string, files: Attachment[] = []) => {
     const trimmed = text.trim()
     if (!trimmed && files.length === 0) return false
-    if (!socketRef.current?.send({ type: 'user.text', text: trimmed, files: files.map((f) => f.id) })) return false
+    const nav = navigator as PhoneNavigator
+    const status: PhoneStatus | undefined = onPhone ? {
+      battery: batteryRef.current?.level,
+      charging: batteryRef.current?.charging,
+      network: nav.connection?.type,
+      dark: matchMedia('(prefers-color-scheme: dark)').matches,
+    } : undefined
+    if (!socketRef.current?.send({
+      type: 'user.text', text: trimmed, files: files.map((f) => f.id), location: hereRef.current, status,
+    })) return false
     dispatch({ kind: 'user', text: trimmed, files })
     return true
   }, [])

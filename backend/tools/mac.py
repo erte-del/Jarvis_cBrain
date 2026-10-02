@@ -106,14 +106,24 @@ def _rel(p: Path) -> str:
 
 # --- reading -------------------------------------------------------------------------
 
-async def locator(*args: str) -> dict[str, Any]:
-    """Ask JarvisLocation.app (where am I / search / directions). RuntimeError if it can't answer."""
+# The user's phone [lat, lon] while they're talking from it, so "near me" means near them.
+# ponytail: one global for the turn being answered; a scheduled job running during a phone
+# turn uses it too. Pass it per call if that ever matters.
+phone_here: list[float] | None = None
+phone_status: str | None = None  # "Battery: 82%, charging\n...", same turn as phone_here
+
+
+async def locator(action: str = "where", params: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Ask JarvisLocation.app (where am I / search / directions), from the phone's location
+    when the user is on it, else this Mac's. RuntimeError if it can't answer."""
+    params = {**(params or {}), **({"here": phone_here} if phone_here else {})}
     if not LOCATION_APP.exists():
         raise RuntimeError("Location isn't set up: run scripts/setup_location.sh once.")
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp, "out")
         # Through `open`, so macOS sees the app (with its permission) and not Jarvis's Python.
-        await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), "--args", *args, timeout=150)
+        await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), "--args", action,
+                   json.dumps(params, ensure_ascii=False), timeout=150)
         found = json.loads(out.read_text() or '{"error": "no answer"}')
     if found.get("error") == "denied":
         raise RuntimeError("macOS doesn't allow Jarvis's location. Turn on Jarvis Location in System "
@@ -163,8 +173,10 @@ def find_files(query: str) -> list[dict[str, Any]]:
 
 @tool(
     "mac_read",
-    "Read things on this Mac. what: 'status' (battery, volume, dark mode, Wi-Fi), 'location' (where "
-    "this Mac is: latitude, longitude, place name, time zone; for weather, directions, things nearby), 'clipboard' "
+    "Read things on this Mac. what: 'status' (battery, volume, dark mode, Wi-Fi; the phone's first when "
+    "the user is on it), 'location' (where "
+    "the user is: their phone's GPS when they're on it, else this Mac's; latitude, longitude, place name, "
+    "time zone; for weather, directions, things nearby), 'clipboard' "
     "(the text copied right now), 'shortcuts' (the user's Shortcuts, to run with mac_change), or "
     "'files' (files in Jarvis's folder whose path has every word of query; empty query lists them all). "
     "To look inside files, use run_python.",
@@ -181,9 +193,13 @@ async def mac_read(args: dict[str, Any]) -> dict[str, Any]:
     what = args.get("what")
     try:
         if what == "status":
+            if phone_status:  # they're on the phone: its readings first, the Mac's after
+                return _text(f"The user's phone (they're on it):\n{phone_status}\nVolume and the Wi-Fi "
+                             f"network's name can't be read from the phone.\n\nThis Mac:\n{await _status()}")
             return _text(await _status())
         if what == "location":
-            return _text(json.dumps(await locator(), ensure_ascii=False))
+            found = {**await locator(), "from": "the user's phone" if phone_here else "this Mac"}
+            return _text(json.dumps(found, ensure_ascii=False))
         if what == "clipboard":
             text = await _out("pbpaste")
             return _text(text[:MAX_CHARS] if text else "The clipboard is empty or holds something that isn't text.")

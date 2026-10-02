@@ -28,7 +28,7 @@ from brain.confirm import ConfirmationGate
 from PIL import UnidentifiedImageError
 
 from storage import chat_store, image_store, job_store, memory_store, model_store, upload_store, video_store
-from tools import canvas, spotify
+from tools import canvas, mac, spotify
 
 log = logging.getLogger("jarvis")
 
@@ -165,17 +165,65 @@ async def spotify_callback(state: str = "", code: str = "", error: str = "") -> 
         return f"Couldn't finish the Spotify login: {e}"
 
 
+def device_of(ws: WebSocket) -> str:
+    """Which device a tab is on, for Jarvis's per-message [Device: ...] note. Local origins
+    are this Mac; the Tailscale address is the user's phone (or another computer)."""
+    if ws.headers.get("origin") in terminal.LOCAL_ORIGINS:
+        return "this Mac"
+    ua = ws.headers.get("user-agent", "")
+    return "the user's Android phone" if "Android" in ua or "Mobile" in ua else "another computer, not this Mac"
+
+
+def phone_location(raw: object) -> list[float] | None:
+    """[lat, lon] the page sent from the phone's GPS, or None if it's missing or nonsense."""
+    try:
+        lat, lon = (float(x) for x in raw) if isinstance(raw, list) else ()
+    except (TypeError, ValueError):
+        return None
+    return [lat, lon] if -90 <= lat <= 90 and -180 <= lon <= 180 else None
+
+
+NETWORKS = {"wifi": "Wi-Fi", "cellular": "mobile data", "ethernet": "Ethernet", "none": "offline"}
+
+
+def phone_status(raw: object) -> str | None:
+    """The phone's battery, network and appearance as the page read them, or None if it sent none."""
+    if not isinstance(raw, dict):
+        return None
+    lines = []
+    level = raw.get("battery")
+    if isinstance(level, (int, float)) and 0 <= level <= 1:
+        charging = raw.get("charging")
+        lines.append(f"Battery: {round(level * 100)}%" + {True: ", charging", False: ", not charging"}.get(charging, ""))
+    if raw.get("network") in NETWORKS:
+        lines.append("Network: " + NETWORKS[raw["network"]])
+    if isinstance(raw.get("dark"), bool):
+        lines.append("Appearance: " + ("dark" if raw["dark"] else "light"))
+    return "\n".join(lines) or None
+
+
 async def run_turn(
-    send: hub.Sender, text: str, model_override: ModelAlias | None, selected_image: dict | None, files: list[str]
+    send: hub.Sender,
+    text: str,
+    model_override: ModelAlias | None,
+    selected_image: dict | None,
+    files: list[str],
+    device: str,
+    here: list[float] | None = None,
+    status: str | None = None,
 ) -> None:
     """Answer one user message and stream the reply to the browser."""
     await send(events.status("thinking"))
+    if here:  # maps and mac_read location start from the phone, not the Mac
+        device += f", at {here[0]:.5f},{here[1]:.5f} (its GPS)"
+    mac.phone_here, mac.phone_status = here, status
     try:
         # aclosing: if sending fails (browser gone), end the brain turn right away.
-        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image, files=files)) as stream:
+        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image, files=files, device=device)) as stream:
             async for ev in stream:
                 await send(ev)
     finally:
+        mac.phone_here = mac.phone_status = None
         try:
             await send(events.status("idle"))
         except Exception:
@@ -322,6 +370,7 @@ async def websocket_endpoint(ws: WebSocket) -> None:
         await send(request)
     model_override: ModelAlias | None = None
     selected_image: dict | None = None  # the image you clicked on the canvas
+    device = device_of(ws)
     turns: set[asyncio.Task] = set()
 
     try:
@@ -341,7 +390,8 @@ async def websocket_endpoint(ws: WebSocket) -> None:
                     continue
                 # Run the turn in the background so this loop keeps listening
                 # (later: confirmations, barge-in). The brain runs one turn at a time.
-                task = asyncio.create_task(run_turn(send, text, model_override, selected_image, files))
+                task = asyncio.create_task(run_turn(send, text, model_override, selected_image, files, device,
+                                                    phone_location(msg.get("location")), phone_status(msg.get("status"))))
                 turns.add(task)
                 task.add_done_callback(turns.discard)
 

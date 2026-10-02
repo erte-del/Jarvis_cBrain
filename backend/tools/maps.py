@@ -53,7 +53,7 @@ async def maps(args: dict[str, Any]) -> dict[str, Any]:
         return _text(f"maps: mode must be one of {', '.join(MODES)}.", True)
     params = {k: v for k, v in args.items() if k != "action" and v not in (None, "")}
     try:
-        found = await locator(action, json.dumps(params, ensure_ascii=False))
+        found = await locator(action, params)
     except (RuntimeError, OSError, ValueError) as e:
         return _text(f"maps: {e}", True)
     return _text(json.dumps(found, ensure_ascii=False))

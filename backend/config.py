@@ -20,6 +20,8 @@ SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
 # Jarvis's own Telegram bot, for texting you (tools/telegram.py).
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+# The MacroDroid webhook on your phone, for its volume (tools/phone.py).
+MACRODROID_WEBHOOK = os.getenv("MACRODROID_WEBHOOK", "").strip()
 # Teams on the web, which Jarvis reads in Chrome (tools/homework.py).
 HOMEWORK_URL = os.getenv("JARVIS_HOMEWORK_URL", "").strip() or "https://teams.cloud.microsoft/"
 # The Amazon site Jarvis browses in Chrome (tools/amazon.py).
