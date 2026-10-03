@@ -472,7 +472,7 @@
       "source_location": "L12"
     },
     {
-      "id": "scripts_jarvis_app",
+      "id": "scripts_ultron_app",
       "label": "App",
       "_callable": true,
       "_callable_class": true,
@@ -481,7 +481,7 @@
       "community_name": "Locator",
       "file_type": "code",
       "norm_label": "app",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L6"
     },
     {
@@ -537,15 +537,15 @@
       "source_location": "L25"
     },
     {
-      "id": "backend_brain_agent_jarvis",
-      "label": "Jarvis",
+      "id": "backend_brain_agent_ultron",
+      "label": "Ultron",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
-      "norm_label": "jarvis",
+      "norm_label": "ultron",
       "source_file": "backend/brain/agent.py",
       "source_location": "L30"
     },
@@ -556,7 +556,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "route",
       "source_file": "backend/brain/router.py",
@@ -569,7 +569,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "devicetest",
       "source_file": "backend/tests/test_device.py",
@@ -745,15 +745,15 @@
       "source_location": "L59"
     },
     {
-      "id": "backend_tools_registry_jarvistool",
-      "label": "JarvisTool",
+      "id": "backend_tools_registry_ultrontool",
+      "label": "UltronTool",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "code",
-      "norm_label": "jarvistool",
+      "norm_label": "ultrontool",
       "source_file": "backend/tools/registry.py",
       "source_location": "L57"
     },
@@ -1122,15 +1122,15 @@
       "source_location": "L11"
     },
     {
-      "id": "frontend_src_ws_jarvissocket",
-      "label": "JarvisSocket",
+      "id": "frontend_src_ws_ultronsocket",
+      "label": "UltronSocket",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 60,
       "community_name": "Terminal.tsx",
       "file_type": "code",
-      "norm_label": "jarvissocket",
+      "norm_label": "ultronsocket",
       "source_file": "frontend/src/ws.ts",
       "source_location": "L231"
     },
@@ -2383,14 +2383,14 @@
       "source_location": "L137"
     },
     {
-      "id": "backend_tests_test_usage_usagenumberstest_test_jarvis_tokens_count_only_this_window_and_survive_a_restart",
-      "label": ".test_jarvis_tokens_count_only_this_window_and_survive_a_restart()",
+      "id": "backend_tests_test_usage_usagenumberstest_test_ultron_tokens_count_only_this_window_and_survive_a_restart",
+      "label": ".test_ultron_tokens_count_only_this_window_and_survive_a_restart()",
       "_callable": true,
       "_origin": "ast",
       "community": 105,
       "community_name": "UsageNumbersTest",
       "file_type": "code",
-      "norm_label": ".test_jarvis_tokens_count_only_this_window_and_survive_a_restart()",
+      "norm_label": ".test_ultron_tokens_count_only_this_window_and_survive_a_restart()",
       "source_file": "backend/tests/test_usage.py",
       "source_location": "L141"
     },
@@ -2863,7 +2863,7 @@
       "source_location": "L61"
     },
     {
-      "id": "backend_brain_agent_jarvis_init",
+      "id": "backend_brain_agent_ultron_init",
       "label": ".__init__()",
       "_callable": true,
       "_origin": "ast",
@@ -4051,7 +4051,7 @@
       "source_location": "L169"
     },
     {
-      "id": "scripts_jarvis_app_applicationdidfinishlaunching",
+      "id": "scripts_ultron_app_applicationdidfinishlaunching",
       "label": ".applicationDidFinishLaunching()",
       "_callable": true,
       "_origin": "ast",
@@ -4099,11 +4099,11 @@
         ]
       },
       "norm_label": ".applicationdidfinishlaunching()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L11"
     },
     {
-      "id": "scripts_jarvis_app_applicationshouldhandlereopen",
+      "id": "scripts_ultron_app_applicationshouldhandlereopen",
       "label": ".applicationShouldHandleReopen()",
       "_callable": true,
       "_origin": "ast",
@@ -4111,11 +4111,11 @@
       "community_name": "Locator",
       "file_type": "code",
       "norm_label": ".applicationshouldhandlereopen()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L37"
     },
     {
-      "id": "scripts_jarvis_app_applicationwillterminate",
+      "id": "scripts_ultron_app_applicationwillterminate",
       "label": ".applicationWillTerminate()",
       "_callable": true,
       "_origin": "ast",
@@ -4123,11 +4123,11 @@
       "community_name": "Locator",
       "file_type": "code",
       "norm_label": ".applicationwillterminate()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L42"
     },
     {
-      "id": "scripts_jarvis_app_openpage",
+      "id": "scripts_ultron_app_openpage",
       "label": ".openPage()",
       "_callable": true,
       "_origin": "ast",
@@ -4145,11 +4145,11 @@
         ]
       },
       "norm_label": ".openpage()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L46"
     },
     {
-      "id": "scripts_jarvis_app_orb",
+      "id": "scripts_ultron_app_orb",
       "label": ".orb()",
       "_callable": true,
       "_origin": "ast",
@@ -4173,11 +4173,11 @@
         ]
       },
       "norm_label": ".orb()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L66"
     },
     {
-      "id": "scripts_jarvis_app_run",
+      "id": "scripts_ultron_app_run",
       "label": ".run()",
       "_callable": true,
       "_origin": "ast",
@@ -4201,7 +4201,7 @@
         ]
       },
       "norm_label": ".run()",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L51"
     },
     {
@@ -5023,36 +5023,36 @@
       "source_location": "L54"
     },
     {
-      "id": "backend_brain_agent_jarvis_handle_text",
+      "id": "backend_brain_agent_ultron_handle_text",
       "label": ".handle_text()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".handle_text()",
       "source_file": "backend/brain/agent.py",
       "source_location": "L45"
     },
     {
-      "id": "backend_brain_agent_jarvis_idle_too_long",
+      "id": "backend_brain_agent_ultron_idle_too_long",
       "label": "._idle_too_long()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "._idle_too_long()",
       "source_file": "backend/brain/agent.py",
       "source_location": "L37"
     },
     {
-      "id": "backend_brain_agent_jarvis_usage_event",
+      "id": "backend_brain_agent_ultron_usage_event",
       "label": ".usage_event()",
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".usage_event()",
       "source_file": "backend/brain/agent.py",
@@ -5064,7 +5064,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_device_of()",
       "source_file": "backend/tests/test_device.py",
@@ -5076,7 +5076,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_locator_starts_from_the_phone()",
       "source_file": "backend/tests/test_device.py",
@@ -5088,7 +5088,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "fake_out()",
       "source_file": "backend/tests/test_device.py",
@@ -5100,7 +5100,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_note_reaches_the_brain()",
       "source_file": "backend/tests/test_device.py",
@@ -5112,7 +5112,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "send()",
       "source_file": "backend/tests/test_device.py",
@@ -5124,7 +5124,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_phone_location()",
       "source_file": "backend/tests/test_device.py",
@@ -5136,7 +5136,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_phone_status()",
       "source_file": "backend/tests/test_device.py",
@@ -5148,7 +5148,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_phone_taxi()",
       "source_file": "backend/tests/test_device.py",
@@ -5160,7 +5160,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_phone_volume()",
       "source_file": "backend/tests/test_device.py",
@@ -5172,7 +5172,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": ".test_status_shows_the_phone_first()",
       "source_file": "backend/tests/test_device.py",
@@ -5184,7 +5184,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "mac_status()",
       "source_file": "backend/tests/test_device.py",
@@ -5196,7 +5196,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "tab()",
       "source_file": "backend/tests/test_device.py",
@@ -6811,7 +6811,7 @@
       "source_location": "L220"
     },
     {
-      "id": "backend_tools_registry_jarvistool_full_name",
+      "id": "backend_tools_registry_ultrontool_full_name",
       "label": ".full_name()",
       "_callable": true,
       "_origin": "ast",
@@ -8227,7 +8227,7 @@
       "source_location": "L16"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_close",
+      "id": "frontend_src_ws_ultronsocket_close",
       "label": ".close()",
       "_callable": true,
       "_origin": "ast",
@@ -8239,7 +8239,7 @@
       "source_location": "L276"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_connect",
+      "id": "frontend_src_ws_ultronsocket_connect",
       "label": ".connect()",
       "_callable": true,
       "_origin": "ast",
@@ -8251,7 +8251,7 @@
       "source_location": "L241"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_onconnection",
+      "id": "frontend_src_ws_ultronsocket_onconnection",
       "label": ".onConnection()",
       "_callable": true,
       "_origin": "ast",
@@ -8263,7 +8263,7 @@
       "source_location": "L238"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_onevent",
+      "id": "frontend_src_ws_ultronsocket_onevent",
       "label": ".onEvent()",
       "_callable": true,
       "_origin": "ast",
@@ -8275,7 +8275,7 @@
       "source_location": "L237"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_onopen",
+      "id": "frontend_src_ws_ultronsocket_onopen",
       "label": ".onOpen()",
       "_callable": true,
       "_origin": "ast",
@@ -8287,7 +8287,7 @@
       "source_location": "L239"
     },
     {
-      "id": "frontend_src_ws_jarvissocket_send",
+      "id": "frontend_src_ws_ultronsocket_send",
       "label": ".send()",
       "_callable": true,
       "_origin": "ast",
@@ -8299,14 +8299,14 @@
       "source_location": "L270"
     },
     {
-      "id": "frontend_src_ws_usejarvis",
-      "label": "useJarvis()",
+      "id": "frontend_src_ws_useultron",
+      "label": "useUltron()",
       "_callable": true,
       "_origin": "ast",
       "community": 60,
       "community_name": "Terminal.tsx",
       "file_type": "code",
-      "norm_label": "usejarvis()",
+      "norm_label": "useultron()",
       "source_file": "frontend/src/ws.ts",
       "source_location": "L656"
     },
@@ -8484,7 +8484,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "code",
       "norm_label": "maps()",
       "source_file": "backend/tools/maps.py",
@@ -11255,15 +11255,15 @@
     },
     {
       "id": "frontend_index_index_html",
-      "label": "Jarvis Frontend index.html (Vite entry, #root, /src/main.tsx)",
+      "label": "Ultron Frontend index.html (Vite entry, #root, /src/main.tsx)",
       "_origin": "ast",
       "author": null,
       "captured_at": null,
       "community": 30,
-      "community_name": "Jarvis Frontend index.html (Vite entry, #root, /src/main.tsx)",
+      "community_name": "Ultron Frontend index.html (Vite entry, #root, /src/main.tsx)",
       "contributor": null,
       "file_type": "code",
-      "norm_label": "jarvis frontend index.html (vite entry, #root, /src/main.tsx)",
+      "norm_label": "ultron frontend index.html (vite entry, #root, /src/main.tsx)",
       "source_file": "frontend/index.html",
       "source_location": "L1",
       "source_url": null
@@ -11483,12 +11483,12 @@
     },
     {
       "id": "backend_main_rationale_169",
-      "label": "Which device a tab is on, for Jarvis's per-message [Device: ...] note. Local\u2026",
+      "label": "Which device a tab is on, for Ultron's per-message [Device: ...] note. Local\u2026",
       "_origin": "ast",
       "community": 10,
       "community_name": "websocket_endpoint",
       "file_type": "rationale",
-      "norm_label": "which device a tab is on, for jarvis's per-message [device: ...] note. local...",
+      "norm_label": "which device a tab is on, for ultron's per-message [device: ...] note. local...",
       "source_file": "backend/main.py",
       "source_location": "L169"
     },
@@ -12034,7 +12034,7 @@
       "source_location": ""
     },
     {
-      "id": "jarvis_build_prompt_13_first_steps_start_here",
+      "id": "ultron_build_prompt_13_first_steps_start_here",
       "label": "13. FIRST STEPS (start here)",
       "_origin": "ast",
       "community": 14,
@@ -12046,19 +12046,19 @@
       "source_location": "L341"
     },
     {
-      "id": "jarvis_build_prompt_1_decision_how_jarvis_talks_to_claude",
-      "label": "1. Decision: how Jarvis talks to Claude",
+      "id": "ultron_build_prompt_1_decision_how_ultron_talks_to_claude",
+      "label": "1. Decision: how Ultron talks to Claude",
       "_origin": "ast",
       "community": 14,
       "community_name": "Brain",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "1. decision: how jarvis talks to claude",
+      "norm_label": "1. decision: how ultron talks to claude",
       "source_file": "JARVIS_BUILD_PROMPT.md",
       "source_location": "L23"
     },
     {
-      "id": "jarvis_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
+      "id": "ultron_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
       "label": "\u274c NOT USED (documented for later): Claude API with an API key",
       "_origin": "ast",
       "community": 14,
@@ -12070,7 +12070,7 @@
       "source_location": "L40"
     },
     {
-      "id": "jarvis_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
+      "id": "ultron_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
       "label": "\u2705 USED: my existing Claude Pro subscription (via Claude Code / Claude Agent SDK)",
       "_origin": "ast",
       "community": 14,
@@ -12159,7 +12159,7 @@
       "source_location": ""
     },
     {
-      "id": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "id": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "label": "4. The brain (`brain_claudecode.py` + `agent.py`)",
       "_origin": "ast",
       "community": 15,
@@ -12491,12 +12491,12 @@
     },
     {
       "id": "backend_brain_prompts_rationale_1",
-      "label": "Jarvis system prompt(s).",
+      "label": "Ultron system prompt(s).",
       "_origin": "ast",
       "community": 17,
       "community_name": "config.py",
       "file_type": "rationale",
-      "norm_label": "jarvis system prompt(s).",
+      "norm_label": "ultron system prompt(s).",
       "source_file": "backend/brain/prompts.py",
       "source_location": "L1"
     },
@@ -12535,12 +12535,12 @@
     },
     {
       "id": "backend_gateway_rationale_42",
-      "label": "The omniroute command. Jarvis.app starts without your shell's PATH, so also\u2026",
+      "label": "The omniroute command. Ultron.app starts without your shell's PATH, so also\u2026",
       "_origin": "ast",
       "community": 17,
       "community_name": "config.py",
       "file_type": "rationale",
-      "norm_label": "the omniroute command. jarvis.app starts without your shell's path, so also...",
+      "norm_label": "the omniroute command. ultron.app starts without your shell's path, so also...",
       "source_file": "backend/gateway.py",
       "source_location": "L42"
     },
@@ -12723,23 +12723,23 @@
     },
     {
       "id": "backend_tools_blender_export_script_rationale_1",
-      "label": "Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never\u2026",
+      "label": "Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never\u2026",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "runs inside blender (never imported by jarvis). fixed script: claude never...",
+      "norm_label": "runs inside blender (never imported by ultron). fixed script: claude never...",
       "source_file": "backend/tools/blender_export_script.py",
       "source_location": "L1"
     },
     {
       "id": "backend_tools_blender_render_script_rationale_1",
-      "label": "Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never\u2026",
+      "label": "Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never\u2026",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "runs inside blender (never imported by jarvis). fixed script: claude never...",
+      "norm_label": "runs inside blender (never imported by ultron). fixed script: claude never...",
       "source_file": "backend/tools/blender_render_script.py",
       "source_location": "L1"
     },
@@ -12756,23 +12756,23 @@
     },
     {
       "id": "backend_tools_mac_rationale_117",
-      "label": "Ask JarvisLocation.app (where am I / search / directions), from the phone's\u2026",
+      "label": "Ask UltronLocation.app (where am I / search / directions), from the phone's\u2026",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "ask jarvislocation.app (where am i / search / directions), from the phone's...",
+      "norm_label": "ask ultronlocation.app (where am i / search / directions), from the phone's...",
       "source_file": "backend/tools/mac.py",
       "source_location": "L117"
     },
     {
       "id": "backend_tools_mac_rationale_160",
-      "label": "Files and folders in Jarvis's folder whose path has every word of the query,\u2026",
+      "label": "Files and folders in Ultron's folder whose path has every word of the query,\u2026",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "files and folders in jarvis's folder whose path has every word of the query,...",
+      "norm_label": "files and folders in ultron's folder whose path has every word of the query,...",
       "source_file": "backend/tools/mac.py",
       "source_location": "L160"
     },
@@ -12800,23 +12800,23 @@
     },
     {
       "id": "backend_tools_mac_rationale_95",
-      "label": "The file a path names inside Jarvis's folder. ValueError if it's anywhere else.",
+      "label": "The file a path names inside Ultron's folder. ValueError if it's anywhere else.",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "the file a path names inside jarvis's folder. valueerror if it's anywhere else.",
+      "norm_label": "the file a path names inside ultron's folder. valueerror if it's anywhere else.",
       "source_file": "backend/tools/mac.py",
       "source_location": "L95"
     },
     {
       "id": "scripts_make_icon_rationale_1",
-      "label": "Draw the Jarvis icon (the glowing blue orb from the page header) as a macOS\u2026",
+      "label": "Draw the Ultron icon (the glowing blue orb from the page header) as a macOS\u2026",
       "_origin": "ast",
       "community": 18,
       "community_name": "mac.py",
       "file_type": "rationale",
-      "norm_label": "draw the jarvis icon (the glowing blue orb from the page header) as a macos...",
+      "norm_label": "draw the ultron icon (the glowing blue orb from the page header) as a macos...",
       "source_file": "scripts/make_icon.py",
       "source_location": "L1"
     },
@@ -13047,7 +13047,7 @@
       "community": 20,
       "community_name": "._connect",
       "file_type": "rationale",
-      "norm_label": "switch claude.ai connectors on or off to match jarvis_connectors (.env). claude...",
+      "norm_label": "switch claude.ai connectors on or off to match ultron_connectors (.env). claude...",
       "source_file": "backend/brain/brain_claudecode.py",
       "source_location": "L188"
     },
@@ -13152,23 +13152,23 @@
     },
     {
       "id": "backend_tools_canvas_rationale_153",
-      "label": "Put a markdown card on the canvas from Jarvis's own code. Returns the card id.",
+      "label": "Put a markdown card on the canvas from Ultron's own code. Returns the card id.",
       "_origin": "ast",
       "community": 21,
       "community_name": "spotify.py",
       "file_type": "rationale",
-      "norm_label": "put a markdown card on the canvas from jarvis's own code. returns the card id.",
+      "norm_label": "put a markdown card on the canvas from ultron's own code. returns the card id.",
       "source_file": "backend/tools/canvas.py",
       "source_location": "L153"
     },
     {
       "id": "backend_tools_canvas_rationale_160",
-      "label": "Put a table card on the canvas from Jarvis's own code. Returns the card id.",
+      "label": "Put a table card on the canvas from Ultron's own code. Returns the card id.",
       "_origin": "ast",
       "community": 21,
       "community_name": "spotify.py",
       "file_type": "rationale",
-      "norm_label": "put a table card on the canvas from jarvis's own code. returns the card id.",
+      "norm_label": "put a table card on the canvas from ultron's own code. returns the card id.",
       "source_file": "backend/tools/canvas.py",
       "source_location": "L160"
     },
@@ -13268,7 +13268,7 @@
       "community_name": "Locator",
       "file_type": "code",
       "norm_label": "appkit",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L4",
       "type": "module"
     },
@@ -13463,18 +13463,18 @@
       "source_location": ""
     },
     {
-      "id": "scripts_jarvis",
-      "label": "Jarvis.swift",
+      "id": "scripts_ultron",
+      "label": "Ultron.swift",
       "_origin": "ast",
       "community": 22,
       "community_name": "Locator",
       "file_type": "code",
-      "norm_label": "jarvis.swift",
-      "source_file": "scripts/Jarvis.swift",
+      "norm_label": "ultron.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L1"
     },
     {
-      "id": "scripts_jarvis_swift_string",
+      "id": "scripts_ultron_swift_string",
       "label": "String",
       "_origin": "ast",
       "community": 22,
@@ -13553,14 +13553,14 @@
       "source_location": "L303"
     },
     {
-      "id": "readme_jarvis_cbrain",
+      "id": "readme_ultron_cbrain",
       "label": "Jarvis_cBrain",
       "_origin": "ast",
       "community": 23,
       "community_name": "Jarvis_cBrain",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "jarvis_cbrain",
+      "norm_label": "ultron_cbrain",
       "source_file": "README.md",
       "source_location": "L1"
     },
@@ -13811,12 +13811,12 @@
     },
     {
       "id": "backend_notify_rationale_57",
-      "label": "Notifications since the user's last message, for Jarvis's conversation to know\u2026",
+      "label": "Notifications since the user's last message, for Ultron's conversation to know\u2026",
       "_origin": "ast",
       "community": 24,
       "community_name": "asyncio",
       "file_type": "rationale",
-      "norm_label": "notifications since the user's last message, for jarvis's conversation to know...",
+      "norm_label": "notifications since the user's last message, for ultron's conversation to know...",
       "source_file": "backend/notify.py",
       "source_location": "L57"
     },
@@ -13998,12 +13998,12 @@
     },
     {
       "id": "backend_tools_init_rationale_1",
-      "label": "Jarvis's local tools, exposed to Claude via an in-process MCP server.",
+      "label": "Ultron's local tools, exposed to Claude via an in-process MCP server.",
       "_origin": "ast",
       "community": 24,
       "community_name": "asyncio",
       "file_type": "rationale",
-      "norm_label": "jarvis's local tools, exposed to claude via an in-process mcp server.",
+      "norm_label": "ultron's local tools, exposed to claude via an in-process mcp server.",
       "source_file": "backend/tools/__init__.py",
       "source_location": "L1"
     },
@@ -14114,7 +14114,7 @@
       "community": 25,
       "community_name": "job_store.py",
       "file_type": "rationale",
-      "norm_label": "inside jarvis_quiet_hours? (they may run over midnight: 23:00-07:00.)",
+      "norm_label": "inside ultron_quiet_hours? (they may run over midnight: 23:00-07:00.)",
       "source_file": "backend/scheduler.py",
       "source_location": "L49"
     },
@@ -14208,12 +14208,12 @@
     },
     {
       "id": "backend_tools_jobs_rationale_1",
-      "label": "schedule_job / list_jobs / change_job: things Jarvis does on its own, later.\u2026",
+      "label": "schedule_job / list_jobs / change_job: things Ultron does on its own, later.\u2026",
       "_origin": "ast",
       "community": 25,
       "community_name": "job_store.py",
       "file_type": "rationale",
-      "norm_label": "schedule_job / list_jobs / change_job: things jarvis does on its own, later....",
+      "norm_label": "schedule_job / list_jobs / change_job: things ultron does on its own, later....",
       "source_file": "backend/tools/jobs.py",
       "source_location": "L1"
     },
@@ -14351,12 +14351,12 @@
     },
     {
       "id": "backend_main_rationale_161",
-      "label": "Spotify sends you back here after the login link Jarvis showed you.",
+      "label": "Spotify sends you back here after the login link Ultron showed you.",
       "_origin": "ast",
       "community": 27,
       "community_name": "video.py",
       "file_type": "rationale",
-      "norm_label": "spotify sends you back here after the login link jarvis showed you.",
+      "norm_label": "spotify sends you back here after the login link ultron showed you.",
       "source_file": "backend/main.py",
       "source_location": "L161"
     },
@@ -14497,7 +14497,7 @@
       "label": "Event",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "event",
       "source_file": "",
@@ -14508,7 +14508,7 @@
       "label": "router.py",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "router.py",
       "source_file": "backend/brain/router.py",
@@ -14519,7 +14519,7 @@
       "label": "test_device.py",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "test_device.py",
       "source_file": "backend/tests/test_device.py",
@@ -14530,7 +14530,7 @@
       "label": "SimpleNamespace",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "code",
       "norm_label": "simplenamespace",
       "source_file": "",
@@ -14541,7 +14541,7 @@
       "label": "A big conversation left alone for over an hour: Claude's cached copy has\u2026",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "rationale",
       "norm_label": "a big conversation left alone for over an hour: claude's cached copy has...",
       "source_file": "backend/brain/agent.py",
@@ -14552,7 +14552,7 @@
       "label": "Answer one user message, yielding WebSocket events for the browser.",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "rationale",
       "norm_label": "answer one user message, yielding websocket events for the browser.",
       "source_file": "backend/brain/agent.py",
@@ -14563,7 +14563,7 @@
       "label": "Haiku / Sonnet / Opus selection. Order of checks: 1. The model picked in the UI\u2026",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "rationale",
       "norm_label": "haiku / sonnet / opus selection. order of checks: 1. the model picked in the ui...",
       "source_file": "backend/brain/router.py",
@@ -14571,12 +14571,12 @@
     },
     {
       "id": "backend_tests_test_device_rationale_1",
-      "label": "Which device you're talking from reaches Jarvis, so \"play this\" happens on that\u2026",
+      "label": "Which device you're talking from reaches Ultron, so \"play this\" happens on that\u2026",
       "_origin": "ast",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "file_type": "rationale",
-      "norm_label": "which device you're talking from reaches jarvis, so \"play this\" happens on that...",
+      "norm_label": "which device you're talking from reaches ultron, so \"play this\" happens on that...",
       "source_file": "backend/tests/test_device.py",
       "source_location": "L1"
     },
@@ -14955,48 +14955,48 @@
       "source_location": "L3"
     },
     {
-      "id": "scripts_start_jarvis",
-      "label": "start_jarvis.sh",
+      "id": "scripts_start_ultron",
+      "label": "start_ultron.sh",
       "_origin": "ast",
       "community": 34,
-      "community_name": "start_jarvis.sh",
+      "community_name": "start_ultron.sh",
       "file_type": "code",
       "metadata": {
         "language": "bash",
         "kind": "file"
       },
-      "norm_label": "start_jarvis.sh",
-      "source_file": "scripts/start_jarvis.sh",
+      "norm_label": "start_ultron.sh",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L1"
     },
     {
-      "id": "scripts_start_jarvis_running",
+      "id": "scripts_start_ultron_running",
       "label": "running()",
       "_origin": "ast",
       "community": 34,
-      "community_name": "start_jarvis.sh",
+      "community_name": "start_ultron.sh",
       "file_type": "code",
       "metadata": {
         "language": "bash",
         "kind": "bash_function"
       },
       "norm_label": "running()",
-      "source_file": "scripts/start_jarvis.sh",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L13"
     },
     {
-      "id": "scripts_start_jarvis_sh__entry",
-      "label": "start_jarvis.sh script",
+      "id": "scripts_start_ultron_sh__entry",
+      "label": "start_ultron.sh script",
       "_origin": "ast",
       "community": 34,
-      "community_name": "start_jarvis.sh",
+      "community_name": "start_ultron.sh",
       "file_type": "code",
       "metadata": {
         "language": "bash",
         "kind": "bash_entrypoint"
       },
-      "norm_label": "start_jarvis.sh script",
-      "source_file": "scripts/start_jarvis.sh",
+      "norm_label": "start_ultron.sh script",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L1"
     },
     {
@@ -15102,12 +15102,12 @@
     },
     {
       "id": "backend_storage_memory_store_rationale_1",
-      "label": "What Jarvis remembers about you between chats, in storage/memory.json. Short\u2026",
+      "label": "What Ultron remembers about you between chats, in storage/memory.json. Short\u2026",
       "_origin": "ast",
       "community": 36,
       "community_name": "memory_store.py",
       "file_type": "rationale",
-      "norm_label": "what jarvis remembers about you between chats, in storage/memory.json. short...",
+      "norm_label": "what ultron remembers about you between chats, in storage/memory.json. short...",
       "source_file": "backend/storage/memory_store.py",
       "source_location": "L1"
     },
@@ -15212,12 +15212,12 @@
     },
     {
       "id": "backend_tools_memory_rationale_1",
-      "label": "remember / recall / forget: what Jarvis knows about you between chats. The\u2026",
+      "label": "remember / recall / forget: what Ultron knows about you between chats. The\u2026",
       "_origin": "ast",
       "community": 36,
       "community_name": "memory_store.py",
       "file_type": "rationale",
-      "norm_label": "remember / recall / forget: what jarvis knows about you between chats. the...",
+      "norm_label": "remember / recall / forget: what ultron knows about you between chats. the...",
       "source_file": "backend/tools/memory.py",
       "source_location": "L1"
     },
@@ -15453,7 +15453,7 @@
       "source_location": ""
     },
     {
-      "id": "jarvis_build_prompt_12_build_phases",
+      "id": "ultron_build_prompt_12_build_phases",
       "label": "12. Build phases",
       "_origin": "ast",
       "community": 4,
@@ -15627,33 +15627,33 @@
       "source_location": "L1"
     },
     {
-      "id": "scripts_stop_jarvis",
-      "label": "stop_jarvis.sh",
+      "id": "scripts_stop_ultron",
+      "label": "stop_ultron.sh",
       "_origin": "ast",
       "community": 42,
-      "community_name": "stop_jarvis.sh",
+      "community_name": "stop_ultron.sh",
       "file_type": "code",
       "metadata": {
         "language": "bash",
         "kind": "file"
       },
-      "norm_label": "stop_jarvis.sh",
-      "source_file": "scripts/stop_jarvis.sh",
+      "norm_label": "stop_ultron.sh",
+      "source_file": "scripts/stop_ultron.sh",
       "source_location": "L1"
     },
     {
-      "id": "scripts_stop_jarvis_sh__entry",
-      "label": "stop_jarvis.sh script",
+      "id": "scripts_stop_ultron_sh__entry",
+      "label": "stop_ultron.sh script",
       "_origin": "ast",
       "community": 42,
-      "community_name": "stop_jarvis.sh",
+      "community_name": "stop_ultron.sh",
       "file_type": "code",
       "metadata": {
         "language": "bash",
         "kind": "bash_entrypoint"
       },
-      "norm_label": "stop_jarvis.sh script",
-      "source_file": "scripts/stop_jarvis.sh",
+      "norm_label": "stop_ultron.sh script",
+      "source_file": "scripts/stop_ultron.sh",
       "source_location": "L1"
     },
     {
@@ -15801,23 +15801,23 @@
     },
     {
       "id": "backend_tools_connectors_rationale_69",
-      "label": "h5hdgf82...' -> 'Jarvis test (2026-09-30T16:00:00+04:00)', if Jarvis has seen\u2026",
+      "label": "h5hdgf82...' -> 'Ultron test (2026-09-30T16:00:00+04:00)', if Ultron has seen\u2026",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "h5hdgf82...' -> 'jarvis test (2026-09-30t16:00:00+04:00)', if jarvis has seen...",
+      "norm_label": "h5hdgf82...' -> 'ultron test (2026-09-30t16:00:00+04:00)', if ultron has seen...",
       "source_file": "backend/tools/connectors.py",
       "source_location": "L69"
     },
     {
       "id": "backend_tools_registry_rationale_1",
-      "label": "All Jarvis tools + read/act labels, SDK MCP server. Every tool is labelled:\u2026",
+      "label": "All Ultron tools + read/act labels, SDK MCP server. Every tool is labelled:\u2026",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "all jarvis tools + read/act labels, sdk mcp server. every tool is labelled:...",
+      "norm_label": "all ultron tools + read/act labels, sdk mcp server. every tool is labelled:...",
       "source_file": "backend/tools/registry.py",
       "source_location": "L1"
     },
@@ -15845,23 +15845,23 @@
     },
     {
       "id": "backend_tools_registry_rationale_227",
-      "label": "Mark Jarvis's own tools 'always load' so Tool Search doesn't hide them. Claude\u2026",
+      "label": "Mark Ultron's own tools 'always load' so Tool Search doesn't hide them. Claude\u2026",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "mark jarvis's own tools 'always load' so tool search doesn't hide them. claude...",
+      "norm_label": "mark ultron's own tools 'always load' so tool search doesn't hide them. claude...",
       "source_file": "backend/tools/registry.py",
       "source_location": "L227"
     },
     {
       "id": "backend_tools_registry_rationale_245",
-      "label": "The in-process MCP server that exposes Jarvis's tools to Claude Code.",
+      "label": "The in-process MCP server that exposes Ultron's tools to Claude Code.",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "the in-process mcp server that exposes jarvis's tools to claude code.",
+      "norm_label": "the in-process mcp server that exposes ultron's tools to claude code.",
       "source_file": "backend/tools/registry.py",
       "source_location": "L245"
     },
@@ -15878,23 +15878,23 @@
     },
     {
       "id": "backend_tools_registry_rationale_257",
-      "label": "mcp__jarvis__ask_expert' -> 'ask_expert'. Other names are unchanged.",
+      "label": "mcp__ultron__ask_expert' -> 'ask_expert'. Other names are unchanged.",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "mcp__jarvis__ask_expert' -> 'ask_expert'. other names are unchanged.",
+      "norm_label": "mcp__ultron__ask_expert' -> 'ask_expert'. other names are unchanged.",
       "source_file": "backend/tools/registry.py",
       "source_location": "L257"
     },
     {
       "id": "backend_tools_registry_rationale_262",
-      "label": "A readable tool name for the confirmation card. 'mcp__jarvis__save_note' ->\u2026",
+      "label": "A readable tool name for the confirmation card. 'mcp__ultron__save_note' ->\u2026",
       "_origin": "ast",
       "community": 45,
       "community_name": "registry.py",
       "file_type": "rationale",
-      "norm_label": "a readable tool name for the confirmation card. 'mcp__jarvis__save_note' ->...",
+      "norm_label": "a readable tool name for the confirmation card. 'mcp__ultron__save_note' ->...",
       "source_file": "backend/tools/registry.py",
       "source_location": "L262"
     },
@@ -16334,7 +16334,7 @@
       "community": 51,
       "community_name": "notes.py",
       "file_type": "rationale",
-      "norm_label": "search_notes / read_note / write_note: your obsidian vault (jarvis_vault in...",
+      "norm_label": "search_notes / read_note / write_note: your obsidian vault (ultron_vault in...",
       "source_file": "backend/tools/notes.py",
       "source_location": "L1"
     },
@@ -16362,12 +16362,12 @@
     },
     {
       "id": "backend_tools_notes_rationale_58",
-      "label": "(relative path, text) of every note Jarvis may read, newest first.",
+      "label": "(relative path, text) of every note Ultron may read, newest first.",
       "_origin": "ast",
       "community": 51,
       "community_name": "notes.py",
       "file_type": "rationale",
-      "norm_label": "(relative path, text) of every note jarvis may read, newest first.",
+      "norm_label": "(relative path, text) of every note ultron may read, newest first.",
       "source_file": "backend/tools/notes.py",
       "source_location": "L58"
     },
@@ -16428,12 +16428,12 @@
     },
     {
       "id": "backend_tests_test_calendar_rationale_1",
-      "label": "Calendar: Google Calendar reads run freely, writes ask; Jarvis knows the date;\u2026",
+      "label": "Calendar: Google Calendar reads run freely, writes ask; Ultron knows the date;\u2026",
       "_origin": "ast",
       "community": 52,
       "community_name": "canvas.py",
       "file_type": "rationale",
-      "norm_label": "calendar: google calendar reads run freely, writes ask; jarvis knows the date;...",
+      "norm_label": "calendar: google calendar reads run freely, writes ask; ultron knows the date;...",
       "source_file": "backend/tests/test_calendar.py",
       "source_location": "L1"
     },
@@ -16516,12 +16516,12 @@
     },
     {
       "id": "backend_terminal_rationale_39",
-      "label": "Your normal environment, without the variables that point Jarvis's own Claude\u2026",
+      "label": "Your normal environment, without the variables that point Ultron's own Claude\u2026",
       "_origin": "ast",
       "community": 53,
       "community_name": "terminal.py",
       "file_type": "rationale",
-      "norm_label": "your normal environment, without the variables that point jarvis's own claude...",
+      "norm_label": "your normal environment, without the variables that point ultron's own claude...",
       "source_file": "backend/terminal.py",
       "source_location": "L39"
     },
@@ -16923,12 +16923,12 @@
     },
     {
       "id": "backend_tools_important_rationale_1",
-      "label": "mark_important / unmark_important: files and folders Jarvis must ask about\u2026",
+      "label": "mark_important / unmark_important: files and folders Ultron must ask about\u2026",
       "_origin": "ast",
       "community": 59,
       "community_name": "important.py",
       "file_type": "rationale",
-      "norm_label": "mark_important / unmark_important: files and folders jarvis must ask about...",
+      "norm_label": "mark_important / unmark_important: files and folders ultron must ask about...",
       "source_file": "backend/tools/important.py",
       "source_location": "L1"
     },
@@ -17417,23 +17417,23 @@
       "source_location": "L14"
     },
     {
-      "id": "jarvis_build_prompt",
+      "id": "ultron_build_prompt",
       "label": "JARVIS_BUILD_PROMPT.md",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "page",
-      "norm_label": "jarvis_build_prompt.md",
+      "norm_label": "ultron_build_prompt.md",
       "source_file": "JARVIS_BUILD_PROMPT.md",
       "source_location": "L1"
     },
     {
-      "id": "jarvis_build_prompt_0_role_and_goal",
+      "id": "ultron_build_prompt_0_role_and_goal",
       "label": "0. Role and goal",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "0. role and goal",
@@ -17441,11 +17441,11 @@
       "source_location": "L7"
     },
     {
-      "id": "jarvis_build_prompt_10_memory",
+      "id": "ultron_build_prompt_10_memory",
       "label": "10. Memory",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "10. memory",
@@ -17453,11 +17453,11 @@
       "source_location": "L259"
     },
     {
-      "id": "jarvis_build_prompt_11_project_structure",
+      "id": "ultron_build_prompt_11_project_structure",
       "label": "11. Project structure",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "11. project structure",
@@ -17465,11 +17465,11 @@
       "source_location": "L267"
     },
     {
-      "id": "jarvis_build_prompt_2_architecture",
+      "id": "ultron_build_prompt_2_architecture",
       "label": "2. Architecture",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "2. architecture",
@@ -17477,11 +17477,11 @@
       "source_location": "L67"
     },
     {
-      "id": "jarvis_build_prompt_5_web_search",
+      "id": "ultron_build_prompt_5_web_search",
       "label": "5. Web search",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "5. web search",
@@ -17489,11 +17489,11 @@
       "source_location": "L149"
     },
     {
-      "id": "jarvis_build_prompt_6_connectors_gmail_calendar_drive",
+      "id": "ultron_build_prompt_6_connectors_gmail_calendar_drive",
       "label": "6. Connectors (Gmail, Calendar, Drive, \u2026)",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "6. connectors (gmail, calendar, drive, ...)",
@@ -17501,11 +17501,11 @@
       "source_location": "L155"
     },
     {
-      "id": "jarvis_build_prompt_7_canvas_and_images_the_dog_picture_feature",
+      "id": "ultron_build_prompt_7_canvas_and_images_the_dog_picture_feature",
       "label": "7. Canvas and images (the \"dog picture\" feature)",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "7. canvas and images (the \"dog picture\" feature)",
@@ -17513,11 +17513,11 @@
       "source_location": "L164"
     },
     {
-      "id": "jarvis_build_prompt_7b_3d_objects_preview_mode_phase_4d",
+      "id": "ultron_build_prompt_7b_3d_objects_preview_mode_phase_4d",
       "label": "7b. 3D objects: preview mode (Phase 4d)",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "7b. 3d objects: preview mode (phase 4d)",
@@ -17525,11 +17525,11 @@
       "source_location": "L179"
     },
     {
-      "id": "jarvis_build_prompt_8_safety_confirmation_gate_and_trust_rules",
+      "id": "ultron_build_prompt_8_safety_confirmation_gate_and_trust_rules",
       "label": "8. Safety: confirmation gate and trust rules",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "8. safety: confirmation gate and trust rules",
@@ -17537,11 +17537,11 @@
       "source_location": "L232"
     },
     {
-      "id": "jarvis_build_prompt_9_voice",
+      "id": "ultron_build_prompt_9_voice",
       "label": "9. Voice",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "9. voice",
@@ -17549,11 +17549,11 @@
       "source_location": "L241"
     },
     {
-      "id": "jarvis_build_prompt_feature_spec_written_by_me",
+      "id": "ultron_build_prompt_feature_spec_written_by_me",
       "label": "Feature spec (written by me)",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "feature spec (written by me)",
@@ -17561,23 +17561,23 @@
       "source_location": "L181"
     },
     {
-      "id": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "label": "Jarvis \u2014 Full Build Prompt",
+      "id": "ultron_build_prompt_ultron_full_build_prompt",
+      "label": "Ultron \u2014 Full Build Prompt",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "jarvis \u2014 full build prompt",
+      "norm_label": "ultron \u2014 full build prompt",
       "source_file": "JARVIS_BUILD_PROMPT.md",
       "source_location": "L1"
     },
     {
-      "id": "jarvis_build_prompt_technical_approach_proposed_by_claude",
+      "id": "ultron_build_prompt_technical_approach_proposed_by_claude",
       "label": "Technical approach (proposed by Claude)",
       "_origin": "ast",
       "community": 61,
-      "community_name": "Jarvis \u2014 Full Build Prompt",
+      "community_name": "Ultron \u2014 Full Build Prompt",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "technical approach (proposed by claude)",
@@ -17710,7 +17710,7 @@
       "label": "Any",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "code",
       "norm_label": "any",
       "source_file": "",
@@ -17721,7 +17721,7 @@
       "label": "tool",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "code",
       "norm_label": "tool",
       "source_file": "",
@@ -17732,7 +17732,7 @@
       "label": "to_do_list.md",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "page",
       "norm_label": "to_do_list.md",
@@ -17744,7 +17744,7 @@
       "label": "1. Calendar read/write  \u2014 *Priority 1*",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "1. calendar read/write  \u2014 *priority 1*",
@@ -17756,7 +17756,7 @@
       "label": "2. Reminders / tasks  \u2014 *Priority 2*",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "2. reminders / tasks  \u2014 *priority 2*",
@@ -17768,7 +17768,7 @@
       "label": "3. Contacts lookup  \u2014 *Priority 3*",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "3. contacts lookup  \u2014 *priority 3*",
@@ -17780,7 +17780,7 @@
       "label": "6. Notifications  \u2014 *Priority 5 (ships with the scheduler)*",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "6. notifications  \u2014 *priority 5 (ships with the scheduler)*",
@@ -17792,7 +17792,7 @@
       "label": "8. Messaging + maps/travel  \u2014 *Priority 7*",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "8. messaging + maps/travel  \u2014 *priority 7*",
@@ -17804,7 +17804,7 @@
       "label": "Honorable mentions (later)",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "honorable mentions (later)",
@@ -17812,14 +17812,14 @@
       "source_location": "L147"
     },
     {
-      "id": "to_do_list_jarvis_to_do_list",
-      "label": "Jarvis To-Do List",
+      "id": "to_do_list_ultron_to_do_list",
+      "label": "Ultron To-Do List",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "jarvis to-do list",
+      "norm_label": "ultron to-do list",
       "source_file": "to_do_list.md",
       "source_location": "L1"
     },
@@ -17828,7 +17828,7 @@
       "label": "Milestone: Daily briefing",
       "_origin": "ast",
       "community": 64,
-      "community_name": "Jarvis To-Do List",
+      "community_name": "Ultron To-Do List",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "milestone: daily briefing",
@@ -18101,12 +18101,12 @@
     },
     {
       "id": "backend_brain_agent_rationale_1",
-      "label": "Jarvis logic: router -> brain -> events.",
+      "label": "Ultron logic: router -> brain -> events.",
       "_origin": "ast",
       "community": 7,
       "community_name": "main.py",
       "file_type": "rationale",
-      "norm_label": "jarvis logic: router -> brain -> events.",
+      "norm_label": "ultron logic: router -> brain -> events.",
       "source_file": "backend/brain/agent.py",
       "source_location": "L1"
     },
@@ -18145,12 +18145,12 @@
     },
     {
       "id": "backend_brain_init_rationale_1",
-      "label": "Jarvis's brain: talks to Claude.",
+      "label": "Ultron's brain: talks to Claude.",
       "_origin": "ast",
       "community": 7,
       "community_name": "main.py",
       "file_type": "rationale",
-      "norm_label": "jarvis's brain: talks to claude.",
+      "norm_label": "ultron's brain: talks to claude.",
       "source_file": "backend/brain/__init__.py",
       "source_location": "L1"
     },
@@ -18519,12 +18519,12 @@
     },
     {
       "id": "backend_tools_telegram_rationale_1",
-      "label": "Telegram: Jarvis texts you from its own bot, which shows up on your phone as a\u2026",
+      "label": "Telegram: Ultron texts you from its own bot, which shows up on your phone as a\u2026",
       "_origin": "ast",
       "community": 81,
       "community_name": "telegram.py",
       "file_type": "rationale",
-      "norm_label": "telegram: jarvis texts you from its own bot, which shows up on your phone as a...",
+      "norm_label": "telegram: ultron texts you from its own bot, which shows up on your phone as a...",
       "source_file": "backend/tools/telegram.py",
       "source_location": "L1"
     },
@@ -18684,12 +18684,12 @@
     },
     {
       "id": "backend_main_rationale_78",
-      "label": "The page itself must never come from the browser's cache, or a rebuilt Jarvis\u2026",
+      "label": "The page itself must never come from the browser's cache, or a rebuilt Ultron\u2026",
       "_origin": "ast",
       "community": 88,
       "community_name": "upload",
       "file_type": "rationale",
-      "norm_label": "the page itself must never come from the browser's cache, or a rebuilt jarvis...",
+      "norm_label": "the page itself must never come from the browser's cache, or a rebuilt ultron...",
       "source_file": "backend/main.py",
       "source_location": "L78"
     },
@@ -18794,12 +18794,12 @@
     },
     {
       "id": "backend_brain_base_rationale_1",
-      "label": "Brain protocol + BrainEvent types. Everything in Jarvis talks to a `Brain`,\u2026",
+      "label": "Brain protocol + BrainEvent types. Everything in Ultron talks to a `Brain`,\u2026",
       "_origin": "ast",
       "community": 9,
       "community_name": "scheduler.py",
       "file_type": "rationale",
-      "norm_label": "brain protocol + brainevent types. everything in jarvis talks to a `brain`,...",
+      "norm_label": "brain protocol + brainevent types. everything in ultron talks to a `brain`,...",
       "source_file": "backend/brain/base.py",
       "source_location": "L1"
     },
@@ -18849,12 +18849,12 @@
     },
     {
       "id": "backend_brain_brain_api_rationale_1",
-      "label": "Placeholder: API-key brain. Not used. Jarvis runs on the Claude Pro\u2026",
+      "label": "Placeholder: API-key brain. Not used. Ultron runs on the Claude Pro\u2026",
       "_origin": "ast",
       "community": 9,
       "community_name": "scheduler.py",
       "file_type": "rationale",
-      "norm_label": "placeholder: api-key brain. not used. jarvis runs on the claude pro...",
+      "norm_label": "placeholder: api-key brain. not used. ultron runs on the claude pro...",
       "source_file": "backend/brain/brain_api.py",
       "source_location": "L1"
     },
@@ -18926,12 +18926,12 @@
     },
     {
       "id": "backend_scheduler_rationale_1",
-      "label": "Runs scheduled jobs (storage/job_store.py): Jarvis acting on its own. A loop\u2026",
+      "label": "Runs scheduled jobs (storage/job_store.py): Ultron acting on its own. A loop\u2026",
       "_origin": "ast",
       "community": 9,
       "community_name": "scheduler.py",
       "file_type": "rationale",
-      "norm_label": "runs scheduled jobs (storage/job_store.py): jarvis acting on its own. a loop...",
+      "norm_label": "runs scheduled jobs (storage/job_store.py): ultron acting on its own. a loop...",
       "source_file": "backend/scheduler.py",
       "source_location": "L1"
     },
@@ -18991,7 +18991,7 @@
       "source_location": ""
     },
     {
-      "id": "jarvis_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
+      "id": "ultron_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
       "label": "3. Model routing (cheap by default, strong when needed)",
       "_origin": "ast",
       "community": 93,
@@ -19085,12 +19085,12 @@
     },
     {
       "id": "backend_tools_models3d_rationale_89",
-      "label": "Run one of Jarvis's fixed Blender scripts in the background. Returns Blender's\u2026",
+      "label": "Run one of Ultron's fixed Blender scripts in the background. Returns Blender's\u2026",
       "_origin": "ast",
       "community": 94,
       "community_name": "_blender",
       "file_type": "rationale",
-      "norm_label": "run one of jarvis's fixed blender scripts in the background. returns blender's...",
+      "norm_label": "run one of ultron's fixed blender scripts in the background. returns blender's...",
       "source_file": "backend/tools/models3d.py",
       "source_location": "L89"
     },
@@ -19099,7 +19099,7 @@
       "label": "Doing things on its own",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "doing things on its own",
@@ -19111,7 +19111,7 @@
       "label": "Knowing you",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "knowing you",
@@ -19123,7 +19123,7 @@
       "label": "Making things",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "making things",
@@ -19135,7 +19135,7 @@
       "label": "Messages",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "messages",
@@ -19147,7 +19147,7 @@
       "label": "On this Mac",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "on this mac",
@@ -19155,14 +19155,14 @@
       "source_location": "L129"
     },
     {
-      "id": "readme_what_jarvis_can_do",
-      "label": "What Jarvis can do",
+      "id": "readme_what_ultron_can_do",
+      "label": "What Ultron can do",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "what jarvis can do",
+      "norm_label": "what ultron can do",
       "source_file": "README.md",
       "source_location": "L10"
     },
@@ -19171,7 +19171,7 @@
       "label": "Your accounts",
       "_origin": "ast",
       "community": 95,
-      "community_name": "What Jarvis can do",
+      "community_name": "What Ultron can do",
       "file_type": "document",
       "node_kind": "heading",
       "norm_label": "your accounts",
@@ -19233,7 +19233,7 @@
       "contributor": null,
       "file_type": "concept",
       "norm_label": "ai core orb visual identity",
-      "rationale": "Glowing cyan sphere motif suggests a JARVIS-like assistant 'brain' core; cyan/teal palette signals a sci-fi HUD aesthetic.",
+      "rationale": "Glowing cyan sphere motif suggests a ULTRON-like assistant 'brain' core; cyan/teal palette signals a sci-fi HUD aesthetic.",
       "source_file": "frontend/public/favicon.svg",
       "source_location": null,
       "source_url": null
@@ -19249,7 +19249,7 @@
       "contributor": null,
       "file_type": "image",
       "norm_label": "favicon (glowing cyan orb)",
-      "rationale": "Single 32x32 circle filled with an off-center radial gradient (pale cyan #bdf4ff highlight to #4cc9f0 to deep teal #0d5e78) giving a lit 3D sphere/orb look; evokes a Jarvis-style AI core glow used as the app browser-tab icon.",
+      "rationale": "Single 32x32 circle filled with an off-center radial gradient (pale cyan #bdf4ff highlight to #4cc9f0 to deep teal #0d5e78) giving a lit 3D sphere/orb look; evokes a Ultron-style AI core glow used as the app browser-tab icon.",
       "source_file": "frontend/public/favicon.svg",
       "source_location": null,
       "source_url": null
@@ -19475,7 +19475,7 @@
       "label": "dataclasses",
       "_origin": "semantic",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "external": true,
       "file_type": "concept",
       "norm_label": "dataclasses",
@@ -19793,7 +19793,7 @@
       "id": "types",
       "label": "types",
       "community": 29,
-      "community_name": "Jarvis",
+      "community_name": "Ultron",
       "external": true,
       "file_type": "concept",
       "norm_label": "types",
@@ -19957,8 +19957,8 @@
   ],
   "links": [
     {
-      "source": "backend_brain_agent_jarvis_handle_text",
-      "target": "backend_brain_agent_jarvis_usage_event",
+      "source": "backend_brain_agent_ultron_handle_text",
+      "target": "backend_brain_agent_ultron_usage_event",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -19969,8 +19969,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_handle_text",
-      "target": "backend_brain_agent_jarvis_idle_too_long",
+      "source": "backend_brain_agent_ultron_handle_text",
+      "target": "backend_brain_agent_ultron_idle_too_long",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -19981,7 +19981,7 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_handle_text",
+      "source": "backend_brain_agent_ultron_handle_text",
       "target": "backend_brain_router_route",
       "relation": "calls",
       "_origin": "ast",
@@ -19993,7 +19993,7 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_handle_text",
+      "source": "backend_brain_agent_ultron_handle_text",
       "target": "backend_brain_agent_now_note",
       "relation": "calls",
       "_origin": "ast",
@@ -22586,7 +22586,7 @@
     },
     {
       "source": "backend_tests_test_device_devicetest_test_note_reaches_the_brain",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23690,7 +23690,7 @@
     },
     {
       "source": "backend_tests_test_usage_idlestartovertest_run_turn",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28034,7 +28034,7 @@
     },
     {
       "source": "frontend_src_app_app",
-      "target": "frontend_src_ws_usejarvis",
+      "target": "frontend_src_ws_useultron",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28694,7 +28694,7 @@
     },
     {
       "source": "frontend_src_components_terminal_terminal",
-      "target": "frontend_src_ws_jarvissocket_send",
+      "target": "frontend_src_ws_ultronsocket_send",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28885,8 +28885,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket_connect",
-      "target": "frontend_src_ws_jarvissocket_onconnection",
+      "source": "frontend_src_ws_ultronsocket_connect",
+      "target": "frontend_src_ws_ultronsocket_onconnection",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28897,8 +28897,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket_connect",
-      "target": "frontend_src_ws_jarvissocket_onopen",
+      "source": "frontend_src_ws_ultronsocket_connect",
+      "target": "frontend_src_ws_ultronsocket_onopen",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28909,8 +28909,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket_connect",
-      "target": "frontend_src_ws_jarvissocket_onevent",
+      "source": "frontend_src_ws_ultronsocket_connect",
+      "target": "frontend_src_ws_ultronsocket_onevent",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28921,8 +28921,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket_connect",
-      "target": "frontend_src_ws_jarvissocket_connect",
+      "source": "frontend_src_ws_ultronsocket_connect",
+      "target": "frontend_src_ws_ultronsocket_connect",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28981,8 +28981,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_usejarvis",
-      "target": "frontend_src_ws_jarvissocket",
+      "source": "frontend_src_ws_useultron",
+      "target": "frontend_src_ws_ultronsocket",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -28993,8 +28993,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_usejarvis",
-      "target": "frontend_src_ws_jarvissocket_send",
+      "source": "frontend_src_ws_useultron",
+      "target": "frontend_src_ws_ultronsocket_send",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29005,8 +29005,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_usejarvis",
-      "target": "frontend_src_ws_jarvissocket_connect",
+      "source": "frontend_src_ws_useultron",
+      "target": "frontend_src_ws_ultronsocket_connect",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29017,8 +29017,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_usejarvis",
-      "target": "frontend_src_ws_jarvissocket_close",
+      "source": "frontend_src_ws_useultron",
+      "target": "frontend_src_ws_ultronsocket_close",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29041,62 +29041,62 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationdidfinishlaunching",
-      "target": "scripts_jarvis_app_orb",
+      "source": "scripts_ultron_app_applicationdidfinishlaunching",
+      "target": "scripts_ultron_app_orb",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L13",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationdidfinishlaunching",
-      "target": "scripts_jarvis_app_run",
+      "source": "scripts_ultron_app_applicationdidfinishlaunching",
+      "target": "scripts_ultron_app_run",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L22",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationshouldhandlereopen",
-      "target": "scripts_jarvis_app_openpage",
+      "source": "scripts_ultron_app_applicationshouldhandlereopen",
+      "target": "scripts_ultron_app_openpage",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L38",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationwillterminate",
-      "target": "scripts_jarvis_app_run",
+      "source": "scripts_ultron_app_applicationwillterminate",
+      "target": "scripts_ultron_app_run",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L43",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_run",
-      "target": "scripts_jarvis_app_run",
+      "source": "scripts_ultron_app_run",
+      "target": "scripts_ultron_app_run",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L58",
       "weight": 1.0
     },
@@ -29401,14 +29401,14 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_start_jarvis_sh__entry",
-      "target": "scripts_start_jarvis_running",
+      "source": "scripts_start_ultron_sh__entry",
+      "target": "scripts_start_ultron_running",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
-      "source_file": "scripts/start_jarvis.sh",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L31",
       "weight": 1.0
     },
@@ -30637,19 +30637,19 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
+      "source": "scripts_ultron_app",
       "target": "nsstatusitem",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "field",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L9",
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_handle_text",
+      "source": "backend_brain_agent_ultron_handle_text",
       "target": "backend_brain_agent_py_event",
       "relation": "references",
       "_origin": "ast",
@@ -32776,7 +32776,7 @@
     },
     {
       "source": "backend_main",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -33688,7 +33688,7 @@
     },
     {
       "source": "backend_tests_test_device",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -34564,7 +34564,7 @@
     },
     {
       "source": "backend_tests_test_usage",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -37252,7 +37252,7 @@
     },
     {
       "source": "frontend_src_app",
-      "target": "frontend_src_ws_usejarvis",
+      "target": "frontend_src_ws_useultron",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -37995,14 +37995,14 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis",
+      "source": "scripts_ultron",
       "target": "appkit",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "import",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L4",
       "weight": 1.0
     },
@@ -42623,7 +42623,7 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_init",
+      "source": "backend_brain_agent_ultron_init",
       "target": "backend_brain_base_brain",
       "relation": "references",
       "_origin": "ast",
@@ -43667,38 +43667,38 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationdidfinishlaunching",
+      "source": "scripts_ultron_app_applicationdidfinishlaunching",
       "target": "notification",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "parameter_type",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L11",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationshouldhandlereopen",
+      "source": "scripts_ultron_app_applicationshouldhandlereopen",
       "target": "nsapplication",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "parameter_type",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L37",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationwillterminate",
+      "source": "scripts_ultron_app_applicationwillterminate",
       "target": "notification",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "parameter_type",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L42",
       "weight": 1.0
     },
@@ -43919,7 +43919,7 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_applicationshouldhandlereopen",
+      "source": "scripts_ultron_app_applicationshouldhandlereopen",
       "target": "bool",
       "relation": "references",
       "_origin": "ast",
@@ -43929,12 +43929,12 @@
       "metadata": {
         "swift_plain_return": true
       },
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L37",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_orb",
+      "source": "scripts_ultron_app_orb",
       "target": "nsimage",
       "relation": "references",
       "_origin": "ast",
@@ -43944,7 +43944,7 @@
       "metadata": {
         "swift_plain_return": true
       },
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L66",
       "weight": 1.0
     },
@@ -43979,7 +43979,7 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis_usage_event",
+      "source": "backend_brain_agent_ultron_usage_event",
       "target": "backend_brain_agent_py_event",
       "relation": "references",
       "_origin": "ast",
@@ -44999,26 +44999,26 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_run",
+      "source": "scripts_ultron_app_run",
       "target": "bool",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "return_type",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L51",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app_run",
-      "target": "scripts_jarvis_swift_string",
+      "source": "scripts_ultron_app_run",
+      "target": "scripts_ultron_swift_string",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "return_type",
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L51",
       "weight": 1.0
     },
@@ -46199,7 +46199,7 @@
     },
     {
       "source": "backend_brain_agent",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -50027,7 +50027,7 @@
     },
     {
       "source": "backend_tools_registry",
-      "target": "backend_tools_registry_jarvistool",
+      "target": "backend_tools_registry_ultrontool",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -52579,7 +52579,7 @@
     },
     {
       "source": "frontend_src_ws",
-      "target": "frontend_src_ws_jarvissocket",
+      "target": "frontend_src_ws_ultronsocket",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -52788,7 +52788,7 @@
     },
     {
       "source": "frontend_src_ws",
-      "target": "frontend_src_ws_usejarvis",
+      "target": "frontend_src_ws_useultron",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53238,8 +53238,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt",
-      "target": "jarvis_build_prompt_jarvis_full_build_prompt",
+      "source": "ultron_build_prompt",
+      "target": "ultron_build_prompt_ultron_full_build_prompt",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53249,8 +53249,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_1_decision_how_jarvis_talks_to_claude",
-      "target": "jarvis_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
+      "source": "ultron_build_prompt_1_decision_how_ultron_talks_to_claude",
+      "target": "ultron_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53260,8 +53260,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_1_decision_how_jarvis_talks_to_claude",
-      "target": "jarvis_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
+      "source": "ultron_build_prompt_1_decision_how_ultron_talks_to_claude",
+      "target": "ultron_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53271,8 +53271,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_7b_3d_objects_preview_mode_phase_4d",
-      "target": "jarvis_build_prompt_feature_spec_written_by_me",
+      "source": "ultron_build_prompt_7b_3d_objects_preview_mode_phase_4d",
+      "target": "ultron_build_prompt_feature_spec_written_by_me",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53282,8 +53282,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_7b_3d_objects_preview_mode_phase_4d",
-      "target": "jarvis_build_prompt_technical_approach_proposed_by_claude",
+      "source": "ultron_build_prompt_7b_3d_objects_preview_mode_phase_4d",
+      "target": "ultron_build_prompt_technical_approach_proposed_by_claude",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53293,8 +53293,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53304,8 +53304,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53315,8 +53315,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_5_web_search",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_5_web_search",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53326,8 +53326,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_6_connectors_gmail_calendar_drive",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_6_connectors_gmail_calendar_drive",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53337,8 +53337,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_7_canvas_and_images_the_dog_picture_feature",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_7_canvas_and_images_the_dog_picture_feature",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53348,8 +53348,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_7b_3d_objects_preview_mode_phase_4d",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_7b_3d_objects_preview_mode_phase_4d",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53359,8 +53359,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_1_decision_how_jarvis_talks_to_claude",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_1_decision_how_ultron_talks_to_claude",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53370,8 +53370,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_8_safety_confirmation_gate_and_trust_rules",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_8_safety_confirmation_gate_and_trust_rules",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53381,8 +53381,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_9_voice",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_9_voice",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53392,8 +53392,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_10_memory",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_10_memory",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53403,8 +53403,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_11_project_structure",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_11_project_structure",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53414,8 +53414,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_12_build_phases",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_12_build_phases",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53425,8 +53425,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_13_first_steps_start_here",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_13_first_steps_start_here",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53436,8 +53436,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_2_architecture",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_2_architecture",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53447,8 +53447,8 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_jarvis_full_build_prompt",
-      "target": "jarvis_build_prompt_0_role_and_goal",
+      "source": "ultron_build_prompt_ultron_full_build_prompt",
+      "target": "ultron_build_prompt_0_role_and_goal",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53459,7 +53459,7 @@
     },
     {
       "source": "readme",
-      "target": "readme_jarvis_cbrain",
+      "target": "readme_ultron_cbrain",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53469,8 +53469,8 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
-      "target": "readme_what_jarvis_can_do",
+      "source": "readme_ultron_cbrain",
+      "target": "readme_what_ultron_can_do",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53480,7 +53480,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_the_brains",
       "relation": "contains",
       "_origin": "ast",
@@ -53491,7 +53491,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_setup",
       "relation": "contains",
       "_origin": "ast",
@@ -53502,7 +53502,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_run",
       "relation": "contains",
       "_origin": "ast",
@@ -53513,7 +53513,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_move_to_a_new_mac",
       "relation": "contains",
       "_origin": "ast",
@@ -53524,7 +53524,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_how_it_fits_together",
       "relation": "contains",
       "_origin": "ast",
@@ -53535,7 +53535,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "readme_status",
       "relation": "contains",
       "_origin": "ast",
@@ -53568,7 +53568,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_making_things",
       "relation": "contains",
       "_origin": "ast",
@@ -53579,7 +53579,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_on_this_mac",
       "relation": "contains",
       "_origin": "ast",
@@ -53590,7 +53590,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_talking_and_thinking",
       "relation": "contains",
       "_origin": "ast",
@@ -53601,7 +53601,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_knowing_you",
       "relation": "contains",
       "_origin": "ast",
@@ -53612,7 +53612,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_your_accounts",
       "relation": "contains",
       "_origin": "ast",
@@ -53623,7 +53623,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_messages",
       "relation": "contains",
       "_origin": "ast",
@@ -53634,7 +53634,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_what_jarvis_can_do",
+      "source": "readme_what_ultron_can_do",
       "target": "readme_doing_things_on_its_own",
       "relation": "contains",
       "_origin": "ast",
@@ -53667,13 +53667,13 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis",
-      "target": "scripts_jarvis_app",
+      "source": "scripts_ultron",
+      "target": "scripts_ultron_app",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L6",
       "weight": 1.0
     },
@@ -53788,30 +53788,30 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_start_jarvis",
-      "target": "scripts_start_jarvis_sh__entry",
+      "source": "scripts_start_ultron",
+      "target": "scripts_start_ultron_sh__entry",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/start_jarvis.sh",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L1",
       "weight": 1.0
     },
     {
-      "source": "scripts_stop_jarvis",
-      "target": "scripts_stop_jarvis_sh__entry",
+      "source": "scripts_stop_ultron",
+      "target": "scripts_stop_ultron_sh__entry",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/stop_jarvis.sh",
+      "source_file": "scripts/stop_ultron.sh",
       "source_location": "L1",
       "weight": 1.0
     },
     {
       "source": "to_do_list",
-      "target": "to_do_list_jarvis_to_do_list",
+      "target": "to_do_list_ultron_to_do_list",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -53821,7 +53821,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_7_macos_integration_priority_6",
       "relation": "contains",
       "_origin": "ast",
@@ -53832,7 +53832,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_8_messaging_maps_travel_priority_7",
       "relation": "contains",
       "_origin": "ast",
@@ -53843,7 +53843,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_honorable_mentions_later",
       "relation": "contains",
       "_origin": "ast",
@@ -53854,7 +53854,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_milestone_daily_briefing",
       "relation": "contains",
       "_origin": "ast",
@@ -53865,7 +53865,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_1_calendar_read_write_priority_1",
       "relation": "contains",
       "_origin": "ast",
@@ -53876,7 +53876,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_2_reminders_tasks_priority_2",
       "relation": "contains",
       "_origin": "ast",
@@ -53887,7 +53887,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_3_contacts_lookup_priority_3",
       "relation": "contains",
       "_origin": "ast",
@@ -53898,7 +53898,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_4_persistent_user_memory_priority_4_readme_phase_6",
       "relation": "contains",
       "_origin": "ast",
@@ -53909,7 +53909,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_5_scheduled_triggered_actions_priority_5",
       "relation": "contains",
       "_origin": "ast",
@@ -53920,7 +53920,7 @@
       "weight": 1.0
     },
     {
-      "source": "to_do_list_jarvis_to_do_list",
+      "source": "to_do_list_ultron_to_do_list",
       "target": "to_do_list_6_notifications_priority_5_ships_with_the_scheduler",
       "relation": "contains",
       "_origin": "ast",
@@ -53942,13 +53942,13 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_start_jarvis",
-      "target": "scripts_start_jarvis_running",
+      "source": "scripts_start_ultron",
+      "target": "scripts_start_ultron_running",
       "relation": "defines",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/start_jarvis.sh",
+      "source_file": "scripts/start_ultron.sh",
       "source_location": "L13",
       "weight": 1.0
     },
@@ -53971,13 +53971,13 @@
       "source_file": "frontend/src/components/Stage.tsx"
     },
     {
-      "source": "scripts_jarvis_app",
+      "source": "scripts_ultron_app",
       "target": "nsapplicationdelegate",
       "relation": "implements",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L6",
       "weight": 1.0
     },
@@ -54026,13 +54026,13 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
+      "source": "scripts_ultron_app",
       "target": "nsobject",
       "relation": "inherits",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L6",
       "weight": 1.0
     },
@@ -54048,8 +54048,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis",
-      "target": "backend_brain_agent_jarvis_init",
+      "source": "backend_brain_agent_ultron",
+      "target": "backend_brain_agent_ultron_init",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -54059,8 +54059,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis",
-      "target": "backend_brain_agent_jarvis_usage_event",
+      "source": "backend_brain_agent_ultron",
+      "target": "backend_brain_agent_ultron_usage_event",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -54070,8 +54070,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis",
-      "target": "backend_brain_agent_jarvis_idle_too_long",
+      "source": "backend_brain_agent_ultron",
+      "target": "backend_brain_agent_ultron_idle_too_long",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -54081,8 +54081,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis",
-      "target": "backend_brain_agent_jarvis_handle_text",
+      "source": "backend_brain_agent_ultron",
+      "target": "backend_brain_agent_ultron_handle_text",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -56898,7 +56898,7 @@
     },
     {
       "source": "backend_tests_test_usage_usagenumberstest",
-      "target": "backend_tests_test_usage_usagenumberstest_test_jarvis_tokens_count_only_this_window_and_survive_a_restart",
+      "target": "backend_tests_test_usage_usagenumberstest_test_ultron_tokens_count_only_this_window_and_survive_a_restart",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57194,8 +57194,8 @@
       "weight": 1.0
     },
     {
-      "source": "backend_tools_registry_jarvistool",
-      "target": "backend_tools_registry_jarvistool_full_name",
+      "source": "backend_tools_registry_ultrontool",
+      "target": "backend_tools_registry_ultrontool_full_name",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57205,8 +57205,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_onevent",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_onevent",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57216,8 +57216,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_onconnection",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_onconnection",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57227,8 +57227,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_onopen",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_onopen",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57238,8 +57238,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_connect",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_connect",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57249,8 +57249,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_send",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_send",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57260,8 +57260,8 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_jarvissocket",
-      "target": "frontend_src_ws_jarvissocket_close",
+      "source": "frontend_src_ws_ultronsocket",
+      "target": "frontend_src_ws_ultronsocket_close",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57271,68 +57271,68 @@
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_applicationdidfinishlaunching",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_applicationdidfinishlaunching",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L11",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_applicationshouldhandlereopen",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_applicationshouldhandlereopen",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L37",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_applicationwillterminate",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_applicationwillterminate",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L42",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_openpage",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_openpage",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L46",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_run",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_run",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L51",
       "weight": 1.0
     },
     {
-      "source": "scripts_jarvis_app",
-      "target": "scripts_jarvis_app_orb",
+      "source": "scripts_ultron_app",
+      "target": "scripts_ultron_app_orb",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "scripts/Jarvis.swift",
+      "source_file": "scripts/Ultron.swift",
       "source_location": "L66",
       "weight": 1.0
     },
@@ -57492,7 +57492,7 @@
     },
     {
       "source": "backend_brain_agent_rationale_38",
-      "target": "backend_brain_agent_jarvis_idle_too_long",
+      "target": "backend_brain_agent_ultron_idle_too_long",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -57503,7 +57503,7 @@
     },
     {
       "source": "backend_brain_agent_rationale_54",
-      "target": "backend_brain_agent_jarvis_handle_text",
+      "target": "backend_brain_agent_ultron_handle_text",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -60942,7 +60942,7 @@
       "weight": 1.0
     },
     {
-      "source": "frontend_src_ws_usejarvis",
+      "source": "frontend_src_ws_useultron",
       "target": "frontend_src_ws_reducer",
       "relation": "indirect_call",
       "_origin": "ast",
@@ -61218,7 +61218,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_13_first_steps_start_here",
+      "source": "ultron_build_prompt_13_first_steps_start_here",
       "target": "backend_brain_base_brain",
       "relation": "references",
       "_origin": "ast",
@@ -61230,7 +61230,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
+      "source": "ultron_build_prompt_not_used_documented_for_later_claude_api_with_an_api_key",
       "target": "backend_brain_base_brain",
       "relation": "references",
       "_origin": "ast",
@@ -61243,18 +61243,18 @@
     },
     {
       "source": "readme_knowing_you",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "references",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.95,
-      "context": "Jarvis",
+      "context": "Ultron",
       "source_file": "README.md",
       "source_location": "L39",
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_12_build_phases",
+      "source": "ultron_build_prompt_12_build_phases",
       "target": "backend_tools_expert_ask_expert",
       "relation": "references",
       "_origin": "ast",
@@ -61266,7 +61266,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
+      "source": "ultron_build_prompt_3_model_routing_cheap_by_default_strong_when_needed",
       "target": "backend_tools_expert_ask_expert",
       "relation": "references",
       "_origin": "ast",
@@ -61278,7 +61278,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "source": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "target": "backend_tools_expert_ask_expert",
       "relation": "references",
       "_origin": "ast",
@@ -61338,7 +61338,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "source": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "target": "backend_brain_confirm_confirmationgate_can_use_tool",
       "relation": "references",
       "_origin": "ast",
@@ -61350,7 +61350,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_11_project_structure",
+      "source": "ultron_build_prompt_11_project_structure",
       "target": "backend_events_error",
       "relation": "references",
       "_origin": "ast",
@@ -61398,7 +61398,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_12_build_phases",
+      "source": "ultron_build_prompt_12_build_phases",
       "target": "backend_tools_images_image_edit",
       "relation": "references",
       "_origin": "ast",
@@ -61410,7 +61410,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_12_build_phases",
+      "source": "ultron_build_prompt_12_build_phases",
       "target": "backend_tools_images_image_search",
       "relation": "references",
       "_origin": "ast",
@@ -61470,7 +61470,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "source": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "target": "backend_brain_brain_claudecode_claudecodebrain_model",
       "relation": "references",
       "_origin": "ast",
@@ -61482,7 +61482,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
+      "source": "ultron_build_prompt_used_my_existing_claude_pro_subscription_via_claude_code_claude_agent_sdk",
       "target": "backend_tests_test_flights_flightstest_query",
       "relation": "references",
       "_origin": "ast",
@@ -61566,7 +61566,7 @@
       "weight": 1.0
     },
     {
-      "source": "jarvis_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
+      "source": "ultron_build_prompt_4_the_brain_brain_claudecode_py_agent_py",
       "target": "backend_tools_canvas_show_on_canvas",
       "relation": "references",
       "_origin": "ast",
@@ -61626,7 +61626,7 @@
       "weight": 1.0
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_toolresult",
       "relation": "uses",
       "_origin": "ast",
@@ -61637,7 +61637,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_done",
       "relation": "uses",
       "_origin": "ast",
@@ -61648,7 +61648,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_error",
       "relation": "uses",
       "_origin": "ast",
@@ -61659,7 +61659,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_brain",
       "relation": "uses",
       "_origin": "ast",
@@ -61670,7 +61670,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_router_route",
       "relation": "uses",
       "_origin": "ast",
@@ -61681,7 +61681,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_toolstart",
       "relation": "uses",
       "_origin": "ast",
@@ -61692,7 +61692,7 @@
       "weight": 0.8
     },
     {
-      "source": "backend_brain_agent_jarvis",
+      "source": "backend_brain_agent_ultron",
       "target": "backend_brain_base_textdelta",
       "relation": "uses",
       "_origin": "ast",
@@ -61935,7 +61935,7 @@
     },
     {
       "source": "backend_tests_test_device_devicetest",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "uses",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -61979,7 +61979,7 @@
     },
     {
       "source": "backend_tests_test_usage_idlestartovertest",
-      "target": "backend_brain_agent_jarvis",
+      "target": "backend_brain_agent_ultron",
       "relation": "uses",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -62066,7 +62066,7 @@
       "weight": 1.0
     },
     {
-      "source": "readme_jarvis_cbrain",
+      "source": "readme_ultron_cbrain",
       "target": "backend_requirements_requirements",
       "relation": "references",
       "_origin": "semantic",

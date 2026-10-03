@@ -33,11 +33,11 @@ Server -> client:
     notice               {message}        something to know that isn't an error
     confirm.request      {id, title, summary, details}   an 'act' tool wants to run
     confirm.resolved     {id, status}     status = approved | denied | expired
-    conversation.new     {reason: "button" | "idle" | "provider"}   Jarvis forgot the conversation
+    conversation.new     {reason: "button" | "idle" | "provider"}   Ultron forgot the conversation
     conversation.loaded  {messages, cards}   a saved chat was loaded: show these messages and cards
     chats.list           {chats: [{id, title, provider, saved_at}], max}   saved chats, newest first
     memory.list          {memories: [{id, category, text, source, created, updated}], categories}
-                         everything Jarvis remembers, most recently changed first
+                         everything Ultron remembers, most recently changed first
     jobs.list            {jobs: [{id, title, prompt, at, days, every_min, once, enabled, last_run}],
                           runs: [{job_id, title, time, status, text}]}   scheduled jobs; runs newest first,
                          status = told | nothing | skipped | failed

@@ -1,4 +1,4 @@
-// The centre of the HUD: the reactor core (Jarvis's state, and the voice orb), or the
+// The centre of the HUD: the reactor core (Ultron's state, and the voice orb), or the
 // canvas: cards and 3D models, each in a tab.
 
 import { lazy, Suspense, useState } from 'react'
@@ -7,7 +7,7 @@ import type { ActiveTool, CanvasCard, ConnectionState, ImageSelection, TerminalT
 import Canvas from './Canvas'
 import VoiceOrb, { type VoiceState } from './VoiceOrb'
 
-// xterm is only loaded when Jarvis first opens a terminal.
+// xterm is only loaded when Ultron first opens a terminal.
 const Terminal = lazy(() => import('./Terminal'))
 
 const VOICE_STATES: VoiceState[] = ['idle', 'listening', 'thinking', 'speaking']
@@ -20,13 +20,13 @@ const VOICE_PILL: Record<VoiceState, string> = {
 }
 
 // Sample captions for the voice preview (voice isn't connected yet: Phase 5b/5c).
-const SAMPLE: Record<VoiceState, { you?: string; jarvis?: string }> = {
+const SAMPLE: Record<VoiceState, { you?: string; ultron?: string }> = {
   idle: {},
   listening: { you: "What's on my calendar tomorrow" },
   thinking: { you: "What's on my calendar tomorrow?" },
   speaking: {
     you: "What's on my calendar tomorrow?",
-    jarvis: 'You have three things tomorrow. The first is a dentist appointment at nine.',
+    ultron: 'You have three things tomorrow. The first is a dentist appointment at nine.',
   },
 }
 
@@ -74,7 +74,7 @@ function Core({ busy, activeTool, connection, voiceOn, onVoice }: Pick<StageProp
       <VoiceOrb
         state={state}
         onClick={voiceOn ? cycle : () => onVoice(true)}
-        label={voiceOn ? 'Voice preview: next state' : 'Talk to Jarvis'}
+        label={voiceOn ? 'Voice preview: next state' : 'Talk to Ultron'}
       />
       <div className="core-bottom">
         <Waveform state={state} />
@@ -82,7 +82,7 @@ function Core({ busy, activeTool, connection, voiceOn, onVoice }: Pick<StageProp
           type="button"
           className={`core-pill${voiceOn ? ' on' : ''}`}
           onClick={() => onVoice(!voiceOn)}
-          title={voiceOn ? 'End voice mode (Esc)' : 'Talk to Jarvis'}
+          title={voiceOn ? 'End voice mode (Esc)' : 'Talk to Ultron'}
         >
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
             <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />
@@ -97,9 +97,9 @@ function Core({ busy, activeTool, connection, voiceOn, onVoice }: Pick<StageProp
                 <b>YOU</b> {sample.you}
               </div>
             )}
-            {sample.jarvis && (
-              <div className="caption caption-jarvis">
-                <b>JARVIS</b> {sample.jarvis}
+            {sample.ultron && (
+              <div className="caption caption-ultron">
+                <b>ULTRON</b> {sample.ultron}
               </div>
             )}
             <div className="core-preview">

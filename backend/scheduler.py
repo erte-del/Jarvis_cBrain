@@ -1,4 +1,4 @@
-"""Runs scheduled jobs (storage/job_store.py): Jarvis acting on its own.
+"""Runs scheduled jobs (storage/job_store.py): Ultron acting on its own.
 
 A loop checks every half minute which jobs are due. Each run is its own short Claude
 conversation, separate from yours, and tells you the result through notify.py.
@@ -6,7 +6,7 @@ conversation, separate from yours, and tells you the result through notify.py.
 Safe defaults:
   - a job can only use 'read' tools: anything that sends, creates, changes or deletes is
     refused, and the job tells you what it would suggest instead. The one way round it is
-    a job's "allow" list of tool names in jobs.json, written by hand: Jarvis can't set it
+    a job's "allow" list of tool names in jobs.json, written by hand: Ultron can't set it
   - one job at a time, and none once JARVIS_JOBS_MAX_USAGE of the Pro 5-hour limit is used
   - watchers don't run during JARVIS_QUIET_HOURS
   - a job that was due while the Mac slept still runs if it's under CATCH_UP late, once
@@ -30,7 +30,7 @@ from brain.brain_claudecode import ClaudeCodeBrain
 from storage import job_store
 from tools import registry
 
-log = logging.getLogger("jarvis.scheduler")
+log = logging.getLogger("ultron.scheduler")
 
 CHECK_EVERY_S = 30
 CATCH_UP = timedelta(hours=3)

@@ -365,13 +365,13 @@
     "ast_hash": "c654d02ed72edb49ea137a0509a9631c",
     "semantic_hash": "c654d02ed72edb49ea137a0509a9631c"
   },
-  "scripts/start_jarvis.sh": {
+  "scripts/start_ultron.sh": {
     "mtime": 1790783250.3512213,
     "seen": 1790922098.071765,
     "ast_hash": "94cd06315e4fc3444a082c2d60b8b10c",
     "semantic_hash": ""
   },
-  "scripts/stop_jarvis.sh": {
+  "scripts/stop_ultron.sh": {
     "mtime": 1790783015.317545,
     "seen": 1790922098.071766,
     "ast_hash": "b66b8b58bdbf357c1d7d00293a669441",
@@ -809,7 +809,7 @@
     "ast_hash": "389a5b9b108157cf039c162c67052d2c",
     "semantic_hash": ""
   },
-  "scripts/Jarvis.swift": {
+  "scripts/Ultron.swift": {
     "mtime": 1790850388.3701112,
     "seen": 1790922098.0717618,
     "ast_hash": "c70d81ada570d4eaeffba858e6eae728",

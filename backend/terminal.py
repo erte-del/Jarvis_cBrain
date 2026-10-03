@@ -1,8 +1,8 @@
 """/ws/terminal: a real shell in a canvas tab, for you to type in (e.g. to run Claude Code).
 
-Jarvis can open the tab (open_terminal) but never types in it: the shell only gets
+Ultron can open the tab (open_terminal) but never types in it: the shell only gets
 what you type in that tab. Only pages on this Mac may connect, not your phone through
-Tailscale: a shell is more than the rest of Jarvis can do.
+Tailscale: a shell is more than the rest of Ultron can do.
 
 The shell lives as long as the tab's connection: closing the tab or reloading the
 page ends it.
@@ -24,9 +24,9 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 import config
 
-log = logging.getLogger("jarvis.terminal")
+log = logging.getLogger("ultron.terminal")
 
-# Jarvis's pages on this Mac: the dev server (npm run dev) and the built page (Jarvis.app).
+# Ultron's pages on this Mac: the dev server (npm run dev) and the built page (Ultron.app).
 LOCAL_ORIGINS = {
     "http://127.0.0.1:5173",
     "http://localhost:5173",
@@ -36,7 +36,7 @@ LOCAL_ORIGINS = {
 
 
 def _shell_env() -> dict[str, str]:
-    """Your normal environment, without the variables that point Jarvis's own Claude Code
+    """Your normal environment, without the variables that point Ultron's own Claude Code
     at the gateway: `claude` in the terminal uses your own login."""
     env = {k: v for k, v in os.environ.items() if k not in config.CLAUDE_ENV_VARS}
     env["TERM"] = "xterm-256color"
@@ -64,7 +64,7 @@ async def serve(ws: WebSocket) -> None:
 
     master, slave = pty.openpty()
     shell = os.environ.get("SHELL") or "/bin/zsh"
-    # A login shell, so PATH etc. come from your profile (Jarvis.app starts without them).
+    # A login shell, so PATH etc. come from your profile (Ultron.app starts without them).
     # Plain Popen, not asyncio's: under uvicorn's uvloop, preexec_fn runs before the new
     # session and the pty are set up, so taking the terminal fails.
     try:
@@ -106,7 +106,7 @@ async def serve(ws: WebSocket) -> None:
             msg = json.loads(await ws.receive_text())
             if msg.get("type") == "input":
                 # ponytail: blocking write; fine for typing and normal pastes, a huge paste
-                # into a busy program could stall Jarvis for a moment.
+                # into a busy program could stall Ultron for a moment.
                 os.write(master, str(msg.get("data", "")).encode())
             elif msg.get("type") == "resize":
                 cols, rows = int(msg["cols"]), int(msg["rows"])

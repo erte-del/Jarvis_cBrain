@@ -1,8 +1,8 @@
-"""Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never writes code that runs here.
+"""Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never writes code that runs here.
 
     Blender --background --factory-startup --python blender_export_script.py -- <in.glb> <out> <format>
 
-Imports the detailed model Jarvis built, smooths round surfaces, adds small
+Imports the detailed model Ultron built, smooths round surfaces, adds small
 bevels to boxes and extruded shapes, and saves it in the requested format.
 """
 

@@ -1,7 +1,7 @@
-"""What Jarvis remembers about you between chats, in storage/memory.json.
+"""What Ultron remembers about you between chats, in storage/memory.json.
 
 Short notes you can read, edit and delete in the app (the memory button in the top bar),
-not raw chat history. The newest ones go into Jarvis's system prompt when a conversation
+not raw chat history. The newest ones go into Ultron's system prompt when a conversation
 starts (`prompt_block`); the rest it finds with the recall tool.
 
 Anything that looks like a password, card number or key is refused (`secret_in`).
@@ -78,7 +78,7 @@ def _check(text: str, category: str) -> str:
     if category not in CATEGORIES:
         raise ValueError(f"Unknown category {category!r}: use {', '.join(CATEGORIES)}.")
     if kind := secret_in(text):
-        raise ValueError(f"Not saved: that looks like {kind}, and Jarvis's memory never stores secrets.")
+        raise ValueError(f"Not saved: that looks like {kind}, and Ultron's memory never stores secrets.")
     return text
 
 

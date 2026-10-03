@@ -1,14 +1,14 @@
 """WhatsApp: send a message from the WhatsApp app on this Mac. (act: asks you first)
 
 WhatsApp has no API for personal accounts, and unofficial "linked device" libraries can
-get a number banned. So Jarvis uses the app itself: WhatsApp's own whatsapp://send link
+get a number banned. So Ultron uses the app itself: WhatsApp's own whatsapp://send link
 opens the chat with the message typed in (it only loads chats while it's in front, so it
-can't be done in the background). Jarvis waits for the chat to load, presses Enter, then
-hides WhatsApp and switches back to the app you were in (the browser with Jarvis). It only
+can't be done in the background). Ultron waits for the chat to load, presses Enter, then
+hides WhatsApp and switches back to the app you were in (the browser with Ultron). It only
 presses Enter while WhatsApp is the frontmost app, so the key can't land anywhere else.
 
-Pressing keys needs macOS Accessibility permission for Jarvis (System Settings →
-Privacy & Security → Accessibility). Jarvis can't read messages.
+Pressing keys needs macOS Accessibility permission for Ultron (System Settings →
+Privacy & Security → Accessibility). Ultron can't read messages.
 """
 
 import asyncio
@@ -23,7 +23,7 @@ FRONT_APP = ('tell application "System Events" to get bundle identifier of first
 WHATSAPP_ID = "net.whatsapp.WhatsApp"
 HIDE = 'tell application "System Events" to set visible of process "WhatsApp" to false'
 PRESS_ENTER = 'tell application "System Events" to key code 36'
-# ponytail: fixed wait for the chat to load once WhatsApp is in front (Jarvis can't see when
+# ponytail: fixed wait for the chat to load once WhatsApp is in front (Ultron can't see when
 # "Loading chat" is done); raise it if messages stay typed but unsent.
 CHAT_LOAD_S = 2.5
 SENT_S = 1.0  # after Enter, so the send goes out before WhatsApp is hidden
@@ -51,7 +51,7 @@ async def _run(*cmd: str) -> str:
     if proc.returncode:
         msg = err.decode().strip()
         if "1002" in msg or "-1719" in msg or "not allowed" in msg.lower():
-            msg = ("macOS didn't allow Jarvis to press keys. Allow it in System Settings → "
+            msg = ("macOS didn't allow Ultron to press keys. Allow it in System Settings → "
                    "Privacy & Security → Accessibility.")
         raise RuntimeError(msg or f"{cmd[0]} failed")
     return out.decode().strip()
@@ -91,7 +91,7 @@ async def whatsapp_send(args: dict[str, Any]) -> dict[str, Any]:
     if not message:
         return _text("The message is empty; not sent.", True)
     try:
-        back_to = await _run("osascript", "-e", FRONT_APP)  # usually the browser with Jarvis
+        back_to = await _run("osascript", "-e", FRONT_APP)  # usually the browser with Ultron
         await _run("open", f"whatsapp://send?phone={digits}&text={quote(message)}")
         loop = asyncio.get_running_loop()
         deadline = loop.time() + OPEN_TIMEOUT_S
@@ -112,4 +112,4 @@ async def whatsapp_send(args: dict[str, Any]) -> dict[str, Any]:
     except (RuntimeError, OSError, TimeoutError) as e:
         return _text(f"WhatsApp: {e}. The message may be typed in the chat but not sent.", True)
     return _text(f"Pressed Send in WhatsApp for {args.get('to') or digits}. "
-                 "Jarvis can't read the chat, so it can't confirm delivery.")
+                 "Ultron can't read the chat, so it can't confirm delivery.")

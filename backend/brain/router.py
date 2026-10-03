@@ -43,10 +43,10 @@ _FORCE_HAIKU = re.compile(
 # Whole message is a greeting, thanks, acknowledgement or goodbye.
 _SMALL_TALK = re.compile(
     r"^\W*("
-    r"(hi|hey|hello|yo|hiya|howdy)( there)?( jarvis)?"
-    r"|good (morning|afternoon|evening|night)( jarvis)?"
-    r"|how are you( doing)?( today)?( jarvis)?|how's it going|what's up|sup"
-    r"|(thanks|thank you|thx|ty|cheers)( (so|very) much)?( jarvis)?"
+    r"(hi|hey|hello|yo|hiya|howdy)( there)?( ultron)?"
+    r"|good (morning|afternoon|evening|night)( ultron)?"
+    r"|how are you( doing)?( today)?( ultron)?|how's it going|what's up|sup"
+    r"|(thanks|thank you|thx|ty|cheers)( (so|very) much)?( ultron)?"
     r"|ok(ay)?|cool|nice|great|awesome|perfect|got it|sounds good|sure|yes|no|yep|nope"
     r"|bye|goodbye|see you( later)?|good ?night"
     r")\W*$",

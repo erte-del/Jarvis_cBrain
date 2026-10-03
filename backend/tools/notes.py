@@ -1,6 +1,6 @@
 """search_notes / read_note / write_note: your Obsidian vault (JARVIS_VAULT in .env).
 
-A vault is a folder of Markdown files, so these are plain file tools. Jarvis only sees
+A vault is a folder of Markdown files, so these are plain file tools. Ultron only sees
 .md files inside the vault, skips hidden folders (.obsidian, .trash) and never reads a
 note tagged #private. Writing is an 'act' tool: it asks you first only for notes you marked important.
 """
@@ -55,7 +55,7 @@ def _resolve(path: str) -> Path:
 
 
 def _notes() -> list[tuple[str, str]]:
-    """(relative path, text) of every note Jarvis may read, newest first."""
+    """(relative path, text) of every note Ultron may read, newest first."""
     vault = _vault()
     found = []
     for p in vault.rglob("*.md"):
@@ -127,7 +127,7 @@ def write(path: str, content: str, mode: str) -> str:
         if mode == "create":
             raise ValueError(f"{rel} already exists: use mode append or replace.")
         if is_private(full.read_text(encoding="utf-8", errors="replace")):
-            raise ValueError(f"{rel} is tagged #private, so Jarvis doesn't change it.")
+            raise ValueError(f"{rel} is tagged #private, so Ultron doesn't change it.")
     elif mode == "append":
         mode = "create"  # appending to nothing is just a new note
     full.parent.mkdir(parents=True, exist_ok=True)
@@ -147,7 +147,7 @@ def write(path: str, content: str, mode: str) -> str:
     {
         "type": "object",
         "properties": {
-            "path": {"type": "string", "description": "Path in the vault, e.g. 'Jarvis/Chemistry test.md'"},
+            "path": {"type": "string", "description": "Path in the vault, e.g. 'Ultron/Chemistry test.md'"},
             "content": {"type": "string", "description": "Markdown"},
             "mode": {"type": "string", "enum": ["create", "append", "replace"]},
         },

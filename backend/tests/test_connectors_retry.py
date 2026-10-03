@@ -26,18 +26,18 @@ class RetryConnectors(unittest.IsolatedAsyncioTestCase):
         return brain, client
 
     async def test_restarts_when_still_missing(self):
-        brain, client = await self.run_retry(["jarvis"])
+        brain, client = await self.run_retry(["ultron"])
         self.assertTrue(client.closed)
         self.assertIsNone(brain._client)
 
     async def test_keeps_session_when_they_arrived_late(self):
-        brain, client = await self.run_retry(["jarvis", "claude.ai Gmail"])
+        brain, client = await self.run_retry(["ultron", "claude.ai Gmail"])
         self.assertFalse(client.closed)
         self.assertTrue(brain._has_connectors)
 
     async def test_waits_between_retries(self):
-        brain, client = await self.run_retry(["jarvis"])
-        brain._client, brain._has_connectors = FakeClient(["jarvis"]), False
+        brain, client = await self.run_retry(["ultron"])
+        brain._client, brain._has_connectors = FakeClient(["ultron"]), False
         await brain._retry_connectors()  # too soon after the last try
         self.assertFalse(brain._client.closed)
 

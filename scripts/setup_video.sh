@@ -29,4 +29,4 @@ if [ ! -f "$MODEL/config.json" ]; then
   rm -rf "$RAW"
 fi
 
-echo "== Video generation is ready. Restart Jarvis to use it."
+echo "== Video generation is ready. Restart Ultron to use it."

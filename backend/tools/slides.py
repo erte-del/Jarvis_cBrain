@@ -3,7 +3,7 @@
 The template is the teacher's own deck (PG Online's AQA design) with its slides taken out,
 kept in storage/slides/template.pptx (not in git: it's PG Online's). Each deck is built
 from its layouts: title, hook question, objectives, teaching slides, activities, end.
-Decks are saved in the Output folder of Jarvis's files and opened.
+Decks are saved in the Output folder of Ultron's files and opened.
 """
 
 import asyncio
@@ -30,7 +30,7 @@ from storage import image_store
 TEMPLATE = config.STORAGE_DIR / "slides" / "template.pptx"
 LECTURES = Path.home() / "Desktop" / "school" / "computing" / "class lectures"
 RENDERS = config.STORAGE_DIR / "lectures"
-CHECKS = config.STORAGE_DIR / "slides" / "checks"  # pictures of Jarvis's own decks, to look over
+CHECKS = config.STORAGE_DIR / "slides" / "checks"  # pictures of Ultron's own decks, to look over
 SHEET = 9  # slides per contact sheet
 MAX_SEEN = 6  # slide pictures per call
 COURSE = ["AQA", "AS Level", "Computer Science", "Paper 2"]
@@ -94,7 +94,7 @@ def _table(slide, rows: list[list[str]], left: int, top: int, room: int) -> None
 
 
 def _picture(slide, image_id: str, left: int, top: int, width: int, height: int) -> None:
-    """A picture from Jarvis's images (image_search, generate_image), as big as fits the box."""
+    """A picture from Ultron's images (image_search, generate_image), as big as fits the box."""
     rec = image_store.load(image_id)
     path = image_store.file_path(image_id, rec.get().file)
     with Image.open(path) as img:
@@ -251,7 +251,7 @@ def _free(name: str) -> Path:
 @tool(
     "make_slides",
     "Make a PowerPoint (.pptx) lesson in the user's computing teacher's design (AQA, PG Online "
-    "template) and save it in Jarvis's Output folder. It isn't opened: you get every slide back as "
+    "template) and save it in Ultron's Output folder. It isn't opened: you get every slide back as "
     "a picture to check, then fix it (again with replace) or hand it over with open_slides. Give "
     "the whole deck at once. The "
     "title slide and the end slide are added for you. Each slide: kind (hook: an opening question "

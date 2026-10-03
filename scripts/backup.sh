@@ -1,7 +1,7 @@
 #!/bin/bash
-# Everything of yours that isn't on GitHub, in one file: .env, Jarvis's memory, saved
+# Everything of yours that isn't on GitHub, in one file: .env, Ultron's memory, saved
 # chats, scheduled jobs, school notes, images, 3D models, videos and uploads.
-#   scripts/backup.sh                  writes ~/Jarvis-backup-<date>.tgz
+#   scripts/backup.sh                  writes ~/Ultron-backup-<date>.tgz
 #   scripts/backup.sh restore FILE     puts a backup into this project (e.g. on a new Mac)
 # The file holds your keys (.env): keep it to yourself.
 # Not included: the image and video models (scripts/setup_images.sh and setup_video.sh
@@ -31,11 +31,11 @@ if [ "${1:-}" = restore ]; then
     mkdir -p "$SESSIONS"
     tar -xzf "$FILE" -C "$SESSIONS" --strip-components 1 sessions
   fi
-  echo "Restored into $ROOT. Restart Jarvis if he's running."
+  echo "Restored into $ROOT. Restart Ultron if he's running."
   exit 0
 fi
 
-OUT="$HOME/Jarvis-backup-$(date +%Y-%m-%d).tgz"
+OUT="$HOME/Ultron-backup-$(date +%Y-%m-%d).tgz"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 

@@ -23,7 +23,7 @@ import events
 import hub
 from tools import registry
 
-log = logging.getLogger("jarvis.confirm")
+log = logging.getLogger("ultron.confirm")
 
 CONFIRM_TIMEOUT_S = 300
 

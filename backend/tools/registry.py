@@ -1,4 +1,4 @@
-"""All Jarvis tools + read/act labels, SDK MCP server.
+"""All Ultron tools + read/act labels, SDK MCP server.
 
 Every tool is labelled:
   read — runs freely, even in scheduled jobs (searching, looking things up, thinking)
@@ -49,12 +49,12 @@ from .video import generate_video
 from .whatsapp import whatsapp_send
 from .youtube import youtube
 
-SERVER_NAME = "jarvis"
+SERVER_NAME = "ultron"
 PREFIX = f"mcp__{SERVER_NAME}__"  # how Claude Code names tools from this server
 
 
 @dataclass(frozen=True)
-class JarvisTool:
+class UltronTool:
     tool: SdkMcpTool[Any]
     kind: Literal["read", "act"]
 
@@ -63,86 +63,86 @@ class JarvisTool:
         return PREFIX + self.tool.name
 
 
-TOOLS: list[JarvisTool] = [
-    JarvisTool(ask_expert, "read"),
-    JarvisTool(show_on_canvas, "read"),
+TOOLS: list[UltronTool] = [
+    UltronTool(ask_expert, "read"),
+    UltronTool(show_on_canvas, "read"),
     # Only opens the tab: what runs in the shell is up to you, typing in it.
-    JarvisTool(open_terminal, "read"),
-    # Image edits only change Jarvis's own copies and can always be undone.
-    JarvisTool(image_search, "read"),
-    JarvisTool(image_edit, "read"),
-    JarvisTool(image_undo, "read"),
-    JarvisTool(image_versions, "read"),
-    # AI images are made on this Mac in seconds and only add Jarvis's own copies.
-    JarvisTool(generate_image, "read"),
-    JarvisTool(image_ai_edit, "read"),
-    # 3D previews only change Jarvis's own copies. The final file needs your approval.
-    JarvisTool(preview_3d, "read"),
-    JarvisTool(revert_3d, "read"),
-    JarvisTool(get_3d_spec, "read"),
-    JarvisTool(export_3d, "act"),
+    UltronTool(open_terminal, "read"),
+    # Image edits only change Ultron's own copies and can always be undone.
+    UltronTool(image_search, "read"),
+    UltronTool(image_edit, "read"),
+    UltronTool(image_undo, "read"),
+    UltronTool(image_versions, "read"),
+    # AI images are made on this Mac in seconds and only add Ultron's own copies.
+    UltronTool(generate_image, "read"),
+    UltronTool(image_ai_edit, "read"),
+    # 3D previews only change Ultron's own copies. The final file needs your approval.
+    UltronTool(preview_3d, "read"),
+    UltronTool(revert_3d, "read"),
+    UltronTool(get_3d_spec, "read"),
+    UltronTool(export_3d, "act"),
     # Playing music and reading your own playlists change nothing that matters.
-    JarvisTool(spotify_control, "read"),
-    JarvisTool(spotify_playlist_tracks, "read"),
+    UltronTool(spotify_control, "read"),
+    UltronTool(spotify_playlist_tracks, "read"),
     # Only your own phone's media volume. The taxi only opens Careem: you book and pay.
-    JarvisTool(phone_volume, "read"),
-    JarvisTool(phone_taxi, "read"),
+    UltronTool(phone_volume, "read"),
+    UltronTool(phone_taxi, "read"),
     # Looks people up in Contacts; never changes them.
-    JarvisTool(find_contact, "read"),
+    UltronTool(find_contact, "read"),
     # Only reads the school's Assignments page, in a tab it opens and closes itself.
-    JarvisTool(check_homework, "read"),
+    UltronTool(check_homework, "read"),
     # Reads the exam boards' public spec PDFs (downloaded once).
-    JarvisTool(syllabus, "read"),
+    UltronTool(syllabus, "read"),
     # Reads the user's own textbook scans on this Mac.
-    JarvisTool(textbook, "read"),
-    # Only adds a new deck to Jarvis's Output folder; never overwrites one.
-    JarvisTool(make_slides, "read"),
-    JarvisTool(open_slides, "read"),
+    UltronTool(textbook, "read"),
+    # Only adds a new deck to Ultron's Output folder; never overwrites one.
+    UltronTool(make_slides, "read"),
+    UltronTool(open_slides, "read"),
     # Reads the teacher's lesson decks on this Mac.
-    JarvisTool(lectures, "read"),
+    UltronTool(lectures, "read"),
     # Reading Amazon changes nothing; changing the cart or wish list runs without a card.
     # Neither can place an order.
-    JarvisTool(amazon_read, "read"),
-    JarvisTool(amazon_change, "act"),
+    UltronTool(amazon_read, "read"),
+    UltronTool(amazon_change, "act"),
     # Only reads files you uploaded yourself.
-    JarvisTool(read_upload, "read"),
-    # A video ties up the Mac for minutes, but only makes Jarvis's own copy: no card.
-    JarvisTool(generate_video, "act"),
+    UltronTool(read_upload, "read"),
+    # A video ties up the Mac for minutes, but only makes Ultron's own copy: no card.
+    UltronTool(generate_video, "act"),
     # Sends a message in your name.
-    JarvisTool(whatsapp_send, "act"),
+    UltronTool(whatsapp_send, "act"),
     # Only ever texts you: the chat is fixed in .env.
-    JarvisTool(text_me, "read"),
+    UltronTool(text_me, "read"),
     # Memories go into every later conversation; you see and delete them in the memory panel.
-    JarvisTool(remember, "act"),
-    JarvisTool(forget, "act"),
-    JarvisTool(recall, "read"),
+    UltronTool(remember, "act"),
+    UltronTool(forget, "act"),
+    UltronTool(recall, "read"),
     # Your Obsidian notes: reading is free (never #private ones), a write asks only for notes you marked important.
-    JarvisTool(search_notes, "read"),
-    JarvisTool(read_note, "read"),
-    JarvisTool(write_note, "act"),
+    UltronTool(search_notes, "read"),
+    UltronTool(read_note, "read"),
+    UltronTool(write_note, "act"),
     # A standing job keeps running (and using your Pro limit) until you stop it.
-    JarvisTool(schedule_job, "act"),
-    JarvisTool(change_job, "act"),
-    JarvisTool(list_jobs, "read"),
+    UltronTool(schedule_job, "act"),
+    UltronTool(change_job, "act"),
+    UltronTool(list_jobs, "read"),
     # Adding only adds protection; lifting it asks (see ASK_TOOLS).
-    JarvisTool(mark_important, "act"),
-    JarvisTool(unmark_important, "act"),
-    # This Mac: reading is free. Changes stay on this Mac and inside Jarvis's folder, so no card
+    UltronTool(mark_important, "act"),
+    UltronTool(unmark_important, "act"),
+    # This Mac: reading is free. Changes stay on this Mac and inside Ultron's folder, so no card
     # (files you marked important still ask); scheduled jobs can't use them.
-    JarvisTool(mac_read, "read"),
-    JarvisTool(mac_change, "act"),
-    # Sandboxed: no network or other programs, writes only in Jarvis's Output folder.
-    JarvisTool(run_python, "act"),
+    UltronTool(mac_read, "read"),
+    UltronTool(mac_change, "act"),
+    # Sandboxed: no network or other programs, writes only in Ultron's Output folder.
+    UltronTool(run_python, "act"),
     # Apple Maps: looking places and travel times up changes nothing.
-    JarvisTool(maps, "read"),
+    UltronTool(maps, "read"),
     # Google Flights: only searches, can't book.
-    JarvisTool(flights, "read"),
+    UltronTool(flights, "read"),
     # YouTube: only searches.
-    JarvisTool(youtube, "read"),
+    UltronTool(youtube, "read"),
 ]
 
 # In chat, an 'act' tool asks you first only when it reaches other people or touches
-# something you marked important. These are the ones of Jarvis's own that always ask.
+# something you marked important. These are the ones of Ultron's own that always ask.
 ASK_TOOLS = {"whatsapp_send", "unmark_important"}
 # Connector actions whose name has one of these words reach other people (send_message,
 # reply, share, respond_to_event, publish_app, ...). Drafts don't: they wait for you.
@@ -168,7 +168,7 @@ TITLES = {
     "mac_change": "Change something on this Mac",
 }
 
-# Claude Code's own built-in tools that Jarvis may use (all 'read').
+# Claude Code's own built-in tools that Ultron may use (all 'read').
 # ToolSearch lets Claude find connector tools on demand instead of loading
 # hundreds of tool descriptions into every message.
 BUILTIN_READ_TOOLS: list[str] = [*web.WEB_TOOLS, "ToolSearch"]
@@ -227,7 +227,7 @@ def hooks() -> dict[str, list[HookMatcher]]:
 
 @contextmanager
 def _always_load():
-    """Mark Jarvis's own tools 'always load' so Tool Search doesn't hide them.
+    """Mark Ultron's own tools 'always load' so Tool Search doesn't hide them.
 
     Claude Code reads this from the tool's `_meta`; the SDK (0.2.x) only fills
     `_meta` from its own helper, so we wrap that helper while building our server.
@@ -245,7 +245,7 @@ def _always_load():
 
 
 def mcp_servers() -> dict[str, Any]:
-    """The in-process MCP server that exposes Jarvis's tools to Claude Code."""
+    """The in-process MCP server that exposes Ultron's tools to Claude Code."""
     with _always_load():
         server = create_sdk_mcp_server(SERVER_NAME, tools=[t.tool for t in TOOLS])
     return {SERVER_NAME: server}
@@ -257,14 +257,14 @@ def auto_allowed() -> list[str]:
 
 
 def short_name(name: str) -> str:
-    """'mcp__jarvis__ask_expert' -> 'ask_expert'. Other names are unchanged."""
+    """'mcp__ultron__ask_expert' -> 'ask_expert'. Other names are unchanged."""
     return name.removeprefix(PREFIX)
 
 
 def friendly_name(name: str) -> str:
     """A readable tool name for the confirmation card.
 
-    'mcp__jarvis__save_note'             -> 'Save note'
+    'mcp__ultron__save_note'             -> 'Save note'
     'mcp__claude_ai_Gmail__send_message'  -> 'Gmail: Send message'
     'mcp__claude_ai_Canva__search-designs' -> 'Canva: Search designs'
     """
@@ -281,14 +281,14 @@ def friendly_name(name: str) -> str:
 
 
 MAX_DETAIL_CHARS = 600
-# Id arguments a card can name: the event or task Jarvis saw earlier, a saved memory or a scheduled job.
+# Id arguments a card can name: the event or task Ultron saw earlier, a saved memory or a scheduled job.
 ID_KEYS = {"eventId": "event", "task_id": "task", "memory_id": "memory", "job_id": "job"}
 
 
 def describe_call(name: str, tool_input: dict[str, Any]) -> tuple[str, str, list[list[str]]]:
     """(title, summary, details) describing a tool call, for the confirmation card."""
     title = friendly_name(name)
-    summary = f"Jarvis wants to: {title}"
+    summary = f"Ultron wants to: {title}"
     details = []
     # One nested object (TickTick's create_task sends {"task": {...}}) becomes its own rows.
     items = []

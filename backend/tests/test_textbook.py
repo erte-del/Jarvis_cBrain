@@ -16,7 +16,7 @@ PAGES[2 + 20] = "Discriminant\n22"
 
 class TextbookTest(unittest.TestCase):
     def test_runs_freely(self):
-        self.assertEqual(registry.classify("mcp__jarvis__textbook"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__textbook"), "read")
 
     def test_printed(self):
         self.assertEqual(textbook.printed(PAGES)[2:], NUMS)

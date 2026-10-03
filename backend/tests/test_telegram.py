@@ -25,7 +25,7 @@ def send(args, urlopen=None, token=TOKEN, chat_id="42"):
 
 class TelegramTest(unittest.TestCase):
     def test_runs_without_asking(self):
-        self.assertEqual(registry.classify("mcp__jarvis__text_me"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__text_me"), "read")
 
     def test_sends_to_the_chat_in_env_only(self):
         result, urlopen = send({"message": "Meeting in 10 min", "chat_id": "999"})

@@ -30,7 +30,7 @@ function Meter({ label, window, now }: { label: string; window?: UsageWindow; no
         <div className="meter-label">{label}</div>
         <div className="meter-value dim">--</div>
         <div className="meter-bar" />
-        <div className="meter-sub">after Jarvis's next reply</div>
+        <div className="meter-sub">after Ultron's next reply</div>
       </div>
     )
   }
@@ -50,7 +50,7 @@ function Meter({ label, window, now }: { label: string; window?: UsageWindow; no
         {window.resets_at ? `resets ${resetTime(window.resets_at)} · ${countdown(window.resets_at, now)}` : 'window just reset'}
       </div>
       {window.reported_at > 0 && (
-        <div className="meter-sub" title="Includes Claude Code and claude.ai, but Jarvis only gets the number with its replies.">
+        <div className="meter-sub" title="Includes Claude Code and claude.ai, but Ultron only gets the number with its replies.">
           as of {resetTime(window.reported_at)}
         </div>
       )}
@@ -59,7 +59,7 @@ function Meter({ label, window, now }: { label: string; window?: UsageWindow; no
 }
 
 const MODELS: { id: ModelAlias | null; label: string; hint: string }[] = [
-  { id: null, label: 'AUTO', hint: 'Jarvis picks (Sonnet by default)' },
+  { id: null, label: 'AUTO', hint: 'Ultron picks (Sonnet by default)' },
   { id: 'haiku', label: 'HAIKU', hint: 'Fastest, cheapest' },
   { id: 'sonnet', label: 'SONNET', hint: 'The default' },
   { id: 'opus', label: 'OPUS', hint: 'Strongest, uses the most of your limit' },
@@ -115,7 +115,7 @@ export function UsagePanel({ usage, settings, modelOverride, onModel, onGatewayM
       )}
 
       <div className="usage-section">
-        <div className="usage-label">JARVIS · THIS 5-HOUR WINDOW</div>
+        <div className="usage-label">ULTRON · THIS 5-HOUR WINDOW</div>
         <div className="usage-total">
           {fmt(total)} <span>tokens</span>
         </div>
@@ -193,22 +193,22 @@ export function TerminalPanel({ busy, activeTool, connection }: TerminalPanelPro
   let command: string
   let status: string
   if (connection !== 'open') {
-    command = 'jarvis --reconnect'
+    command = 'ultron --reconnect'
     status = connection === 'closed' ? 'Backend offline. Waiting for it to come back…' : 'Connecting…'
   } else if (activeTool) {
     const cmd = COMMANDS[activeTool.name] ?? activeTool.name.replace(/_/g, '-').toLowerCase()
-    command = `jarvis --${cmd}${activeTool.detail ? ` "${activeTool.detail}"` : ''}`
+    command = `ultron --${cmd}${activeTool.detail ? ` "${activeTool.detail}"` : ''}`
     status = toolLabel(activeTool)
   } else if (busy) {
-    command = 'jarvis --process'
+    command = 'ultron --process'
     status = 'Working on your request…'
   } else {
-    command = 'jarvis --await-input'
+    command = 'ultron --await-input'
     status = 'Standing by.'
   }
 
   return (
-    <Panel title="TERMINAL" tag="ROOT@JARVIS" className="terminal-panel">
+    <Panel title="TERMINAL" tag="ROOT@ULTRON" className="terminal-panel">
       <div className="terminal">
         <div className="terminal-cmd">
           <span className="prompt">&gt;_</span> {command}

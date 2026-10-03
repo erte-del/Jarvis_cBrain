@@ -1,21 +1,21 @@
 :root {
-  --bg: #02080c;
-  --panel: #06141b;
-  --panel-2: #0a1d26;
-  --border: #0f3442;
-  --line: #13506a;
-  --text: #cdeef7;
-  --text-dim: #5f8f9e;
-  --accent: #22d3ee;
-  --accent-2: #0ea5c6;
-  --glow: rgba(34, 211, 238, 0.45);
-  --user-bubble: #0a2f3c;
+  --bg: #08050f;
+  --panel: #110a20;
+  --panel-2: #180f2e;
+  --border: #2a1a4d;
+  --line: #4a2d86;
+  --text: #e4d9f7;
+  --text-dim: #8f7fb0;
+  --accent: #a855f7;
+  --accent-2: #8b3fe0;
+  --glow: rgba(168, 85, 247, 0.45);
+  --user-bubble: #2a1650;
   --danger: #ff6b6b;
   --warn: #f5b942;
 
   --haiku: #5ad19a;
-  --sonnet: #22d3ee;
-  --opus: #b388ff;
+  --sonnet: #a855f7;
+  --opus: #f472b6;
 
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
@@ -44,8 +44,8 @@ body,
 body {
   background:
     radial-gradient(ellipse at 50% 45%, rgba(14, 90, 115, 0.18), transparent 65%),
-    linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
-    linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(rgba(168, 85, 247, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(168, 85, 247, 0.025) 1px, transparent 1px) 0 0 / 40px 40px,
     var(--bg);
 }
 

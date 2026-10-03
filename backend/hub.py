@@ -10,7 +10,7 @@ from typing import Awaitable, Callable
 
 from events import Event
 
-log = logging.getLogger("jarvis.hub")
+log = logging.getLogger("ultron.hub")
 
 Sender = Callable[[Event], Awaitable[None]]
 

@@ -1,13 +1,13 @@
 #!/bin/bash
-# Stop the Jarvis backend that start_jarvis.sh started (quitting Jarvis.app runs this).
+# Stop the Ultron backend that start_ultron.sh started (quitting Ultron.app runs this).
 # A backend you started yourself in a terminal is left alone.
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PIDFILE="$ROOT/backend/storage/jarvis.pid"
+PIDFILE="$ROOT/backend/storage/ultron.pid"
 
-# With autostart on (scripts/autostart.sh), launchd runs Jarvis and starts him again
-# right after this: quitting Jarvis.app is then a restart.
-launchctl kill TERM "gui/$(id -u)/com.jarvis.backend" 2>/dev/null && exit 0
+# With autostart on (scripts/autostart.sh), launchd runs Ultron and starts him again
+# right after this: quitting Ultron.app is then a restart.
+launchctl kill TERM "gui/$(id -u)/com.ultron.backend" 2>/dev/null && exit 0
 
 [ -f "$PIDFILE" ] || exit 0
 PID="$(cat "$PIDFILE")"

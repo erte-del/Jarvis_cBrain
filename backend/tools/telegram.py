@@ -1,12 +1,12 @@
-"""Telegram: Jarvis texts you from its own bot, which shows up on your phone as a separate
-"Jarvis" chat. (read: it can only reach your own chat)
+"""Telegram: Ultron texts you from its own bot, which shows up on your phone as a separate
+"Ultron" chat. (read: it can only reach your own chat)
 
-The chat it writes to is fixed in .env (TELEGRAM_CHAT_ID), so whatever Jarvis is told, a
+The chat it writes to is fixed in .env (TELEGRAM_CHAT_ID), so whatever Ultron is told, a
 message can't go to anyone else. Setup is in .env.example. To find your chat id, message
 the bot once, then run:
     .venv/bin/python -m tools.telegram
 
-Jarvis can't read what you reply yet, and a bot can't place calls.
+Ultron can't read what you reply yet, and a bot can't place calls.
 """
 
 import asyncio
@@ -59,7 +59,7 @@ def send_text(message: str) -> None:
 
 @tool(
     "text_me",
-    "Text the user on their phone, from Jarvis's own Telegram bot. It only ever goes to "
+    "Text the user on their phone, from Ultron's own Telegram bot. It only ever goes to "
     "the user themselves; to message anyone else use whatsapp_send or email. Can't read replies.",
     {
         "type": "object",

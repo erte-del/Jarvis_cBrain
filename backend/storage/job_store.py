@@ -1,6 +1,6 @@
 """Scheduled jobs and the log of their runs, in storage/jobs.json.
 
-A job is a prompt Jarvis runs on its own (scheduler.py), either
+A job is a prompt Ultron runs on its own (scheduler.py), either
   - at a time of day: {"at": "08:00", "days": ["mon", ...]} (no days = every day), or
   - every so many minutes: {"every_min": 30}, a watcher. It only tells you when there's
     something to tell; with "once" it stops after the first time it does.

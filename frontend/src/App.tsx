@@ -6,7 +6,7 @@ import { LogPanel, TerminalPanel, UsagePanel } from './components/SidePanels'
 import Stage from './components/Stage'
 import TopBar from './components/TopBar'
 import { useSwipePanes } from './useSwipePanes'
-import { useJarvis } from './ws'
+import { useUltron } from './ws'
 
 const PANES = [['chat', 'CHAT'], ['stage', 'CANVAS'], ['status', 'STATUS']] as const
 const PANE_IDS = PANES.map(([id]) => id)
@@ -15,7 +15,7 @@ const PANE_IDS = PANES.map(([id]) => id)
 // A phone shows one of the three at a time (App.css): drag sideways (useSwipePanes), or
 // use the bar at the bottom.
 export default function App() {
-  const jarvis = useJarvis()
+  const ultron = useUltron()
   const [pane, setPane] = useState<(typeof PANES)[number][0]>('chat')
   const [voiceOn, setVoiceOn] = useState(false) // UI only for now (Phase 5a)
   const { ref: gridRef, go, touch } = useSwipePanes(PANE_IDS, pane, setPane)
@@ -23,70 +23,70 @@ export default function App() {
   return (
     <div className="hud">
       <TopBar
-        connection={jarvis.connection}
-        busy={jarvis.busy}
-        settings={jarvis.settings}
-        canStartNewChat={!jarvis.busy && jarvis.connection === 'open' && jarvis.messages.length > 0}
-        onNewChat={jarvis.newChat}
-        onProvider={jarvis.setProvider}
-        savedChats={jarvis.savedChats}
-        maxSavedChats={jarvis.maxSavedChats}
-        canSaveChat={!jarvis.busy && jarvis.connection === 'open' && jarvis.messages.length > 0}
-        canLoadChat={!jarvis.busy && jarvis.connection === 'open'}
-        onSaveChat={jarvis.saveChat}
-        onLoadChat={jarvis.loadChat}
-        onDeleteChat={jarvis.deleteChat}
-        memories={jarvis.memories}
-        memoryCategories={jarvis.memoryCategories}
-        onSaveMemory={jarvis.saveMemory}
-        onDeleteMemory={jarvis.deleteMemory}
-        onWipeMemory={jarvis.wipeMemory}
-        jobs={jarvis.jobs}
-        jobRuns={jarvis.jobRuns}
-        onJob={jarvis.updateJob}
+        connection={ultron.connection}
+        busy={ultron.busy}
+        settings={ultron.settings}
+        canStartNewChat={!ultron.busy && ultron.connection === 'open' && ultron.messages.length > 0}
+        onNewChat={ultron.newChat}
+        onProvider={ultron.setProvider}
+        savedChats={ultron.savedChats}
+        maxSavedChats={ultron.maxSavedChats}
+        canSaveChat={!ultron.busy && ultron.connection === 'open' && ultron.messages.length > 0}
+        canLoadChat={!ultron.busy && ultron.connection === 'open'}
+        onSaveChat={ultron.saveChat}
+        onLoadChat={ultron.loadChat}
+        onDeleteChat={ultron.deleteChat}
+        memories={ultron.memories}
+        memoryCategories={ultron.memoryCategories}
+        onSaveMemory={ultron.saveMemory}
+        onDeleteMemory={ultron.deleteMemory}
+        onWipeMemory={ultron.wipeMemory}
+        jobs={ultron.jobs}
+        jobRuns={ultron.jobRuns}
+        onJob={ultron.updateJob}
       />
 
       <main className={`hud-grid pane-${pane}`} ref={gridRef} {...touch}>
         <Panel title="COMMS" tag="RT-LINK" className="comms-panel">
           <Chat
-            messages={jarvis.messages}
-            connection={jarvis.connection}
-            busy={jarvis.busy}
-            activeTool={jarvis.activeTool}
-            onSend={jarvis.sendText}
-            onStop={jarvis.stop}
-            onConfirm={jarvis.answerConfirm}
+            messages={ultron.messages}
+            connection={ultron.connection}
+            busy={ultron.busy}
+            activeTool={ultron.activeTool}
+            onSend={ultron.sendText}
+            onStop={ultron.stop}
+            onConfirm={ultron.answerConfirm}
             voiceOn={voiceOn}
             onVoice={setVoiceOn}
           />
         </Panel>
 
         <Stage
-          cards={jarvis.cards}
-          tab={jarvis.stageTab}
-          onTab={jarvis.setStageTab}
-          onClose={jarvis.closeCard}
-          selectedImage={jarvis.selectedImage}
-          onSelectImage={jarvis.selectImage}
-          terminals={jarvis.terminals}
-          onCloseTerminal={jarvis.closeTerminal}
-          busy={jarvis.busy}
-          activeTool={jarvis.activeTool}
-          connection={jarvis.connection}
+          cards={ultron.cards}
+          tab={ultron.stageTab}
+          onTab={ultron.setStageTab}
+          onClose={ultron.closeCard}
+          selectedImage={ultron.selectedImage}
+          onSelectImage={ultron.selectImage}
+          terminals={ultron.terminals}
+          onCloseTerminal={ultron.closeTerminal}
+          busy={ultron.busy}
+          activeTool={ultron.activeTool}
+          connection={ultron.connection}
           voiceOn={voiceOn}
           onVoice={setVoiceOn}
         />
 
         <div className="hud-right">
           <UsagePanel
-            usage={jarvis.usage}
-            settings={jarvis.settings}
-            modelOverride={jarvis.modelOverride}
-            onModel={jarvis.setModelOverride}
-            onGatewayModel={jarvis.setGatewayModel}
+            usage={ultron.usage}
+            settings={ultron.settings}
+            modelOverride={ultron.modelOverride}
+            onModel={ultron.setModelOverride}
+            onGatewayModel={ultron.setGatewayModel}
           />
-          <LogPanel log={jarvis.log} />
-          <TerminalPanel busy={jarvis.busy} activeTool={jarvis.activeTool} connection={jarvis.connection} />
+          <LogPanel log={ultron.log} />
+          <TerminalPanel busy={ultron.busy} activeTool={ultron.activeTool} connection={ultron.connection} />
         </div>
       </main>
 
@@ -94,7 +94,7 @@ export default function App() {
         {PANES.map(([id, label]) => (
           <button key={id} type="button" className={pane === id ? 'active' : ''} aria-pressed={pane === id} onClick={() => go(id)}>
             {label}
-            {id === 'stage' && jarvis.cards.length > 0 && <span className="count">{jarvis.cards.length}</span>}
+            {id === 'stage' && ultron.cards.length > 0 && <span className="count">{ultron.cards.length}</span>}
           </button>
         ))}
       </nav>

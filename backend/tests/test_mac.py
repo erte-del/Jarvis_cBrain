@@ -22,7 +22,7 @@ class MacTest(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
-        self.root = Path(tmp.name).resolve() / "Jarvis"
+        self.root = Path(tmp.name).resolve() / "Ultron"
         patch = mock.patch.object(config, "FILES_DIR", self.root)
         patch.start()
         self.addCleanup(patch.stop)
@@ -35,10 +35,10 @@ class MacTest(unittest.TestCase):
         self.fake_run = fake_run
 
     def test_labels_and_no_card(self):
-        self.assertEqual(registry.classify("mcp__jarvis__mac_read"), "read")
-        self.assertEqual(registry.classify("mcp__jarvis__mac_change"), "act")
-        self.assertEqual(registry.classify("mcp__jarvis__run_python"), "act")
-        self.assertFalse(registry.needs_ok("mcp__jarvis__mac_change", {"action": "trash", "path": "a.txt"}))
+        self.assertEqual(registry.classify("mcp__ultron__mac_read"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__mac_change"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__run_python"), "act")
+        self.assertFalse(registry.needs_ok("mcp__ultron__mac_change", {"action": "trash", "path": "a.txt"}))
 
     def test_paths_stay_in_the_folder(self):
         self.root.mkdir()
@@ -98,7 +98,7 @@ class MacTest(unittest.TestCase):
             self.assertIn("setup_location.sh", call(mac.mac_read, what="location")["content"][0]["text"])
 
     def test_maps(self):
-        self.assertEqual(registry.classify("mcp__jarvis__maps"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__maps"), "read")
 
         async def fake_run(*cmd, **kw):
             self.calls.append(cmd)

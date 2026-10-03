@@ -96,7 +96,7 @@ class VideoTest(unittest.TestCase):
 
     def test_is_an_act_tool(self):
         from tools import registry
-        self.assertEqual(registry.classify("mcp__jarvis__generate_video"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__generate_video"), "act")
 
 
 if __name__ == "__main__":

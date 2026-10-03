@@ -1,4 +1,4 @@
-"""Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never writes code that runs here.
+"""Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never writes code that runs here.
 
     Blender --background --factory-startup --python blender_render_script.py -- <in.glb> <out_dir>
 

@@ -18,16 +18,16 @@ backend/storage/uploads/
 backend/storage/videos/
 backend/storage/wan/
 backend/storage/flux/
-backend/storage/JarvisLocation.app/
-backend/storage/jarvis.log
-backend/storage/jarvis.pid
+backend/storage/UltronLocation.app/
+backend/storage/ultron.log
+backend/storage/ultron.pid
 
 # Node / frontend
 node_modules/
 dist/
 
 # The Mac app is built from scripts/ (scripts/make_app.sh)
-Jarvis.app/
+Ultron.app/
 
 # OS / editors
 .DS_Store

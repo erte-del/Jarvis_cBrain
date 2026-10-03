@@ -1,7 +1,7 @@
 """Spotify: play music in the Spotify app on this Mac, and read your playlists.
 
 The claude.ai Spotify connector can search but can't play or list a playlist's songs,
-so Jarvis adds two tools of its own:
+so Ultron adds two tools of its own:
 
   spotify_control         drives the Spotify desktop app with AppleScript. No login,
                           no Premium. The connector's search finds the spotify: URIs.
@@ -9,7 +9,7 @@ so Jarvis adds two tools of its own:
                           through the Web API (Spotify Connect) instead: needs Premium,
                           the login below, and Spotify open on the phone.
   spotify_playlist_tracks the songs in one of your playlists, via Spotify's Web API.
-                          Needs SPOTIFY_CLIENT_ID in .env and a one-time login (Jarvis
+                          Needs SPOTIFY_CLIENT_ID in .env and a one-time login (Ultron
                           shows the link). Since February 2026 Spotify only gives the
                           contents of playlists you own or collaborate on, and the
                           developer app's owner needs Premium.
@@ -188,11 +188,11 @@ def finish_login(state: str, code: str, error: str) -> str:
     if error or not code:
         return f"Spotify login cancelled ({error or 'no code'})."
     if not verifier:
-        return "This login link is old or was already used. Ask Jarvis for a new one."
+        return "This login link is old or was already used. Ask Ultron for a new one."
     _token_request(
         {"grant_type": "authorization_code", "code": code, "redirect_uri": redirect_uri(), "code_verifier": verifier}
     )
-    return "Spotify connected. You can close this tab and ask Jarvis again."
+    return "Spotify connected. You can close this tab and ask Ultron again."
 
 
 def _access_token() -> str | None:

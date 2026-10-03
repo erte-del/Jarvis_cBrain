@@ -1,4 +1,4 @@
-"""Jarvis logic: router -> brain -> events."""
+"""Ultron logic: router -> brain -> events."""
 
 import logging
 import time
@@ -19,7 +19,7 @@ from tools import connectors, registry, web
 from .base import Brain, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
 from .router import STICKY_CONTEXT_TOKENS, Route, route
 
-log = logging.getLogger("jarvis.agent")
+log = logging.getLogger("ultron.agent")
 
 
 def now_note() -> str:
@@ -27,7 +27,7 @@ def now_note() -> str:
     return datetime.now().astimezone().strftime("%A %d %B %Y, %H:%M %Z (UTC%z)")
 
 
-class Jarvis:
+class Ultron:
     def __init__(self, brain: Brain) -> None:
         self.brain = brain
 

@@ -31,7 +31,7 @@ from storage import model_store
 
 from . import shapes
 
-log = logging.getLogger("jarvis.3d")
+log = logging.getLogger("ultron.3d")
 
 EXPORT_SCRIPT = Path(__file__).with_name("blender_export_script.py")
 RENDER_SCRIPT = Path(__file__).with_name("blender_render_script.py")
@@ -86,7 +86,7 @@ def _build_preview(spec: dict[str, Any]) -> tuple[bytes, int, list[float], int, 
 
 
 async def _blender(script: Path, *args: str, ok_marker: str, timeout: float) -> str:
-    """Run one of Jarvis's fixed Blender scripts in the background. Returns Blender's output."""
+    """Run one of Ultron's fixed Blender scripts in the background. Returns Blender's output."""
     blender = config.BLENDER_PATH
     if not Path(blender).exists():
         raise RuntimeError(f"Blender not found at {blender} (set BLENDER_PATH in .env)")

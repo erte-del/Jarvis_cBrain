@@ -1,4 +1,4 @@
-"""remember / recall / forget: what Jarvis knows about you between chats.
+"""remember / recall / forget: what Ultron knows about you between chats.
 
 The notes live in storage/memory_store.py. remember and forget are 'act' tools, so
 scheduled jobs can't use them; in chat they run without a card (you asked for that), and you

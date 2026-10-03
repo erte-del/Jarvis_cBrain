@@ -23,13 +23,13 @@ export interface BrainSettings {
 export interface UsageWindow {
   used: number // 0..1 of the plan window
   resets_at: number // unix seconds, 0 = not reported yet
-  reported_at: number // unix seconds: when Claude Code last told us (with a Jarvis reply)
+  reported_at: number // unix seconds: when Claude Code last told us (with a Ultron reply)
 }
 
 export interface UsageSnapshot {
   provider: Provider
   windows: Record<string, UsageWindow> // five_hour, seven_day, ...
-  tokens: { input: number; cache_write: number; cache_read: number; output: number } // Jarvis, this 5h window
+  tokens: { input: number; cache_write: number; cache_read: number; output: number } // Ultron, this 5h window
   context_tokens: number // size of the current conversation
 }
 
@@ -44,7 +44,7 @@ export interface Memory {
   id: string // mem_3
   category: string // one of the categories the server sends
   text: string
-  source: string // 'chat' (Jarvis saved it, you approved) or 'you' (added in the panel)
+  source: string // 'chat' (Ultron saved it, you approved) or 'you' (added in the panel)
   created: number // unix seconds
   updated: number
 }
@@ -52,7 +52,7 @@ export interface Memory {
 export interface Job {
   id: string // job_2
   title: string
-  prompt: string // what Jarvis does when it runs
+  prompt: string // what Ultron does when it runs
   at: string // 'HH:MM', or '' for a watcher
   days: string[] // 'mon'...; empty = every day
   every_min: number // watcher: checks this often; 0 for a time-of-day job
@@ -228,7 +228,7 @@ type PhoneNavigator = Navigator & {
   connection?: { type?: string }
 }
 
-export class JarvisSocket {
+export class UltronSocket {
   private ws: WebSocket | null = null
   private retryMs = 500
   private retryTimer: number | undefined
@@ -543,7 +543,7 @@ function baseReducer(state: ChatState, action: Action): ChatState {
             role: 'notice',
             text:
               'New conversation: the last one sat idle for over an hour, and sending it all to Claude ' +
-              'again would use a lot of your limit. Jarvis no longer remembers the messages above.',
+              'again would use a lot of your limit. Ultron no longer remembers the messages above.',
           }
           const lastUser = state.messages.map((m) => m.role).lastIndexOf('user')
           const messages = state.messages.slice()
@@ -653,9 +653,9 @@ const initialState: ChatState = {
   log: [],
 }
 
-export function useJarvis() {
+export function useUltron() {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const socketRef = useRef<JarvisSocket | null>(null)
+  const socketRef = useRef<UltronSocket | null>(null)
   const overrideRef = useRef<ModelAlias | null>(null)
   const hereRef = useRef<[number, number] | undefined>(undefined)
   const batteryRef = useRef<BatteryManager | undefined>(undefined) // live: always the current level
@@ -668,14 +668,14 @@ export function useJarvis() {
     if (!navigator.geolocation) return
     const id = navigator.geolocation.watchPosition(
       (p) => { hereRef.current = [p.coords.latitude, p.coords.longitude] },
-      () => { hereRef.current = undefined }, // denied or no fix: Jarvis asks where you are
+      () => { hereRef.current = undefined }, // denied or no fix: Ultron asks where you are
       { enableHighAccuracy: true, maximumAge: 60_000 },
     )
     return () => navigator.geolocation.clearWatch(id)
   }, [])
 
   useEffect(() => {
-    const socket = new JarvisSocket()
+    const socket = new UltronSocket()
     socket.onEvent = (ev) => dispatch({ kind: 'server', ev })
     socket.onConnection = (s) => dispatch({ kind: 'connection', state: s })
     // Settings live per connection on the server, so re-send them after a reconnect.

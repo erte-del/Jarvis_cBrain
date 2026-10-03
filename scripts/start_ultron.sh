@@ -1,18 +1,18 @@
 #!/bin/bash
-# Start Jarvis (if it isn't running yet) and open it in the browser.
-# Used by Jarvis.app; you can also run it yourself: scripts/start_jarvis.sh
+# Start Ultron (if it isn't running yet) and open it in the browser.
+# Used by Ultron.app; you can also run it yourself: scripts/start_ultron.sh
 set -u
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 URL="http://127.0.0.1:8000"
-LOG="$ROOT/backend/storage/jarvis.log"
-PIDFILE="$ROOT/backend/storage/jarvis.pid"
+LOG="$ROOT/backend/storage/ultron.log"
+PIDFILE="$ROOT/backend/storage/ultron.pid"
 
-AGENT="gui/$(id -u)/com.jarvis.backend"  # scripts/autostart.sh
+AGENT="gui/$(id -u)/com.ultron.backend"  # scripts/autostart.sh
 
 running() { curl -s -m 1 "$URL/health" >/dev/null 2>&1; }
 
-# Rebuild the page if its code changed since the last build. Also when Jarvis is
+# Rebuild the page if its code changed since the last build. Also when Ultron is
 # already running (autostart): he serves the new files without a restart.
 DIST="$ROOT/frontend/dist/index.html"
 CHANGED="$(find "$ROOT/frontend/src" "$ROOT/frontend/index.html" "$ROOT/frontend/vite.config.ts" \
@@ -29,11 +29,11 @@ if [ ! -f "$DIST" ] || [ -n "$CHANGED" ]; then
 fi
 
 if ! running; then
-  echo "=== $(date) starting Jarvis" >>"$LOG"
+  echo "=== $(date) starting Ultron" >>"$LOG"
 
   if launchctl print "$AGENT" >/dev/null 2>&1; then
     launchctl kickstart "$AGENT"  # autostart is on: launchd runs him, don't start a second one
-    LOG="$HOME/Library/Logs/Jarvis.log"
+    LOG="$HOME/Library/Logs/Ultron.log"
   else
     cd "$ROOT/backend" || exit 1
     nohup .venv/bin/python main.py </dev/null >>"$LOG" 2>&1 &
@@ -45,7 +45,7 @@ if ! running; then
     sleep 0.5
   done
   if ! running; then
-    echo "Jarvis didn't start. Details: $LOG" >&2
+    echo "Ultron didn't start. Details: $LOG" >&2
     exit 1
   fi
 fi

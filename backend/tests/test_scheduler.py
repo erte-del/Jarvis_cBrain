@@ -75,12 +75,12 @@ class JobsTest(unittest.IsolatedAsyncioTestCase):
         return mock.patch.object(scheduler, "_ask", ask)
 
     async def test_scheduling_asks_first_and_listing_doesnt(self):
-        self.assertEqual(registry.classify("mcp__jarvis__schedule_job"), "act")
-        self.assertEqual(registry.classify("mcp__jarvis__change_job"), "act")
-        self.assertEqual(registry.classify("mcp__jarvis__list_jobs"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__schedule_job"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__change_job"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__list_jobs"), "read")
         result = await jobs.schedule_job.handler({"title": "Morning briefing", "prompt": "Calendar, tasks.", "at": "08:00", "days": ["mon"]})
         self.assertIn("job_1: 08:00 mon", result["content"][0]["text"])
-        _, _, details = registry.describe_call("mcp__jarvis__change_job", {"job_id": "job_1", "action": "delete"})
+        _, _, details = registry.describe_call("mcp__ultron__change_job", {"job_id": "job_1", "action": "delete"})
         self.assertIn(["job", "Morning briefing (08:00 mon)"], details)
         self.assertIn("Morning briefing", (await jobs.list_jobs.handler({}))["content"][0]["text"])
         await jobs.change_job.handler({"job_id": "job_1", "action": "pause"})
@@ -103,7 +103,7 @@ class JobsTest(unittest.IsolatedAsyncioTestCase):
         allow = await scheduler._read_only("mcp__claude_ai_Gmail__search_threads", {}, None)
         deny = await scheduler._read_only("mcp__claude_ai_Gmail__send_message", {}, None)
         self.assertEqual((allow.behavior, deny.behavior), ("allow", "deny"))
-        self.assertEqual((await scheduler._read_only("mcp__jarvis__schedule_job", {}, None)).behavior, "deny")
+        self.assertEqual((await scheduler._read_only("mcp__ultron__schedule_job", {}, None)).behavior, "deny")
 
     async def test_a_job_may_use_the_tools_on_its_allow_list_and_no_others(self):
         create = "mcp__claude_ai_TickTick__create_task"

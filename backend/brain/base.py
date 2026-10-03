@@ -1,6 +1,6 @@
 """Brain protocol + BrainEvent types.
 
-Everything in Jarvis talks to a `Brain`, never to Claude Code or the API
+Everything in Ultron talks to a `Brain`, never to Claude Code or the API
 directly. That way the brain can be swapped (Pro subscription today,
 API key someday) without touching the rest of the app.
 """

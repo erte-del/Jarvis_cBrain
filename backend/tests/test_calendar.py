@@ -1,4 +1,4 @@
-"""Calendar: Google Calendar reads run freely, writes ask; Jarvis knows the date; event cards.
+"""Calendar: Google Calendar reads run freely, writes ask; Ultron knows the date; event cards.
     .venv/bin/python -m unittest tests.test_calendar
 """
 
@@ -22,11 +22,11 @@ class CalendarTest(unittest.TestCase):
 
     def test_confirm_card_names_the_event(self):
         # Shape of a real search_events result: JSON text inside the MCP content blocks.
-        result = [{"type": "text", "text": '{"events":[{"id":"ev1","summary":"Jarvis test",'
+        result = [{"type": "text", "text": '{"events":[{"id":"ev1","summary":"Ultron test",'
                    '"start":{"dateTime":"2026-09-30T16:00:00+04:00"}}]}'}]
         registry.connectors.remember_items(CAL + "search_events", result)
         _, _, details = registry.describe_call(CAL + "delete_event", {"eventId": "ev1"})
-        self.assertIn(["event", "Jarvis test (2026-09-30T16:00:00+04:00)"], details)
+        self.assertIn(["event", "Ultron test (2026-09-30T16:00:00+04:00)"], details)
         _, _, details = registry.describe_call(CAL + "delete_event", {"eventId": "unknown"})
         self.assertEqual([d[0] for d in details], ["eventId"])
 

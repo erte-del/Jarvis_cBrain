@@ -1,19 +1,19 @@
 """Homework: read Microsoft Teams from Chrome on this Mac (read-only).
 
 The school's Microsoft account doesn't let apps read assignments (the Graph API needs the
-school admin's approval), and the Assignments page only works inside Teams. So Jarvis
+school admin's approval), and the Assignments page only works inside Teams. So Ultron
 reads Teams in Google Chrome, where the user is already signed in: it switches to Activity
 (where "… added an assignment, Due …" shows up) and reads its text. For the details (an
 assessment's topic list, a teacher's announcement) it reads a class's posts the same way:
 Teams → the class's card → its posts, opened in full, scrolling back for older ones.
 
 If a Teams tab is already open, it's read there and left open (for posts it's shown for the
-few seconds that takes, then the tab that was showing comes back). Otherwise Jarvis opens Teams and closes
+few seconds that takes, then the tab that was showing comes back). Otherwise Ultron opens Teams and closes
 it after: a background tab for the feed, a window of its own for posts.
 
 Setup, once: in Chrome's menu bar, View → Developer → Allow JavaScript from Apple Events,
 and stay signed in to the school account in Chrome. The first check makes macOS ask to
-let Jarvis control Chrome.
+let Ultron control Chrome.
 
 The tool also says which lines weren't in the feed at the last check, so a scheduled job
 can tell what's new. The feed's layout is never parsed: Claude reads the text.
@@ -57,8 +57,8 @@ READ_FEED = """(function () {
 MAX_POSTS = 40
 READ_CLASS = """(function (run, want) {
   var low = function (s) { return (s || '').toLowerCase(); };
-  var j = window.__jarvis;  // a tab the user keeps open still has the last read's posts
-  if (!j || j.run !== run) j = window.__jarvis = {run: run, posts: {}, polls: 0, calls: 0, quiet: 0, frame: 0, entered: false};
+  var j = window.__ultron;  // a tab the user keeps open still has the last read's posts
+  if (!j || j.run !== run) j = window.__ultron = {run: run, posts: {}, polls: 0, calls: 0, quiet: 0, frame: 0, entered: false};
   requestAnimationFrame(function () { j.frame = Date.now(); });
   if (Date.now() - j.frame > 1500) return j.polls++ ? 'SHOW' : '';
   if (j.entered && document.title.startsWith('Teams and Channels | ') && low(document.title).includes(want)) {
@@ -189,16 +189,16 @@ async def _run(url: str, javascript: str, where: str = "tab", reuse: bool = True
     if proc.returncode:
         msg = err.decode().strip()
         if "Apple Events" in msg:
-            msg = ("Chrome doesn't let Jarvis read pages yet. In Chrome's menu bar: "
+            msg = ("Chrome doesn't let Ultron read pages yet. In Chrome's menu bar: "
                    "View → Developer → Allow JavaScript from Apple Events.")
         elif "-1743" in msg or "not allowed" in msg.lower() or "not authorized" in msg.lower():
-            msg = ("macOS didn't allow Jarvis to control Chrome. Allow it in System Settings → "
+            msg = ("macOS didn't allow Ultron to control Chrome. Allow it in System Settings → "
                    "Privacy & Security → Automation.")
         raise RuntimeError(msg or "osascript failed")
     used, _, rest = out.decode().partition("\n")
     end_url, _, text = rest.partition("\n")
     if used == "existing" and not text.strip():
-        # The user's tab was somewhere Jarvis can't read from (hidden behind another window,
+        # The user's tab was somewhere Ultron can't read from (hidden behind another window,
         # on a class's Files page): open Teams itself instead.
         return await _run(url, javascript, where, reuse=False)
     return end_url, text.strip()

@@ -42,21 +42,21 @@ class BackupTest(unittest.TestCase):
         (old / "backend/storage/chats.json").write_text(f'{{"{CHAT_ID}": {{}}}}')
         (old / "backend/storage/assets/img_001").mkdir(parents=True)
         (old / "backend/storage/assets/img_001/v1.jpg").write_bytes(b"jpg")
-        (old / "backend/storage/jarvis.log").write_text("noise")
+        (old / "backend/storage/ultron.log").write_text("noise")
         sessions(home, old).mkdir(parents=True)
         (sessions(home, old) / f"{CHAT_ID}.jsonl").write_text("saved chat")
         (sessions(home, old) / "11111111-1111-1111-1111-111111111111.jsonl").write_text("not saved")
 
         res = run(home, old)
         self.assertEqual(res.returncode, 0, res.stderr)
-        backup = next(home.glob("Jarvis-backup-*.tgz"))
+        backup = next(home.glob("Ultron-backup-*.tgz"))
         self.assertEqual(backup.stat().st_mode & 0o077, 0)  # it holds keys: only you can read it
 
         self.assertEqual(run(home, new, "restore", str(backup)).returncode, 0)
         self.assertEqual((new / ".env").read_text(), "PEXELS_API_KEY=abc\n")
         self.assertEqual((new / "backend/storage/memory.json").read_text(), "[1]")
         self.assertEqual((new / "backend/storage/assets/img_001/v1.jpg").read_bytes(), b"jpg")
-        self.assertFalse((new / "backend/storage/jarvis.log").exists())
+        self.assertFalse((new / "backend/storage/ultron.log").exists())
         self.assertFalse((new / "sessions").exists())
         self.assertEqual([p.name for p in sessions(home, new).iterdir()], [f"{CHAT_ID}.jsonl"])
 

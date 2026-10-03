@@ -20,19 +20,19 @@ HOST = os.getenv("JARVIS_HOST", "127.0.0.1")
 PORT = int(os.getenv("JARVIS_PORT", "8000"))
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "").strip()
-# Jarvis's own Telegram bot, for texting you (tools/telegram.py).
+# Ultron's own Telegram bot, for texting you (tools/telegram.py).
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
 # The MacroDroid webhook on your phone, for its volume (tools/phone.py).
 MACRODROID_WEBHOOK = os.getenv("MACRODROID_WEBHOOK", "").strip()
-# Teams on the web, which Jarvis reads in Chrome (tools/homework.py).
+# Teams on the web, which Ultron reads in Chrome (tools/homework.py).
 HOMEWORK_URL = os.getenv("JARVIS_HOMEWORK_URL", "").strip() or "https://teams.cloud.microsoft/"
-# The Amazon site Jarvis browses in Chrome (tools/amazon.py).
+# The Amazon site Ultron browses in Chrome (tools/amazon.py).
 AMAZON_URL = (os.getenv("JARVIS_AMAZON_URL", "").strip() or "https://www.amazon.ae").rstrip("/")
-# Your Obsidian vault: the folder Jarvis searches, reads and (with your approval) writes notes in.
+# Your Obsidian vault: the folder Ultron searches, reads and (with your approval) writes notes in.
 _VAULT = os.getenv("JARVIS_VAULT", "").strip()
 VAULT_DIR = Path(_VAULT).expanduser() if _VAULT else None
-# The one folder Jarvis may find, open, move, rename and trash files in, and where its
+# The one folder Ultron may find, open, move, rename and trash files in, and where its
 # sandboxed Python reads from (results go to its Output subfolder).
 FILES_DIR = Path(os.getenv("JARVIS_FILES_DIR", "").strip() or "~/Jarvis Files").expanduser()
 BLENDER_PATH = os.getenv("BLENDER_PATH", "/Applications/Blender.app/Contents/MacOS/Blender")
@@ -48,7 +48,7 @@ EFFORT = os.getenv("JARVIS_EFFORT", "medium").strip().lower()
 if EFFORT not in ("low", "medium", "high", "xhigh", "max"):
     raise SystemExit(f"JARVIS_EFFORT={EFFORT!r}: use low, medium, high, xhigh or max")
 
-# Which claude.ai connectors Jarvis loads: "all", or names like "Gmail, Canva".
+# Which claude.ai connectors Ultron loads: "all", or names like "Gmail, Canva".
 # Each connector's tool list goes into every new conversation, so fewer = cheaper.
 CONNECTORS = [c.strip().lower() for c in os.getenv("JARVIS_CONNECTORS", "all").split(",") if c.strip()]
 
@@ -63,19 +63,19 @@ QUIET_HOURS = os.getenv("JARVIS_QUIET_HOURS", "23:00-07:00").strip()
 if QUIET_HOURS and not re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d-([01]\d|2[0-3]):[0-5]\d", QUIET_HOURS):
     raise SystemExit(f"JARVIS_QUIET_HOURS={QUIET_HOURS!r}: use HH:MM-HH:MM, e.g. 23:00-07:00")
 # Jobs are skipped once this much of the Pro plan's 5-hour window is used (0-1), so
-# background work never locks you out of Jarvis yourself.
+# background work never locks you out of Ultron yourself.
 JOBS_MAX_USAGE = float(os.getenv("JARVIS_JOBS_MAX_USAGE", "0.8"))
 
 if HOST not in ("127.0.0.1", "localhost", "::1"):
-    raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Jarvis only listens on this machine.")
+    raise SystemExit(f"JARVIS_HOST={HOST!r} refused: Ultron only listens on this machine.")
 
-# Jarvis on your phone: the address "tailscale serve" gives this Mac. Tailscale passes
-# your own devices through to 127.0.0.1, so Jarvis still only listens on this machine.
+# Ultron on your phone: the address "tailscale serve" gives this Mac. Tailscale passes
+# your own devices through to 127.0.0.1, so Ultron still only listens on this machine.
 REMOTE_ORIGIN = os.getenv("JARVIS_REMOTE_ORIGIN", "").strip().rstrip("/")
 if REMOTE_ORIGIN and not re.fullmatch(r"https://[a-z0-9-]+(\.[a-z0-9-]+)*\.ts\.net", REMOTE_ORIGIN):
     raise SystemExit(f"JARVIS_REMOTE_ORIGIN={REMOTE_ORIGIN!r}: use your Tailscale address, e.g. https://mac.tail1234.ts.net")
 
-# Which brain Jarvis runs on. You can switch in the UI (gear icon); this is the choice
+# Which brain Ultron runs on. You can switch in the UI (gear icon); this is the choice
 # at startup.
 #   claude    - Claude on your Pro login (the default)
 #   omniroute - OmniRoute (npm i -g omniroute), a gateway to other providers' models.
@@ -112,27 +112,27 @@ _GATEWAY_MODELS = {var: os.environ.pop(var) for var in _MODEL_VARS if os.environ
 # All of the above: the terminal tab leaves them out, so `claude` there uses your own login.
 CLAUDE_ENV_VARS = (*_API_AUTH_VARS, *_MODEL_VARS)
 
-log = logging.getLogger("jarvis.config")
-_gateway_env_set = False  # True while the variables below were put there by Jarvis
+log = logging.getLogger("ultron.config")
+_gateway_env_set = False  # True while the variables below were put there by Ultron
 
 
 def set_login(provider: str = "claude") -> None:
     """Point Claude Code at the Pro login (provider "claude") or at the gateway.
 
-    The Claude Code subprocesses (Jarvis and ask_expert) inherit this process's
+    The Claude Code subprocesses (Ultron and ask_expert) inherit this process's
     environment when they start, so setting it here is enough.
     """
     global _gateway_env_set
     for var in (*_API_AUTH_VARS, *_MODEL_VARS):
         removed = os.environ.pop(var, None) is not None
         if removed and not _gateway_env_set and var in _API_AUTH_VARS:
-            log.warning("Removed %s from the environment (Jarvis uses the Pro login).", var)
+            log.warning("Removed %s from the environment (Ultron uses the Pro login).", var)
     _gateway_env_set = provider == "omniroute"
     if _gateway_env_set:
         os.environ["ANTHROPIC_BASE_URL"] = GATEWAY_URL
         # Always set a token: without one Claude Code would send the Pro login's token
         # to the gateway. Placeholder for gateways that don't check keys.
-        os.environ["ANTHROPIC_AUTH_TOKEN"] = GATEWAY_KEY or "jarvis-gateway"
+        os.environ["ANTHROPIC_AUTH_TOKEN"] = GATEWAY_KEY or "ultron-gateway"
         for var in _MODEL_VARS:
             os.environ[var] = _GATEWAY_MODELS.get(var, GATEWAY_MODEL)
 

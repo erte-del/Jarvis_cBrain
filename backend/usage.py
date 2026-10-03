@@ -4,7 +4,7 @@ Two kinds:
   - Your Pro plan's windows (5 hours, 7 days): how much is used and when it resets.
     Claude Code reports these after each reply, as a fraction. Anthropic doesn't
     publish the limits as token counts, so "left" is a percentage too.
-  - Jarvis's own tokens, per reply, kept in storage/usage.json so the 5-hour total
+  - Ultron's own tokens, per reply, kept in storage/usage.json so the 5-hour total
     survives a restart. (Tokens you use in Claude Code or on claude.ai aren't counted
     here, but they do count towards the plan windows above.)
 """
@@ -16,7 +16,7 @@ from typing import Any
 
 from config import STORAGE_DIR
 
-log = logging.getLogger("jarvis.usage")
+log = logging.getLogger("ultron.usage")
 
 FILE = STORAGE_DIR / "usage.json"
 FIVE_HOURS = 5 * 3600
@@ -51,7 +51,7 @@ def _save() -> None:
 
 def record_limits(raw: dict[str, Any]) -> None:
     """From Claude Code's rate_limit_event. The numbers cover your whole Pro plan (Claude
-    Code, claude.ai, Jarvis), but only arrive with Jarvis's replies, so they can lag."""
+    Code, claude.ai, Ultron), but only arrive with Ultron's replies, so they can lag."""
     now = int(time.time())
     for name, w in (raw.get("unifiedWindows") or {}).items():
         if isinstance(w, dict) and w.get("utilization") is not None:
@@ -81,7 +81,7 @@ def snapshot(provider: str, context_tokens: int) -> dict[str, Any]:
     """Everything the usage panel shows."""
     now = time.time()
     five = windows.get("five_hour")
-    # Jarvis's tokens since the current 5-hour window started (or the last 5 hours).
+    # Ultron's tokens since the current 5-hour window started (or the last 5 hours).
     if five and five["resets_at"] > now:
         since = five["resets_at"] - FIVE_HOURS
     else:

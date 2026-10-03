@@ -45,12 +45,12 @@
 - ApiBrain
 - video.py
 - .oxlintrc.json
-- Jarvis
-- Jarvis Frontend index.html (Vite entry, #root, /src/main.tsx)
+- Ultron
+- Ultron Frontend index.html (Vite entry, #root, /src/main.tsx)
 - typing
 - Favicon (glowing cyan orb)
 - tsconfig.json
-- start_jarvis.sh
+- start_ultron.sh
 - db.py
 - memory_store.py
 - voice/__init__.py
@@ -58,7 +58,7 @@
 - tts.py
 - vad.py
 - make_app.sh
-- stop_jarvis.sh
+- stop_ultron.sh
 - Stage.tsx
 - JobsTest
 - registry.py
@@ -77,10 +77,10 @@
 - youtube.py
 - important.py
 - Terminal.tsx
-- Jarvis — Full Build Prompt
+- Ultron — Full Build Prompt
 - models3d.py
 - Trimesh
-- Jarvis To-Do List
+- Ultron To-Do List
 - GateTest
 - HomeworkTest
 - contacts.py
@@ -111,7 +111,7 @@
 - YoutubeTest
 - ask_expert
 - _blender
-- What Jarvis can do
+- What Ultron can do
 - StartTest
 - LoginTest
 - ShapesTest
@@ -138,16 +138,16 @@
 1. `ClaudeCodeBrain` - 29 edges
 2. `websocket_endpoint()` - 22 edges
 3. `emit()` - 21 edges
-4. `Jarvis` - 20 edges
+4. `Ultron` - 20 edges
 5. `compilerOptions` - 18 edges
 6. `Done` - 17 edges
 7. `_text()` - 17 edges
 8. `EditError` - 17 edges
 9. `react` - 16 edges
-10. `Jarvis — Full Build Prompt` - 16 edges
+10. `Ultron — Full Build Prompt` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Knowing you` --references--> `Jarvis`  [INFERRED]
+- `Knowing you` --references--> `Ultron`  [INFERRED]
   README.md → backend/brain/agent.py
 - `11. Project structure` --references--> `error()`  [INFERRED]
   JARVIS_BUILD_PROMPT.md → backend/events.py
@@ -189,7 +189,7 @@ Nodes (35): dependencies, react, react-dom, react-markdown, remark-gfm, @xterm/a
 
 ### Community 7 - "main.py"
 Cohesion: 0.08
-Nodes (21): Jarvis logic: router -> brain -> events., ConfirmationGate, Event, Confirmation gate for 'act' tools. (Phase 4a) Claude Code runs 'read' tools…, Record your answer from the browser. False if nothing was waiting., Open questions, for a tab that connects while they're waiting., Jarvis's brain: talks to Claude., Pushes events to every open browser tab. Replies stream back on the tab that… (+13 more)
+Nodes (21): Ultron logic: router -> brain -> events., ConfirmationGate, Event, Confirmation gate for 'act' tools. (Phase 4a) Claude Code runs 'read' tools…, Record your answer from the browser. False if nothing was waiting., Open questions, for a tab that connects while they're waiting., Ultron's brain: talks to Claude., Pushes events to every open browser tab. Replies stream back on the tab that… (+13 more)
 
 ### Community 8 - "web.py"
 Cohesion: 0.10
@@ -197,7 +197,7 @@ Nodes (21): PublicUrlTest, Web helper tests. Run from the backend folder: .venv/
 
 ### Community 9 - "scheduler.py"
 Cohesion: 0.09
-Nodes (29): Done, Error, Brain protocol + BrainEvent types. Everything in Jarvis talks to a `Brain`,…, A small piece of the reply text, streamed as it is generated., Claude started using a tool (e.g. a web search)., A tool finished. `data` is the tool's structured result, when there is one., The reply is complete. `model` is the full model ID that answered., TextDelta (+21 more)
+Nodes (29): Done, Error, Brain protocol + BrainEvent types. Everything in Ultron talks to a `Brain`,…, A small piece of the reply text, streamed as it is generated., Claude started using a tool (e.g. a web search)., A tool finished. `data` is the tool's structured result, when there is one., The reply is complete. `model` is the full model ID that answered., TextDelta (+21 more)
 
 ### Community 10 - "websocket_endpoint"
 Cohesion: 0.09
@@ -213,7 +213,7 @@ Nodes (19): compilerOptions, allowArbitraryExtensions, allowImportingTsExtension
 
 ### Community 14 - "Brain"
 Cohesion: 0.14
-Nodes (10): Brain, BrainEvent, Send one user message and stream back events until `Done` or `Error`., Forget the conversation and start a fresh one (optionally on another provider),…, Release resources (e.g. stop the Claude Code process)., 13. FIRST STEPS (start here), 1. Decision: how Jarvis talks to Claude, ❌ NOT USED (documented for later): Claude API with an API key (+2 more)
+Nodes (10): Brain, BrainEvent, Send one user message and stream back events until `Done` or `Error`., Forget the conversation and start a fresh one (optionally on another provider),…, Release resources (e.g. stop the Claude Code process)., 13. FIRST STEPS (start here), 1. Decision: how Ultron talks to Claude, ❌ NOT USED (documented for later): Claude API with an API key (+2 more)
 
 ### Community 15 - "events.py"
 Cohesion: 0.13
@@ -225,11 +225,11 @@ Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib
 
 ### Community 17 - "config.py"
 Cohesion: 0.08
-Nodes (25): Jarvis system prompt(s)., Settings loaded from .env., explain_error(), _find_omniroute(), _is_local(), OmniRoute (the optional gateway brain): is it running, start it, explain its…, Does anything answer at the gateway's address? (Any HTTP reply counts.), The omniroute command. Jarvis.app starts without your shell's PATH, so also… (+17 more)
+Nodes (25): Ultron system prompt(s)., Settings loaded from .env., explain_error(), _find_omniroute(), _is_local(), OmniRoute (the optional gateway brain): is it running, start it, explain its…, Does anything answer at the gateway's address? (Any HTTP reply counts.), The omniroute command. Ultron.app starts without your shell's PATH, so also… (+17 more)
 
 ### Community 18 - "mac.py"
 Cohesion: 0.11
-Nodes (37): Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never…, Runs INSIDE Blender (never imported by Jarvis). Fixed script: Claude never…, find_app(), find_files(), _folder(), in_folder(), locator(), mac_change() (+29 more)
+Nodes (37): Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never…, Runs INSIDE Blender (never imported by Ultron). Fixed script: Claude never…, find_app(), find_files(), _folder(), in_folder(), locator(), mac_change() (+29 more)
 
 ### Community 19 - "re"
 Cohesion: 0.20
@@ -241,7 +241,7 @@ Nodes (8): Give slow connectors a moment, so the first message can already use t
 
 ### Community 21 - "spotify.py"
 Cohesion: 0.08
-Nodes (45): For urlopen to HTTPS sites: Python's own certificates plus the Mac keychain's,…, ssl_context(), MatchPlaylistTest, PhoneTest, Spotify helper tests. Run from the backend folder: .venv/bin/python -m unittest…, ToUriTest, _new_card_id(), Put a markdown card on the canvas from Jarvis's own code. Returns the card id. (+37 more)
+Nodes (45): For urlopen to HTTPS sites: Python's own certificates plus the Mac keychain's,…, ssl_context(), MatchPlaylistTest, PhoneTest, Spotify helper tests. Run from the backend folder: .venv/bin/python -m unittest…, ToUriTest, _new_card_id(), Put a markdown card on the canvas from Ultron's own code. Returns the card id. (+37 more)
 
 ### Community 22 - "Locator"
 Cohesion: 0.08
@@ -253,7 +253,7 @@ Nodes (10): claude-agent-sdk==0.2.160, fastapi / uvicorn, pillow, Backend Python
 
 ### Community 24 - "asyncio"
 Cohesion: 0.09
-Nodes (26): asyncio, Reaching you when you're not looking at the chat. One notification goes three…, Notifications since the user's last message, for Jarvis's conversation to know…, take_unseen(), Amazon: which pages it opens, which buttons it presses, never checkout. Chrome…, Saved chats: the 5-chat limit. Run from the backend folder: .venv/bin/python -m…, Contacts: relationship words, read-only label, errors. The Contacts app itself…, Homework: what's new, read-only label, errors. Chrome itself isn't touched.… (+18 more)
+Nodes (26): asyncio, Reaching you when you're not looking at the chat. One notification goes three…, Notifications since the user's last message, for Ultron's conversation to know…, take_unseen(), Amazon: which pages it opens, which buttons it presses, never checkout. Chrome…, Saved chats: the 5-chat limit. Run from the backend folder: .venv/bin/python -m…, Contacts: relationship words, read-only label, errors. The Contacts app itself…, Homework: what's new, read-only label, errors. Chrome itself isn't touched.… (+18 more)
 
 ### Community 25 - "job_store.py"
 Cohesion: 0.09
@@ -261,15 +261,15 @@ Nodes (42): jobs_list(), change_job(), jobs_event(), Something you did in the sc
 
 ### Community 27 - "video.py"
 Cohesion: 0.10
-Nodes (35): asset(), health(), Finished videos. Names are checked strictly., Spotify sends you back here after the login link Jarvis showed you., Image files for the canvas. Names are checked strictly, so only stored images…, spotify_callback(), video_file(), card_data() (+27 more)
+Nodes (35): asset(), health(), Finished videos. Names are checked strictly., Spotify sends you back here after the login link Ultron showed you., Image files for the canvas. Names are checked strictly, so only stored images…, spotify_callback(), video_file(), card_data() (+27 more)
 
 ### Community 28 - ".oxlintrc.json"
 Cohesion: 0.33
 Nodes (5): plugins, rules, react/only-export-components, react/rules-of-hooks, $schema
 
-### Community 29 - "Jarvis"
+### Community 29 - "Ultron"
 Cohesion: 0.09
-Nodes (13): Jarvis, Event, A big conversation left alone for over an hour: Claude's cached copy has…, Answer one user message, yielding WebSocket events for the browser., Haiku / Sonnet / Opus selection. Order of checks: 1. The model picked in the UI…, Route, DeviceTest, send() (+5 more)
+Nodes (13): Ultron, Event, A big conversation left alone for over an hour: Claude's cached copy has…, Answer one user message, yielding WebSocket events for the browser., Haiku / Sonnet / Opus selection. Order of checks: 1. The model picked in the UI…, Route, DeviceTest, send() (+5 more)
 
 ### Community 31 - "typing"
 Cohesion: 0.11
@@ -293,7 +293,7 @@ Nodes (7): call(), MacTest, fake_run(), fake_open(), run(), skipUnless, JobsTest
 
 ### Community 45 - "registry.py"
 Cohesion: 0.09
-Nodes (22): item_label(), h5hdgf82...' -> 'Jarvis test (2026-09-30T16:00:00+04:00)', if Jarvis has seen…, _always_load(), auto_allowed(), describe_call(), friendly_name(), hooks(), JarvisTool (+14 more)
+Nodes (22): item_label(), h5hdgf82...' -> 'Ultron test (2026-09-30T16:00:00+04:00)', if Ultron has seen…, _always_load(), auto_allowed(), describe_call(), friendly_name(), hooks(), UltronTool (+14 more)
 
 ### Community 46 - "textbook.py"
 Cohesion: 0.12
@@ -321,11 +321,11 @@ Nodes (17): is_private(), _notes(), Any, Path, tool, search_notes / read_note / 
 
 ### Community 52 - "canvas.py"
 Cohesion: 0.20
-Nodes (13): has_clients(), Calendar: Google Calendar reads run freely, writes ask; Jarvis knows the date;…, Reminders: TickTick reads run freely, changes ask; task cards. .venv/bin/python…, _card_data(), map_data(), open_terminal(), Any, tool (+5 more)
+Nodes (13): has_clients(), Calendar: Google Calendar reads run freely, writes ask; Ultron knows the date;…, Reminders: TickTick reads run freely, changes ask; task cards. .venv/bin/python…, _card_data(), map_data(), open_terminal(), Any, tool (+5 more)
 
 ### Community 53 - "terminal.py"
 Cohesion: 0.15
-Nodes (13): WebSocket, /ws/terminal: a real shell in a canvas tab, for you to type in (e.g. to run…, Your normal environment, without the variables that point Jarvis's own Claude…, In the shell's process, before it starts: make the pty its terminal, so Ctrl-C…, _resize(), serve(), _shell_env(), _take_terminal() (+5 more)
+Nodes (13): WebSocket, /ws/terminal: a real shell in a canvas tab, for you to type in (e.g. to run…, Your normal environment, without the variables that point Ultron's own Claude…, In the shell's process, before it starts: make the pty its terminal, so Ctrl-C…, _resize(), serve(), _shell_env(), _take_terminal() (+5 more)
 
 ### Community 54 - "slides.py"
 Cohesion: 0.19
@@ -349,13 +349,13 @@ Nodes (12): YouTube: the search it fetches, how it reads the page, what it refus
 
 ### Community 59 - "important.py"
 Cohesion: 0.32
-Nodes (13): entries(), _listing(), mark_important(), matches(), normalize(), Any, tool, mark_important / unmark_important: files and folders Jarvis must ask about… (+5 more)
+Nodes (13): entries(), _listing(), mark_important(), matches(), normalize(), Any, tool, mark_important / unmark_important: files and folders Ultron must ask about… (+5 more)
 
 ### Community 60 - "Terminal.tsx"
 Cohesion: 0.22
-Nodes (7): Terminal(), TerminalProps, API_BASE, JarvisSocket, useJarvis(), @xterm/addon-fit, @xterm/xterm
+Nodes (7): Terminal(), TerminalProps, API_BASE, UltronSocket, useUltron(), @xterm/addon-fit, @xterm/xterm
 
-### Community 61 - "Jarvis — Full Build Prompt"
+### Community 61 - "Ultron — Full Build Prompt"
 Cohesion: 0.14
 Nodes (13): 0. Role and goal, 10. Memory, 11. Project structure, 2. Architecture, 5. Web search, 6. Connectors (Gmail, Calendar, Drive, …), 7. Canvas and images (the "dog picture" feature), 7b. 3D objects: preview mode (Phase 4d) (+5 more)
 
@@ -367,7 +367,7 @@ Nodes (12): _build_preview(), export_3d(), get_3d_spec(), _load(), preview_3d(),
 Cohesion: 0.21
 Nodes (13): _loft(), _mesh(), Spin a [radius, height] profile around the vertical axis., A box with rounded corners: the hull of a small sphere in each corner., Points around a cross-section, from a rectangle (roundness 0) to an oval (1).…, Add `steps - 1` in-between sections: x linear (keeps order), the rest on a…, A smooth body through cross-sections placed along X (car bodies, hulls,…, _revolve() (+5 more)
 
-### Community 64 - "Jarvis To-Do List"
+### Community 64 - "Ultron To-Do List"
 Cohesion: 0.17
 Nodes (11): maps(), Any, tool, 1. Calendar read/write  — *Priority 1*, 2. Reminders / tasks  — *Priority 2*, 3. Contacts lookup  — *Priority 3*, 6. Notifications  — *Priority 5 (ships with the scheduler)*, 8. Messaging + maps/travel  — *Priority 7* (+3 more)
 
@@ -401,7 +401,7 @@ Nodes (9): consult_expert(), Any, From Claude Code's rate_limit_event. The numbe
 
 ### Community 81 - "telegram.py"
 Cohesion: 0.36
-Nodes (8): _call(), Any, tool, Telegram: Jarvis texts you from its own bot, which shows up on your phone as a…, Text your own chat (blocking). RuntimeError with the reason if it didn't go., send_text(), _text(), text_me()
+Nodes (8): _call(), Any, tool, Telegram: Ultron texts you from its own bot, which shows up on your phone as a…, Text your own chat (blocking). RuntimeError with the reason if it didn't go., send_text(), _text(), text_me()
 
 ### Community 85 - "Model3DViewer.tsx"
 Cohesion: 0.32
@@ -417,7 +417,7 @@ Nodes (6): _Pending, Any, Called by Claude Code before any tool that isn't auto-
 
 ### Community 88 - "upload"
 Cohesion: 0.29
-Nodes (7): fresh_page(), A file from your computer (the raw bytes as the body). Images go on the canvas;…, The page itself must never come from the browser's cache, or a rebuilt Jarvis…, upload(), middleware, post, Request
+Nodes (7): fresh_page(), A file from your computer (the raw bytes as the body). Images go on the canvas;…, The page itself must never come from the browser's cache, or a rebuilt Ultron…, upload(), middleware, post, Request
 
 ### Community 93 - "ask_expert"
 Cohesion: 0.33
@@ -425,11 +425,11 @@ Nodes (7): ask_expert(), tool, 3. Model routing (cheap by default, strong when n
 
 ### Community 94 - "_blender"
 Cohesion: 0.33
-Nodes (7): _blender(), _contact_sheet(), Path, The four views in a 2×2 grid with labels, as a JPEG for Claude., Four quick views of a preview for Claude to look at, or None if Blender isn't…, Run one of Jarvis's fixed Blender scripts in the background. Returns Blender's…, render_views()
+Nodes (7): _blender(), _contact_sheet(), Path, The four views in a 2×2 grid with labels, as a JPEG for Claude., Four quick views of a preview for Claude to look at, or None if Blender isn't…, Run one of Ultron's fixed Blender scripts in the background. Returns Blender's…, render_views()
 
-### Community 95 - "What Jarvis can do"
+### Community 95 - "What Ultron can do"
 Cohesion: 0.29
-Nodes (7): Doing things on its own, Knowing you, Making things, Messages, On this Mac, What Jarvis can do, Your accounts
+Nodes (7): Doing things on its own, Knowing you, Making things, Messages, On this Mac, What Ultron can do, Your accounts
 
 ### Community 96 - "StartTest"
 Cohesion: 0.53

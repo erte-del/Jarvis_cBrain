@@ -46,7 +46,7 @@ def is_read(name: str) -> bool:
     return verb in READ_VERBS or action in READ_EXTRA.get(connector, set())
 
 
-# Calendar events, tasks and Drive files Jarvis has seen in tool results, so a confirmation
+# Calendar events, tasks and Drive files Ultron has seen in tool results, so a confirmation
 # card that only gets an id (eventId, task_id) can still say which one it is, and a change
 # to an important Drive file by its id is still recognised.
 REMEMBER_FROM = {"Google_Calendar", "TickTick", "Google_Drive"}
@@ -67,7 +67,7 @@ def remember_items(name: str, result: Any) -> None:
 
 
 def item_label(item_id: str) -> str | None:
-    """'h5hdgf82...' -> 'Jarvis test (2026-09-30T16:00:00+04:00)', if Jarvis has seen it."""
+    """'h5hdgf82...' -> 'Ultron test (2026-09-30T16:00:00+04:00)', if Ultron has seen it."""
     return _seen.get(item_id)
 
 

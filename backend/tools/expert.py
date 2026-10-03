@@ -16,7 +16,7 @@ from config import EFFORT, STORAGE_DIR
 
 from .canvas import show_text
 
-log = logging.getLogger("jarvis.expert")
+log = logging.getLogger("ultron.expert")
 
 EXPERT_MODEL = "opus"
 
@@ -25,9 +25,9 @@ EXPERT_MODEL = "opus"
 CANVAS_MIN_CHARS = 1200
 
 EXPERT_SYSTEM_PROMPT = """\
-You are the expert advisor behind Jarvis, a personal assistant. Jarvis sends you \
+You are the expert advisor behind Ultron, a personal assistant. Ultron sends you \
 tasks that need deep reasoning, careful analysis, planning or high-quality writing. \
-Your answer goes back to Jarvis, who passes it on to the user. \
+Your answer goes back to Ultron, who passes it on to the user. \
 Give a complete, correct answer, as concise as the task allows. \
 You cannot see the conversation: work only from the task and context you are given, \
 and state any assumption you have to make. \
@@ -59,7 +59,7 @@ async def consult_expert(task: str, context: str = "") -> str:
     options = ClaudeAgentOptions(
         system_prompt=EXPERT_SYSTEM_PROMPT,
         model=EXPERT_MODEL,
-        effort=EFFORT,  # same thinking level as Jarvis (see .env)
+        effort=EFFORT,  # same thinking level as Ultron (see .env)
         tools=[],  # thinking only, no tools
         setting_sources=[],
         strict_mcp_config=True,

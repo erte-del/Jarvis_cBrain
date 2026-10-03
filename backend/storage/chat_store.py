@@ -1,6 +1,6 @@
 """Saved chats (at most MAX_CHATS), in storage/chats.json.
 
-A saved chat is the Claude Code session id (so Jarvis can resume the conversation)
+A saved chat is the Claude Code session id (so Ultron can resume the conversation)
 plus the messages and canvas cards the browser showed (so you can see them again).
 Image, 3D and video cards are kept as ids only: main.load_chat rebuilds them from
 their own stores, which still hold the files.

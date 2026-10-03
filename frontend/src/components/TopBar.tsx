@@ -122,7 +122,7 @@ function SavedChats(props: Pick<TopBarProps, 'savedChats' | 'maxSavedChats' | 'c
 
 type MemoryProps = Pick<TopBarProps, 'memories' | 'memoryCategories' | 'onSaveMemory' | 'onDeleteMemory' | 'onWipeMemory'>
 
-/** What Jarvis remembers about you: search, add, edit, delete, export, wipe. */
+/** What Ultron remembers about you: search, add, edit, delete, export, wipe. */
 function MemoryMenu({ memories, memoryCategories, onSaveMemory, onDeleteMemory, onWipeMemory }: MemoryProps) {
   const { open, setOpen, ref } = usePopup()
   const [search, setSearch] = useState('')
@@ -142,7 +142,7 @@ function MemoryMenu({ memories, memoryCategories, onSaveMemory, onDeleteMemory, 
     const url = URL.createObjectURL(new Blob([JSON.stringify(memories, null, 1)], { type: 'application/json' }))
     const link = document.createElement('a')
     link.href = url
-    link.download = 'jarvis-memory.json'
+    link.download = 'ultron-memory.json'
     link.click()
     URL.revokeObjectURL(url)
   }
@@ -155,7 +155,7 @@ function MemoryMenu({ memories, memoryCategories, onSaveMemory, onDeleteMemory, 
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-label="Memory"
-        title="Memory: what Jarvis remembers about you"
+        title="Memory: what Ultron remembers about you"
       >
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <rect x="6" y="6" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" />
@@ -215,7 +215,7 @@ function MemoryMenu({ memories, memoryCategories, onSaveMemory, onDeleteMemory, 
               <ul className="memory-list">
                 {shown.length === 0 && (
                   <li className="memory-empty">
-                    {memories.length ? 'Nothing matches.' : 'Nothing yet. Tell Jarvis "remember that…", or add one here.'}
+                    {memories.length ? 'Nothing matches.' : 'Nothing yet. Tell Ultron "remember that…", or add one here.'}
                   </li>
                 )}
                 {shown.map((m) => (
@@ -263,7 +263,7 @@ function MemoryMenu({ memories, memoryCategories, onSaveMemory, onDeleteMemory, 
               </div>
             </>
           )}
-          <div className="settings-foot">Jarvis reads these when a new chat starts. Secrets are never stored.</div>
+          <div className="settings-foot">Ultron reads these when a new chat starts. Secrets are never stored.</div>
         </div>
       )}
     </div>
@@ -282,7 +282,7 @@ const RUN_STATUS: Record<JobRun['status'], string> = {
   failed: 'Failed: ',
 }
 
-/** What Jarvis does on its own: the jobs, and what their recent runs told you. */
+/** What Ultron does on its own: the jobs, and what their recent runs told you. */
 function ScheduleMenu({ jobs, jobRuns, onJob }: Pick<TopBarProps, 'jobs' | 'jobRuns' | 'onJob'>) {
   const { open, setOpen, ref } = usePopup()
   const stamp = (t: number) => new Date(t * 1000).toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false })
@@ -295,7 +295,7 @@ function ScheduleMenu({ jobs, jobRuns, onJob }: Pick<TopBarProps, 'jobs' | 'jobR
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         aria-label="Schedule"
-        title="Schedule: what Jarvis does on its own"
+        title="Schedule: what Ultron does on its own"
       >
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
@@ -308,7 +308,7 @@ function ScheduleMenu({ jobs, jobRuns, onJob }: Pick<TopBarProps, 'jobs' | 'jobR
           <ul className="memory-list">
             {jobs.length === 0 && (
               <li className="memory-empty">
-                Nothing scheduled. Ask Jarvis, e.g. "give me a briefing every weekday at 8" or "tell me when Sarah replies".
+                Nothing scheduled. Ask Ultron, e.g. "give me a briefing every weekday at 8" or "tell me when Sarah replies".
               </li>
             )}
             {jobs.map((job) => (
@@ -435,7 +435,7 @@ export default function TopBar({
       <div className="hud-brand">
         <span className="hud-logo" aria-hidden="true" />
         <div>
-          <div className="hud-name">JARVIS</div>
+          <div className="hud-name">ULTRON</div>
           <div className="hud-motto">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
         </div>
       </div>

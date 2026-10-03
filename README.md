@@ -7,12 +7,12 @@ reach it.
 
 See `JARVIS_BUILD_PROMPT.md` for the original plan.
 
-## What Jarvis can do
+## What Ultron can do
 
 Looking things up and everyday actions (reminders, events just for you, notes, memory,
 music, your Amazon cart) run straight away. Anything that reaches other people (emails,
 WhatsApp, calendar invites, sharing, publishing), touches a file or folder you told
-Jarvis is important, or uses a developer connector (Supabase, Vercel, ...) shows a
+Ultron is important, or uses a developer connector (Supabase, Vercel, ...) shows a
 confirmation card first, and nothing happens until you approve it. Scheduled jobs can
 only look things up.
 
@@ -31,15 +31,15 @@ only look things up.
 
 ### Knowing you
 
-- **Remember you.** Jarvis keeps short notes about you between chats: preferences, who
+- **Remember you.** Ultron keeps short notes about you between chats: preferences, who
   people are ("Sarah" = Sarah K. from work), projects, decisions. You see or delete them all with the memory button in the top bar. Passwords, card
   numbers and keys are always refused.
-- **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Jarvis
+- **Use your Obsidian notes.** Set `JARVIS_VAULT` to your vault folder and Ultron
   searches and reads your notes when you ask about something you wrote down, before
-  searching the web. It saves research, plans and lists as new notes (in a `Jarvis`
-  folder unless you say otherwise) or adds to an existing one. Tell Jarvis a note or folder is important and it asks
+  searching the web. It saves research, plans and lists as new notes (in a `Ultron`
+  folder unless you say otherwise) or adds to an existing one. Tell Ultron a note or folder is important and it asks
   before changing it. Tag a
-  note `#private` and Jarvis never reads or changes it, and it can't reach anything
+  note `#private` and Ultron never reads or changes it, and it can't reach anything
   outside the vault.
 - **Use this Mac.** It runs your Shortcuts, opens apps, web pages and documents, reads
   and sets the clipboard, knows where the Mac is (after `scripts/setup_location.sh`, for
@@ -87,13 +87,13 @@ only look things up.
 
 - **Text people on WhatsApp.** It finds the number in your Contacts (synced from your
   Google account) and sends the message from the WhatsApp app on this Mac, after you
-  approve. It can't read your messages. Needs Accessibility permission for Jarvis.
+  approve. It can't read your messages. Needs Accessibility permission for Ultron.
 - **Your phone's volume.** On your phone, "turn it down" or "mute" sets the phone's media
   volume through a MacroDroid macro (free Android app; setup in `.env.example`).
 - **Taxis.** "Get me a Careem to Dubai Mall" opens Careem on your phone with the
-  destination copied: paste it into "Where to?", check the price and book. Jarvis never
+  destination copied: paste it into "Where to?", check the price and book. Ultron never
   books or pays (Careem has no API). A second MacroDroid macro; setup in `.env.example`.
-- **Text you.** Jarvis's own Telegram bot sends things to your phone ("send that list to
+- **Text you.** Ultron's own Telegram bot sends things to your phone ("send that list to
   my phone"). It can only ever reach your own chat. Setup is in `.env.example`.
 
 ### Doing things on its own
@@ -111,18 +111,18 @@ only look things up.
   resize, rotate, flip, brightness, contrast, saturation, sharpen, blur, grayscale,
   sepia, text and borders. Every edit is a new version, so you can always go back.
   Click an image to select it, and "this one" in your next message means that image.
-- **Make images with AI.** Describe a picture and Jarvis paints it with FLUX.2 Klein
+- **Make images with AI.** Describe a picture and Ultron paints it with FLUX.2 Klein
   running on this Mac (about 20 seconds, free, nothing leaves the machine). It can also
   change an image with AI ("make it snowy", "turn it into a watercolour", "put a hat on
   the dog"), each change as a new version. Set it up once with `scripts/setup_images.sh`
   (downloads about 16 GB, keeps 8 GB).
-- **Make videos.** Describe a shot and Jarvis makes a short clip (up to 5 seconds,
+- **Make videos.** Describe a shot and Ultron makes a short clip (up to 5 seconds,
   832×480, no sound) with Wan 2.1 running on this Mac: free, and nothing leaves the
   machine. It's slow (about 13 minutes for 5 seconds on an M5) and runs in the
   background, with progress on the canvas. Set it up once with
   `scripts/setup_video.sh` (downloads about 17.6 GB, keeps 14 GB). Text only for
   now: animating an existing image needs a bigger model.
-- **Build 3D objects.** Jarvis makes a quick preview you can spin around, then checks
+- **Build 3D objects.** Ultron makes a quick preview you can spin around, then checks
   4 rendered views of its own work and fixes mistakes. When you're happy, Blender builds
   the final file (.blend, .fbx, .obj, .stl, .gltf or .glb), never before you say so.
 
@@ -130,25 +130,25 @@ only look things up.
 
 - **Open a terminal.** Ask for a terminal ("open a terminal", or "open Claude Code")
   and a real shell on this Mac opens as a tab on the canvas, optionally with Claude Code
-  already started. It's for you to type in: Jarvis opens it but can't see or type in it.
+  already started. It's for you to type in: Ultron opens it but can't see or type in it.
   Each request opens another tab; closing the tab or reloading the page ends its shell.
   It only works on the Mac itself, never on your phone.
-- **Use it from your phone.** Through Tailscale, Jarvis opens on your phone from
+- **Use it from your phone.** Through Tailscale, Ultron opens on your phone from
   anywhere, one section at a time: swipe sideways between chat, canvas and panels (see
   [Run](#run)).
 - **Track your usage.** The right-hand panel shows how much of your Pro plan's 5-hour and
-  weekly limits is used, when they reset, and how many tokens Jarvis itself used.
+  weekly limits is used, when they reset, and how many tokens Ultron itself used.
 
 ## The brains
 
-Jarvis has two brains. Switch between them with the gear icon at the top right.
+Ultron has two brains. Switch between them with the gear icon at the top right.
 Switching starts a new chat.
 
 ### Claude on your Pro login (the default)
 
-Jarvis talks to Claude through Claude Code (the Claude Agent SDK), signed in with your
+Ultron talks to Claude through Claude Code (the Claude Agent SDK), signed in with your
 Claude Pro account. **No API key is used**: if an `ANTHROPIC_API_KEY` were set, Claude
-Code would bill that key instead, so Jarvis removes it from its environment.
+Code would bill that key instead, so Ultron removes it from its environment.
 
 A router picks the model for each message:
 
@@ -162,15 +162,15 @@ conversation is big, the router won't move it to a cheaper model by itself. A bi
 conversation left alone for an hour starts over fresh, because Claude's cached copy of
 it has expired (`JARVIS_NEW_CHAT_AFTER_IDLE_MIN`).
 
-Jarvis is an assistant, not a coding agent: Claude Code's file, shell and sub-agent tools
-are switched off. Jarvis only gets web search, tool search (so connector tools load on
+Ultron is an assistant, not a coding agent: Claude Code's file, shell and sub-agent tools
+are switched off. Ultron only gets web search, tool search (so connector tools load on
 demand) and its own tools.
 
 ### OmniRoute (optional)
 
 [OmniRoute](https://github.com/diegosouzapw/OmniRoute) is a local gateway to other
 providers' models (Gemini, Groq, …). It doesn't use your Pro limit. Install it with
-`npm i -g omniroute`, then pick it with the gear icon: Jarvis starts it if it isn't
+`npm i -g omniroute`, then pick it with the gear icon: Ultron starts it if it isn't
 running (on 127.0.0.1 only). Connect at least one provider in its dashboard
 (http://localhost:20128 → Providers). Its keyless free providers mostly refuse
 requests from outside their own apps.
@@ -179,7 +179,7 @@ The models you can switch between are set in `JARVIS_GATEWAY_MODELS` and appear 
 buttons in the usage panel. In OmniRoute mode:
 - the claude.ai connectors are off, so your emails never go to other providers' models
 - web search and `ask_expert` are off (web page reading still works)
-- other models may use Jarvis's tools less reliably
+- other models may use Ultron's tools less reliably
 
 ## Setup
 
@@ -203,32 +203,32 @@ settings. Never add an `ANTHROPIC_API_KEY`.
 
 ## Run
 
-**The easy way: Jarvis.app.** Build it once:
+**The easy way: Ultron.app.** Build it once:
 
     scripts/make_app.sh
 
-Then double-click `Jarvis.app` (drag it to Applications if you like). It puts an orb in
-the menu bar, starts Jarvis and opens it in your browser at http://127.0.0.1:8000.
-Click the orb to open the page again, or choose Quit Jarvis to stop Jarvis. For the orb
-at every login, add Jarvis.app in System Settings → General → Login Items. Logs go to `backend/storage/jarvis.log`. Run `make_app.sh` again
+Then double-click `Ultron.app` (drag it to Applications if you like). It puts an orb in
+the menu bar, starts Ultron and opens it in your browser at http://127.0.0.1:8000.
+Click the orb to open the page again, or choose Quit Ultron to stop Ultron. For the orb
+at every login, add Ultron.app in System Settings → General → Login Items. Logs go to `backend/storage/ultron.log`. Run `make_app.sh` again
 if you move the project folder.
 
-**Always on (optional).** `scripts/autostart.sh on` starts Jarvis when you log in and
+**Always on (optional).** `scripts/autostart.sh on` starts Ultron when you log in and
 starts him again if he crashes; `scripts/autostart.sh off` undoes it. While it's on,
-quitting `Jarvis.app` restarts Jarvis instead of stopping him (do that after changing
-`.env`), and the log is `~/Library/Logs/Jarvis.log`. If macOS asks whether Python may
+quitting `Ultron.app` restarts Ultron instead of stopping him (do that after changing
+`.env`), and the log is `~/Library/Logs/Ultron.log`. If macOS asks whether Python may
 access your Desktop folder, allow it; a project kept outside Desktop and Documents is
 never asked.
 
-**On your phone (optional).** Jarvis has no password, so it never listens on your Wi-Fi.
+**On your phone (optional).** Ultron has no password, so it never listens on your Wi-Fi.
 Instead, [Tailscale](https://tailscale.com) connects your own devices privately: install
 it on this Mac and your phone, run `tailscale serve --bg 8000` on the Mac, and put the
 address it prints in `.env` as `JARVIS_REMOTE_ORIGIN` (see `.env.example`). Then open
-that address on your phone, from anywhere, while this Mac is awake and Jarvis is running.
+that address on your phone, from anywhere, while this Mac is awake and Ultron is running.
 
 **Back up.** `scripts/backup.sh` writes everything of yours that isn't on GitHub (`.env`,
 memory, saved chats, scheduled jobs, school notes, images, 3D models, videos, uploads) to
-`~/Jarvis-backup-<date>.tgz`. `scripts/backup.sh restore FILE` puts it back, in this
+`~/Ultron-backup-<date>.tgz`. `scripts/backup.sh restore FILE` puts it back, in this
 project or in a fresh clone on another Mac. The file holds your keys: keep it to yourself.
 
 **For development**, in two terminals (the page reloads as you edit):
@@ -250,15 +250,15 @@ Tests:
 
 **On the old Mac**
 
-1. `scripts/backup.sh`, then copy `~/Jarvis-backup-<date>.tgz` to the new Mac (AirDrop or
+1. `scripts/backup.sh`, then copy `~/Ultron-backup-<date>.tgz` to the new Mac (AirDrop or
    a USB stick; it holds your keys, so not by email).
-2. `scripts/autostart.sh off` if autostart is on. Two running Jarvises would both run
+2. `scripts/autostart.sh off` if autostart is on. Two running Ultrones would both run
    your scheduled jobs and text you twice.
 
 **On the new Mac**
 
 1. Install Claude Code and sign in with your Pro account, plus uv and Node 24 (see
-   [Setup](#setup)). Install the apps you use Jarvis with: Google Chrome, Spotify,
+   [Setup](#setup)). Install the apps you use Ultron with: Google Chrome, Spotify,
    WhatsApp, Blender, Tailscale.
 2. Clone the project into your home folder, not Desktop or Documents (macOS restricts
    those for background programs):
@@ -267,22 +267,22 @@ Tests:
 
 3. Run the backend and frontend commands from [Setup](#setup). Skip copying
    `.env.example`: the backup brings your `.env`.
-4. `scripts/backup.sh restore ~/Jarvis-backup-<date>.tgz`
+4. `scripts/backup.sh restore ~/Ultron-backup-<date>.tgz`
 5. `scripts/setup_images.sh` and `scripts/setup_video.sh`, if you want images and videos
    made on this Mac (about 34 GB of downloads, 22 GB kept).
-6. `scripts/make_app.sh`, then open `Jarvis.app` once. It builds the page and starts Jarvis.
+6. `scripts/make_app.sh`, then open `Ultron.app` once. It builds the page and starts Ultron.
 
 **Sign-ins and switches only you can do**
 
 - **Chrome:** sign in to Teams and Amazon, then View → Developer → Allow JavaScript from
   Apple Events.
-- **Spotify and WhatsApp:** sign in to the apps. WhatsApp also needs Jarvis allowed under
+- **Spotify and WhatsApp:** sign in to the apps. WhatsApp also needs Ultron allowed under
   System Settings → Privacy & Security → Accessibility.
 - **Contacts:** add your Google account under System Settings → Internet Accounts, with
   Contacts on.
 - **Tailscale:** sign in to the same account and run `tailscale serve --bg 8000`. The new
   Mac gets its own address: put that one in `.env` as `JARVIS_REMOTE_ORIGIN`.
-- **Permission prompts:** the first time Jarvis uses Chrome, Spotify, Contacts or
+- **Permission prompts:** the first time Ultron uses Chrome, Spotify, Contacts or
   notifications, macOS asks. Allow each once.
 
 Nothing to do for the claude.ai connectors (Gmail, Calendar, TickTick, …) and Telegram:
@@ -294,10 +294,10 @@ they come with your Claude login and your `.env`.
 2. System Settings → Energy: turn on "Prevent automatic sleeping when the display is
    off" and "Start up automatically after a power failure".
 3. System Settings → Users & Groups: set "Automatically log in as" to your user, so
-   Jarvis comes back after a restart without anyone typing a password. This needs
+   Ultron comes back after a restart without anyone typing a password. This needs
    FileVault off, which means anyone who takes the Mac can read its disk.
 
-**Check it worked.** Ask Jarvis what he remembers about you, open a saved chat and
+**Check it worked.** Ask Ultron what he remembers about you, open a saved chat and
 continue it, ask for your homework, play a song, and open the page on your phone.
 
 ## How it fits together
@@ -306,12 +306,12 @@ continue it, ask for your homework, play a song, and open the page on your phone
     backend/main.py    FastAPI server: the /ws WebSocket, image, 3D and upload endpoints
     backend/brain/     the brain (Claude Code via the Agent SDK), router, prompts,
                        confirmation gate
-    backend/scheduler.py, notify.py   jobs Jarvis runs on its own, and how their results reach you
-    backend/tools/     Jarvis's own tools, served to Claude as an in-process MCP server,
+    backend/scheduler.py, notify.py   jobs Ultron runs on its own, and how their results reach you
+    backend/tools/     Ultron's own tools, served to Claude as an in-process MCP server,
                        each labelled read (runs freely) or act (asks only for other
                        people or important files)
     backend/storage/   images, 3D models, uploads, usage numbers, memory, scheduled jobs (all local files)
-    scripts/           builds and runs Jarvis.app
+    scripts/           builds and runs Ultron.app
 
 ## Status
 

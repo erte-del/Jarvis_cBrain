@@ -39,7 +39,7 @@ class RouterTest(unittest.TestCase):
 
     def test_small_talk_stays_on_the_current_model(self):
         # Switching would re-send the conversation, which costs more than Haiku saves.
-        for text in ["hi", "Hey Jarvis!", "good morning", "thanks!", "Thank you so much",
+        for text in ["hi", "Hey Ultron!", "good morning", "thanks!", "Thank you so much",
                      "how are you?", "ok", "bye", "Got it."]:
             self.check(text, "sonnet")
             self.check(text, "sonnet", current="sonnet", context_tokens=8_000)

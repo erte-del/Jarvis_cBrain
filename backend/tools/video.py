@@ -19,7 +19,7 @@ import events
 import hub
 from storage import video_store
 
-log = logging.getLogger("jarvis.video")
+log = logging.getLogger("ultron.video")
 
 FPS = 16  # Wan 2.1's frame rate
 WIDTH, HEIGHT = 832, 480  # the 1.3B model is trained for 480p

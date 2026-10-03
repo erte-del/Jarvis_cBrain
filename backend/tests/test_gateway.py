@@ -21,7 +21,7 @@ class StartTest(unittest.TestCase):
         args, kwargs = popen.call_args
         self.assertEqual(args[0][:3], ["/nvm/bin/omniroute", "serve", "--daemon"])
         self.assertEqual(kwargs["env"]["OMNIROUTE_SERVER_HOST"], "127.0.0.1")
-        # None of Jarvis's Anthropic settings leak into OmniRoute.
+        # None of Ultron's Anthropic settings leak into OmniRoute.
         self.assertFalse([k for k in kwargs["env"] if k.startswith("ANTHROPIC_")])
         self.assertTrue(kwargs["env"]["PATH"].startswith("/nvm/bin"))
 

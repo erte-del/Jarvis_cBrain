@@ -11,7 +11,7 @@ from unittest import mock
 
 import hub
 import usage
-from brain.agent import Jarvis
+from brain.agent import Ultron
 from brain.base import Done
 from tools import expert
 
@@ -49,7 +49,7 @@ class IdleStartOverTest(unittest.IsolatedAsyncioTestCase):
         hub.disconnect(self.tab)
 
     async def run_turn(self, brain: FakeBrain) -> None:
-        async for _ in Jarvis(brain).handle_text("and the weather?"):
+        async for _ in Ultron(brain).handle_text("and the weather?"):
             pass
 
     async def test_big_conversation_after_long_break_starts_over(self):
@@ -138,7 +138,7 @@ class UsageNumbersTest(unittest.TestCase):
         usage.record_limits({"unifiedWindows": {"five_hour": {"utilization": 0.9, "resetsAt": 1000}}})
         self.assertEqual(usage.snapshot("claude", 0)["windows"]["five_hour"]["used"], 0.0)
 
-    def test_jarvis_tokens_count_only_this_window_and_survive_a_restart(self):
+    def test_ultron_tokens_count_only_this_window_and_survive_a_restart(self):
         usage._turns.append([time.time() - 6 * 3600, "claude-sonnet-5", 999, 999, 999, 999])  # older
         usage.record_turn({"claude-sonnet-5": {"inputTokens": 10, "cacheCreationInputTokens": 200,
                                                "cacheReadInputTokens": 3000, "outputTokens": 40}})

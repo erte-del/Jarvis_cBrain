@@ -18,7 +18,7 @@ class ContactsTest(unittest.TestCase):
         self.assertIsNone(contacts.relation_label("Sarah"))
 
     def test_lookup_runs_freely(self):
-        self.assertEqual(registry.classify("mcp__jarvis__find_contact"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__find_contact"), "read")
 
     def test_mom_goes_through_my_card(self):
         calls = []
@@ -58,7 +58,7 @@ class ContactsTest(unittest.TestCase):
 
     def test_permission_error_is_explained(self):
         async def denied(mode, query):
-            raise RuntimeError("macOS didn't allow Jarvis to use Contacts.")
+            raise RuntimeError("macOS didn't allow Ultron to use Contacts.")
 
         with mock.patch.object(contacts, "_run", denied):
             result = asyncio.run(contacts.find_contact.handler({"query": "Sarah"}))

@@ -33,7 +33,7 @@ from tools import registry
 from .base import BrainEvent, Done, Error, ModelAlias, TextDelta, ToolResult, ToolStart
 from .prompts import JARVIS_SYSTEM_PROMPT, school_block
 
-log = logging.getLogger("jarvis.brain")
+log = logging.getLogger("ultron.brain")
 
 # The SDK warns that 'read' tools in allowed_tools skip the confirmation gate.
 # That's exactly what we want: only 'act' tools should ask you.
@@ -42,18 +42,18 @@ warnings.filterwarnings("ignore", category=CanUseToolShadowedWarning)
 # If Claude Code sends nothing for this long, give up on the turn
 # (e.g. it is silently retrying while Anthropic's servers are overloaded).
 IDLE_TIMEOUT_S = 120
-# While one of Jarvis's tools runs (e.g. ask_expert thinking on Opus), Claude Code
+# While one of Ultron's tools runs (e.g. ask_expert thinking on Opus), Claude Code
 # stays quiet, so allow much longer.
 TOOL_TIMEOUT_S = 600
 # claude.ai connectors connect in the background; wait this long for them at startup.
 CONNECTOR_WAIT_S = 15
-# Jarvis's own server can show up before the claude.ai ones; give those this long to appear
+# Ultron's own server can show up before the claude.ai ones; give those this long to appear
 # (their list usually arrives after ~5 s).
 CONNECTOR_LIST_WAIT_S = 10
 # A session that still has no claude.ai connectors looks for them again this often.
 CONNECTOR_RETRY_S = 300
 
-# Claude Code tools Jarvis must never have: it is an assistant, not a coding agent.
+# Claude Code tools Ultron must never have: it is an assistant, not a coding agent.
 BLOCKED_TOOLS = [
     "Bash", "Read", "Write", "Edit", "MultiEdit", "NotebookEdit",
     "Glob", "Grep", "Agent", "Task", "Skill",
@@ -93,7 +93,7 @@ class ClaudeCodeBrain:
     def _options(self) -> ClaudeAgentOptions:
         on_claude = self.provider == "claude"
         return ClaudeAgentOptions(
-            # Replaces Claude Code's coding prompt. Your school notes and what Jarvis remembers
+            # Replaces Claude Code's coding prompt. Your school notes and what Ultron remembers
             # about you are added each time a conversation starts.
             system_prompt=JARVIS_SYSTEM_PROMPT + school_block() + memory_store.prompt_block(),
             model=self._model,
@@ -106,7 +106,7 @@ class ClaudeCodeBrain:
             # belt and braces; ask_expert calls Claude Opus, which a gateway doesn't have
             disallowed_tools=BLOCKED_TOOLS if on_claude else [*BLOCKED_TOOLS, registry.PREFIX + "ask_expert"],
             hooks=registry.hooks(),  # e.g. WebFetch may not reach local addresses
-            mcp_servers=registry.mcp_servers(),  # Jarvis's own tools (ask_expert, ...)
+            mcp_servers=registry.mcp_servers(),  # Ultron's own tools (ask_expert, ...)
             allowed_tools=registry.auto_allowed(),  # 'read' tools run without asking
             can_use_tool=self._can_use_tool,  # every other tool goes through the gate
             env={
@@ -171,7 +171,7 @@ class ClaudeCodeBrain:
 
     async def _retry_connectors(self) -> None:
         """Claude Code sometimes starts without the claude.ai connectors (their list comes
-        late or not at all), and then Jarvis says Gmail isn't connected. Look again, and
+        late or not at all), and then Ultron says Gmail isn't connected. Look again, and
         if they're still missing restart Claude Code; `resume` keeps the conversation."""
         if self._client is None or self._has_connectors or time.time() < self._connector_retry_at:
             return
@@ -247,7 +247,7 @@ class ClaudeCodeBrain:
                         msg = await asyncio.wait_for(anext(messages), timeout)
                     except StopAsyncIteration:
                         break
-                    # Skip anything from sub-agents; Jarvis only shows its own reply.
+                    # Skip anything from sub-agents; Ultron only shows its own reply.
                     if getattr(msg, "parent_tool_use_id", None):
                         continue
 

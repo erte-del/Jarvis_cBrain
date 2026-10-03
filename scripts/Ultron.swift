@@ -1,30 +1,30 @@
-// Jarvis.app: Jarvis in the menu bar. Opening it starts Jarvis and opens the page;
-// the orb's menu opens the page again or quits (which stops Jarvis).
-// Built by scripts/make_app.sh, which writes the project folder into Info.plist (JarvisRoot).
+// Ultron.app: Ultron in the menu bar. Opening it starts Ultron and opens the page;
+// the orb's menu opens the page again or quits (which stops Ultron).
+// Built by scripts/make_app.sh, which writes the project folder into Info.plist (UltronRoot).
 import AppKit
 
 final class App: NSObject, NSApplicationDelegate {
-    let root = Bundle.main.object(forInfoDictionaryKey: "JarvisRoot") as! String
+    let root = Bundle.main.object(forInfoDictionaryKey: "UltronRoot") as! String
     let page = URL(string: "http://127.0.0.1:8000")!
     var item: NSStatusItem!
 
     func applicationDidFinishLaunching(_ note: Notification) {
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item.button?.image = orb()
-        item.button?.toolTip = "Jarvis"
+        item.button?.toolTip = "Ultron"
         let menu = NSMenu()
-        menu.addItem(withTitle: "Open Jarvis", action: #selector(openPage), keyEquivalent: "o").target = self
+        menu.addItem(withTitle: "Open Ultron", action: #selector(openPage), keyEquivalent: "o").target = self
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit Jarvis", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit Ultron", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         item.menu = menu
 
-        DispatchQueue.global().async {  // start_jarvis.sh can take up to 30 seconds
-            let (ok, message) = self.run("start_jarvis.sh")
+        DispatchQueue.global().async {  // start_ultron.sh can take up to 30 seconds
+            let (ok, message) = self.run("start_ultron.sh")
             guard !ok else { return }
             DispatchQueue.main.async {
                 NSApp.activate(ignoringOtherApps: true)
                 let alert = NSAlert()
-                alert.messageText = "Jarvis couldn't start"
+                alert.messageText = "Ultron couldn't start"
                 alert.informativeText = message
                 alert.alertStyle = .warning
                 alert.runModal()
@@ -33,14 +33,14 @@ final class App: NSObject, NSApplicationDelegate {
         }
     }
 
-    // Opening Jarvis.app again while it runs just opens the page again.
+    // Opening Ultron.app again while it runs just opens the page again.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
         openPage()
         return false
     }
 
     func applicationWillTerminate(_ note: Notification) {
-        run("stop_jarvis.sh")
+        run("stop_ultron.sh")
     }
 
     @objc func openPage() {

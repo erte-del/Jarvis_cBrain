@@ -1,12 +1,12 @@
 """Amazon: browse the user's account in Chrome on this Mac, where they're signed in.
 
-Amazon has no API for a personal account, so this works like homework.py: Jarvis opens the
+Amazon has no API for a personal account, so this works like homework.py: Ultron opens the
 page in a background tab of Google Chrome, reads its text and closes the tab. No password
 is kept anywhere. Same one-time setup as homework (Allow JavaScript from Apple Events).
 
 Two tools. amazon_read only opens a page and reads it. amazon_change presses one of three
 buttons (add to cart, remove from cart, add to list), without a card. Nothing here
-can press any other button, and amazon_read won't open a checkout page, so Jarvis can't
+can press any other button, and amazon_read won't open a checkout page, so Ultron can't
 place an order: the user does that in Chrome themselves.
 
 The layout is never parsed: Claude reads the text. Products are marked with their ASIN
@@ -39,7 +39,7 @@ CANT = "CANT"
 READ = r"""(function () {
   if (document.readyState !== 'complete') return '';
   document.querySelectorAll('header, #navbar, #navFooter, #skiplink, #shortcut-menu').forEach(function (e) { e.style.display = 'none'; });
-  var seen = window.__jarvis = window.__jarvis || {};
+  var seen = window.__ultron = window.__ultron || {};
   document.querySelectorAll('a[href]').forEach(function (a) {
     var href = a.href;
     try { href = decodeURIComponent(href); } catch (e) {}
@@ -52,13 +52,13 @@ READ = r"""(function () {
 })()"""
 
 # Press one button, once, then return what the page says. "Once" is kept in sessionStorage,
-# which survives the page Amazon moves to after adding to the cart (the tab is Jarvis's own,
+# which survives the page Amazon moves to after adding to the cart (the tab is Ultron's own,
 # so it starts empty). CANT + the page's text if the button isn't there.
 # ponytail: a product that asks something first (a size, a protection plan) isn't handled;
 # Claude sees the page's text and tells the user to finish it in Chrome
 PRESS = r"""(function (selector, quantity) {
   var page = function () { return document.title + '\n' + document.body.innerText; };
-  if (sessionStorage.jarvisPressed) return page();
+  if (sessionStorage.ultronPressed) return page();
   if (document.readyState !== 'complete') return '';
   var b = document.querySelector(selector);
   if (!b) return 'CANT\n' + page();
@@ -67,7 +67,7 @@ PRESS = r"""(function (selector, quantity) {
     if (q) { q.value = String(quantity); q.dispatchEvent(new Event('change', {bubbles: true})); }
     if (!q || q.value !== String(quantity)) return 'CANT (that quantity can\'t be chosen)\n' + page();
   }
-  sessionStorage.jarvisPressed = '1';
+  sessionStorage.ultronPressed = '1';
   b.click();
   return '';
 })(%s, %d)"""
@@ -81,7 +81,7 @@ ACTIONS = {
 
 
 def page_url(page: str) -> str:
-    """The Amazon address for 'orders', 'cart', 'lists', an ASIN or a path. ValueError if it isn't one Jarvis may open."""
+    """The Amazon address for 'orders', 'cart', 'lists', an ASIN or a path. ValueError if it isn't one Ultron may open."""
     page = page.strip()
     path = PAGES.get(page.lower()) or (f"/dp/{page}" if ASIN.fullmatch(page) else page)
     url = config.AMAZON_URL + path
@@ -89,7 +89,7 @@ def page_url(page: str) -> str:
     if not path.startswith("/"):
         raise ValueError(f"{page!r} isn't a page on {config.AMAZON_URL}: use orders, cart, lists, an ASIN or a path starting with /.")
     if re.search(r"buy|checkout|/ap/", urlsplit(url).path, re.I):
-        raise ValueError("Jarvis doesn't open Amazon's checkout or sign-in pages. The user does that in Chrome.")
+        raise ValueError("Ultron doesn't open Amazon's checkout or sign-in pages. The user does that in Chrome.")
     return url
 
 
@@ -137,7 +137,7 @@ async def amazon_read(args: dict[str, Any]) -> dict[str, Any]:
     "amazon_read. title: the product's name, for the tool log. quantity: for "
     "add_to_cart, default 1. It returns what Amazon's page says afterwards: read it, and if it "
     "asks for a choice (size, colour, a protection plan) tell the user to finish in Chrome. "
-    "Jarvis can't place an order: when the cart is ready, tell the user to check out in Chrome.",
+    "Ultron can't place an order: when the cart is ready, tell the user to check out in Chrome.",
     {
         "type": "object",
         "properties": {

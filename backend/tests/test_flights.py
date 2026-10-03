@@ -28,7 +28,7 @@ class FlightsTest(unittest.TestCase):
         return parse_qs(urlsplit(self.url).query)["q"][0]
 
     def test_only_reads(self):
-        self.assertEqual(registry.classify("mcp__jarvis__flights"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__flights"), "read")
 
     def test_round_trip_and_one_way(self):
         result = self.call(**{"from": "DXB", "to": "Istanbul", "depart": SOON, "return": LATER})

@@ -208,7 +208,7 @@ export default function Canvas({ cards, onClose, selectedImage, onSelectImage, t
   return (
     <div className="canvas-cards">
       {others.length === 0 ? (
-        <div className="canvas-empty">Things Jarvis shows you will appear here.</div>
+        <div className="canvas-empty">Things Ultron shows you will appear here.</div>
       ) : (
         [...others].reverse().map((card) => (
           <section key={card.id} className="card">

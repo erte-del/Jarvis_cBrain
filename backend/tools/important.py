@@ -1,4 +1,4 @@
-"""mark_important / unmark_important: files and folders Jarvis must ask about before changing.
+"""mark_important / unmark_important: files and folders Ultron must ask about before changing.
 
 Most actions run without a card now; the ones that still ask are those that reach other
 people, and anything touching what's on this list (registry.needs_ok). Entries are note
@@ -53,7 +53,7 @@ def _listing() -> str:
 
 @tool(
     "mark_important",
-    "Mark a file or folder as important when the user says so: Jarvis then asks them before "
+    "Mark a file or folder as important when the user says so: Ultron then asks them before "
     "changing, moving or deleting it or anything inside it. path: a notes path ('School/Chemistry') "
     "or a file or folder name, e.g. in Google Drive ('Coursework'). Leave it empty to list them.",
     {"type": "object", "properties": {"path": {"type": "string"}}},

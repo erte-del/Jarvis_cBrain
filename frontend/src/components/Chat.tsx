@@ -313,8 +313,8 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
             connection !== 'open'
               ? 'Waiting for the backend…'
               : waitingForYou
-                ? 'Jarvis is waiting for your approval above…'
-                : 'Message Jarvis…'
+                ? 'Ultron is waiting for your approval above…'
+                : 'Message Ultron…'
           }
           rows={1}
           autoFocus
@@ -324,8 +324,8 @@ export default function Chat({ messages, connection, busy, activeTool, onSend, o
           className={`mic-button${voiceOn ? ' on' : ''}`}
           onClick={() => onVoice(!voiceOn)}
           aria-pressed={voiceOn}
-          aria-label={voiceOn ? 'End voice mode' : 'Talk to Jarvis'}
-          title={voiceOn ? 'End voice mode (Esc)' : 'Talk to Jarvis'}
+          aria-label={voiceOn ? 'End voice mode' : 'Talk to Ultron'}
+          title={voiceOn ? 'End voice mode (Esc)' : 'Talk to Ultron'}
         >
           <MicIcon />
         </button>

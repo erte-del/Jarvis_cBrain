@@ -1,6 +1,6 @@
 """maps: places nearby and travel times, from Apple Maps on this Mac. (read)
 
-No API key: JarvisLocation.app (scripts/locate.swift, built by scripts/setup_location.sh)
+No API key: UltronLocation.app (scripts/locate.swift, built by scripts/setup_location.sh)
 asks MapKit, which also knows where this Mac is. Driving times leaving now use live
 traffic, later ones Apple's traffic forecast. Places are searched near the user (or near
 another place), nearest first.

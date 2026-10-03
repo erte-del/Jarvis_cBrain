@@ -55,12 +55,12 @@ class NotesTest(unittest.TestCase):
         self.assertTrue((self.vault / "etc" / "passwd.md").exists())
 
     def test_write_modes(self):
-        self.assertFalse(call(notes.write_note, {"path": "Jarvis/Plan", "content": "one", "mode": "create"})[1])
-        self.assertTrue(call(notes.write_note, {"path": "Jarvis/Plan.md", "content": "two", "mode": "create"})[1])
-        call(notes.write_note, {"path": "Jarvis/Plan.md", "content": "two", "mode": "append"})
-        self.assertEqual((self.vault / "Jarvis" / "Plan.md").read_text(), "one\ntwo\n")
-        call(notes.write_note, {"path": "Jarvis/Plan.md", "content": "three", "mode": "replace"})
-        self.assertEqual((self.vault / "Jarvis" / "Plan.md").read_text(), "three\n")
+        self.assertFalse(call(notes.write_note, {"path": "Ultron/Plan", "content": "one", "mode": "create"})[1])
+        self.assertTrue(call(notes.write_note, {"path": "Ultron/Plan.md", "content": "two", "mode": "create"})[1])
+        call(notes.write_note, {"path": "Ultron/Plan.md", "content": "two", "mode": "append"})
+        self.assertEqual((self.vault / "Ultron" / "Plan.md").read_text(), "one\ntwo\n")
+        call(notes.write_note, {"path": "Ultron/Plan.md", "content": "three", "mode": "replace"})
+        self.assertEqual((self.vault / "Ultron" / "Plan.md").read_text(), "three\n")
         # private notes are never changed
         self.assertTrue(call(notes.write_note, {"path": "Keys.md", "content": "x", "mode": "replace"})[1])
         self.assertIn("hunter2", (self.vault / "Keys.md").read_text())

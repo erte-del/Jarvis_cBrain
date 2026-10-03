@@ -32,7 +32,7 @@ class WhatsAppTest(unittest.TestCase):
             self.assertIsNone(whatsapp.phone_digits(bad), bad)
 
     def test_asks_first(self):
-        self.assertEqual(registry.classify("mcp__jarvis__whatsapp_send"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__whatsapp_send"), "act")
 
     def test_sends_when_whatsapp_is_in_front(self):
         result, calls = run({"to": "Mom", "phone": "+971 56 696 6461", "message": "Hi mom & dad?"},

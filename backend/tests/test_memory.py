@@ -39,11 +39,11 @@ class MemoryTest(unittest.TestCase):
         self.assertTrue(call(memory.forget, {"memory_id": "mem_1"})["is_error"])
 
     def test_saving_and_deleting_ask_first_and_the_card_shows_the_memory(self):
-        self.assertEqual(registry.classify("mcp__jarvis__remember"), "act")
-        self.assertEqual(registry.classify("mcp__jarvis__forget"), "act")
-        self.assertEqual(registry.classify("mcp__jarvis__recall"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__remember"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__forget"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__recall"), "read")
         memory_store.add("Lives in Izmir.", "facts")
-        title, _, details = registry.describe_call("mcp__jarvis__forget", {"memory_id": "mem_1"})
+        title, _, details = registry.describe_call("mcp__ultron__forget", {"memory_id": "mem_1"})
         self.assertEqual(title, "Forget this")
         self.assertIn(["memory", "Lives in Izmir."], details)
 
@@ -59,7 +59,7 @@ class MemoryTest(unittest.TestCase):
         self.assertEqual(memory_store.entries(), [])
 
     def test_edit_ids_and_bad_input(self):
-        memory_store.add("Works on Jarvis.", "projects")
+        memory_store.add("Works on Ultron.", "projects")
         second = memory_store.add("Decided to use TickTick.", "decisions", source="you")
         memory_store.delete("mem_1")
         self.assertEqual(memory_store.add("Has an Android phone.", "facts")["id"], "mem_3")  # ids aren't reused

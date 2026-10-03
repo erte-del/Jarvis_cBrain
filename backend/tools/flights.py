@@ -1,6 +1,6 @@
 """flights: search Google Flights in Chrome on this Mac. (read)
 
-Google Flights has no API, so this works like amazon.py: Jarvis opens a search in a
+Google Flights has no API, so this works like amazon.py: Ultron opens a search in a
 background tab, reads it and closes the tab. The search is Google's own plain-English
 query URL (?q=Flights from Dubai to Istanbul on ...), so no form is filled in.
 
@@ -9,7 +9,7 @@ flight in a sentence (price, airline, stops, airports, times), and Claude reads 
 Google ever drops those labels, it falls back to the page's text, which Claude can still
 read, so a redesign makes the answer messier but doesn't break it.
 
-Jarvis can't book: it returns the search link and the user picks a flight there and pays.
+Ultron can't book: it returns the search link and the user picks a flight there and pays.
 """
 
 import datetime as dt

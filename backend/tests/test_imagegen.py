@@ -96,7 +96,7 @@ class ImageGenTest(unittest.TestCase):
 
     def test_tools_run_without_asking(self):
         for name in ("generate_image", "image_ai_edit"):
-            self.assertEqual(registry.classify(f"mcp__jarvis__{name}"), "read")
+            self.assertEqual(registry.classify(f"mcp__ultron__{name}"), "read")
 
 
 if __name__ == "__main__":

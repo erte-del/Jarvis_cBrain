@@ -2,13 +2,13 @@
 and Python in a sandbox.
 
   mac_read   (read) battery / volume / dark mode / Wi-Fi, location, the clipboard, your Shortcuts,
-             and the files in Jarvis's folder (JARVIS_FILES_DIR, default ~/Jarvis Files).
+             and the files in Ultron's folder (JARVIS_FILES_DIR, default ~/Jarvis Files).
   mac_change (act)  opens apps, web pages and files, runs a Shortcut, copies to the
              clipboard, sets volume / mute / dark mode, and moves, renames or trashes
              files in the folder. No card (nothing here reaches other people); files
              you marked important still ask (registry.needs_ok).
   run_python (act)  Python for data work (CSV analysis, quick scripts) in a macOS sandbox:
-             no network, no other programs or apps, reads only Jarvis's folder, writes
+             no network, no other programs or apps, reads only Ultron's folder, writes
              only its Output subfolder.
 
 Files never leave the folder: nothing is moved out of it, nothing is overwritten, and
@@ -34,7 +34,7 @@ from .homework import _text
 MAX_CHARS = 20_000
 MAX_FILES = 50
 # Built by scripts/setup_location.sh: macOS only gives Location to an app bundle.
-LOCATION_APP = config.STORAGE_DIR / "JarvisLocation.app"
+LOCATION_APP = config.STORAGE_DIR / "UltronLocation.app"
 PYTHON_TIMEOUT_S = 60
 SHORTCUT_TIMEOUT_S = 120
 APP_DIRS = [Path("/Applications"), Path("/Applications/Utilities"), Path("/System/Applications"),
@@ -47,7 +47,7 @@ ACTIONS = ["open_app", "open_url", "open_file", "run_shortcut", "copy", "volume"
            "move", "trash"]
 
 # The sandbox for run_python. Later rules win: all of your home is unreadable except
-# Jarvis's folder and Python itself.
+# Ultron's folder and Python itself.
 PROFILE = """(version 1)
 (allow default)
 (deny network*)
@@ -81,7 +81,7 @@ async def _out(*cmd: str, **kw: Any) -> str:
     if code:
         msg = err.strip()
         if "-1743" in msg or "not allowed" in msg.lower():
-            msg = "macOS didn't allow it. Allow Jarvis in System Settings → Privacy & Security → Automation."
+            msg = "macOS didn't allow it. Allow Ultron in System Settings → Privacy & Security → Automation."
         raise RuntimeError(msg or f"{cmd[0]} failed")
     return out.strip()
 
@@ -92,11 +92,11 @@ def _folder() -> Path:
 
 
 def in_folder(path: str) -> Path:
-    """The file a path names inside Jarvis's folder. ValueError if it's anywhere else."""
+    """The file a path names inside Ultron's folder. ValueError if it's anywhere else."""
     root = _folder()
     full = (root / Path(path.strip()).expanduser()).resolve()  # also follows symlinks out
     if not full.is_relative_to(root):
-        raise ValueError(f"{path!r} is outside Jarvis's folder ({root}).")
+        raise ValueError(f"{path!r} is outside Ultron's folder ({root}).")
     return full
 
 
@@ -114,19 +114,19 @@ phone_status: str | None = None  # "Battery: 82%, charging\n...", same turn as p
 
 
 async def locator(action: str = "where", params: dict[str, Any] | None = None) -> dict[str, Any]:
-    """Ask JarvisLocation.app (where am I / search / directions), from the phone's location
+    """Ask UltronLocation.app (where am I / search / directions), from the phone's location
     when the user is on it, else this Mac's. RuntimeError if it can't answer."""
     params = {**(params or {}), **({"here": phone_here} if phone_here else {})}
     if not LOCATION_APP.exists():
         raise RuntimeError("Location isn't set up: run scripts/setup_location.sh once.")
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp, "out")
-        # Through `open`, so macOS sees the app (with its permission) and not Jarvis's Python.
+        # Through `open`, so macOS sees the app (with its permission) and not Ultron's Python.
         await _out("open", "-W", "-n", "-g", "--stdout", str(out), str(LOCATION_APP), "--args", action,
                    json.dumps(params, ensure_ascii=False), timeout=150)
         found = json.loads(out.read_text() or '{"error": "no answer"}')
     if found.get("error") == "denied":
-        raise RuntimeError("macOS doesn't allow Jarvis's location. Turn on Jarvis Location in System "
+        raise RuntimeError("macOS doesn't allow Ultron's location. Turn on Ultron Location in System "
                            "Settings → Privacy & Security → Location Services.")
     if "error" in found:
         raise RuntimeError(found["error"])
@@ -157,7 +157,7 @@ async def _status() -> str:
 
 
 def find_files(query: str) -> list[dict[str, Any]]:
-    """Files and folders in Jarvis's folder whose path has every word of the query, newest first."""
+    """Files and folders in Ultron's folder whose path has every word of the query, newest first."""
     root = _folder()
     words = query.lower().split()
     found = []
@@ -178,7 +178,7 @@ def find_files(query: str) -> list[dict[str, Any]]:
     "the user is: their phone's GPS when they're on it, else this Mac's; latitude, longitude, place name, "
     "time zone; for weather, directions, things nearby), 'clipboard' "
     "(the text copied right now), 'shortcuts' (the user's Shortcuts, to run with mac_change), or "
-    "'files' (files in Jarvis's folder whose path has every word of query; empty query lists them all). "
+    "'files' (files in Ultron's folder whose path has every word of query; empty query lists them all). "
     "To look inside files, use run_python.",
     {
         "type": "object",
@@ -249,9 +249,9 @@ async def _shortcut(name: str, text: str) -> str:
 def move(path: str, to: str) -> str:
     src, dest = in_folder(path), in_folder(to)
     if src == _folder():
-        raise ValueError("Jarvis's folder itself can't be moved.")
+        raise ValueError("Ultron's folder itself can't be moved.")
     if not src.exists():
-        raise ValueError(f"{path!r} doesn't exist in Jarvis's folder.")
+        raise ValueError(f"{path!r} doesn't exist in Ultron's folder.")
     if dest.is_dir():
         dest = dest / src.name  # "move it into Invoices"
     if dest.exists():
@@ -264,7 +264,7 @@ def move(path: str, to: str) -> str:
 async def _trash(path: str) -> str:
     p = in_folder(path)
     if p == _folder() or not p.exists():
-        raise ValueError(f"{path!r} isn't a file or folder in Jarvis's folder.")
+        raise ValueError(f"{path!r} isn't a file or folder in Ultron's folder.")
     await _out("osascript", "-e", "on run argv", "-e",
                'tell application "Finder" to delete (POSIX file (item 1 of argv) as alias)', "-e", "end run", str(p))
     return f"Moved {_rel(p)} to the Trash (it can be put back from there)."
@@ -273,10 +273,10 @@ async def _trash(path: str) -> str:
 @tool(
     "mac_change",
     "Do something on this Mac. action: 'open_app' (name), 'open_url' (url, http or https), "
-    "'open_file' (path: a document in Jarvis's folder opens in its app, a folder shows in Finder), "
+    "'open_file' (path: a document in Ultron's folder opens in its app, a folder shows in Finder), "
     "'run_shortcut' (name, optional text as its input), 'copy' (text to the clipboard), "
     "'volume' (level 0-100), 'mute' (on), 'dark_mode' (on), 'move' (path → to, also renames; "
-    "into a folder if 'to' is one), 'trash' (path, to the Trash). Paths are relative to Jarvis's folder; "
+    "into a folder if 'to' is one), 'trash' (path, to the Trash). Paths are relative to Ultron's folder; "
     "nothing can be moved out of it or overwritten. For Do Not Disturb or Focus, run a Shortcut "
     "that sets it.",
     {
@@ -316,10 +316,10 @@ async def mac_change(args: dict[str, Any]) -> dict[str, Any]:
                 await _out("open", "-R", str(p))  # shows it in Finder; never launches a bundle
                 return _text(f"Showed {_rel(p)} in Finder.")
             if not p.is_file():
-                return _text(f"{path!r} doesn't exist in Jarvis's folder.", True)
+                return _text(f"{path!r} doesn't exist in Ultron's folder.", True)
             if p.suffix.lower().lstrip(".") not in DOCUMENTS:
                 await _out("open", "-R", str(p))
-                return _text(f"Jarvis only opens documents, not {p.suffix or 'files without a type'}; "
+                return _text(f"Ultron only opens documents, not {p.suffix or 'files without a type'}; "
                              f"showed {_rel(p)} in Finder instead.", True)
             await _out("open", str(p))
             return _text(f"Opened {_rel(p)}.")
@@ -360,7 +360,7 @@ def _sb(path: Path) -> str:
     "run_python",
     "Run Python 3 (standard library only: csv, json, statistics, math, re, datetime, ...) for data "
     "work: analysing a CSV, totals, conversions, quick scripts. It runs in a sandbox: no internet, "
-    "can't start other programs, can only read files in Jarvis's folder (as ../name.csv), and can only "
+    "can't start other programs, can only read files in Ultron's folder (as ../name.csv), and can only "
     "write in its Output subfolder, which is the working directory. Print the results; at most "
     f"{PYTHON_TIMEOUT_S} seconds. Find files first with mac_read what=files.",
     {"type": "object", "properties": {"code": {"type": "string"}}, "required": ["code"]},

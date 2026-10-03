@@ -1,11 +1,11 @@
 """Reaching you when you're not looking at the chat.
 
 One notification goes three ways:
-  - the open Jarvis tabs (it appears in the chat),
+  - the open Ultron tabs (it appears in the chat),
   - a macOS notification on this Mac,
-  - a text to your phone from Jarvis's Telegram bot, if it's set up (.env.example).
+  - a text to your phone from Ultron's Telegram bot, if it's set up (.env.example).
 
-Jarvis's conversation didn't write these (a scheduled job did), so the next message you
+Ultron's conversation didn't write these (a scheduled job did), so the next message you
 send carries them along (`take_unseen`): "reply to that tonight" then means something.
 """
 
@@ -17,7 +17,7 @@ import events
 import hub
 from tools import telegram
 
-log = logging.getLogger("jarvis.notify")
+log = logging.getLogger("ultron.notify")
 
 MAC_CHARS = 240  # a banner shows about this much
 MAX_UNSEEN = 5
@@ -54,7 +54,7 @@ async def push(title: str, text: str) -> None:
 
 
 def take_unseen() -> list[str]:
-    """Notifications since the user's last message, for Jarvis's conversation to know about."""
+    """Notifications since the user's last message, for Ultron's conversation to know about."""
     seen = _unseen[:]
     _unseen.clear()
     return seen

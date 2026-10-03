@@ -1,12 +1,12 @@
-// JarvisLocation.app: this Mac's location, places nearby and travel times (Apple Maps),
+// UltronLocation.app: this Mac's location, places nearby and travel times (Apple Maps),
 // printed as one line of JSON, then it quits.
-// macOS only gives Location to an app bundle, not to Jarvis's Python, so this is one
+// macOS only gives Location to an app bundle, not to Ultron's Python, so this is one
 // (built by scripts/setup_location.sh). The first run shows macOS's "Allow location?" question.
 //
-//   JarvisLocation                         where am I
-//   JarvisLocation where '{"here": [lat, lon]}'   any mode: start from here, not this Mac's GPS
-//   JarvisLocation search '{"query": "coffee", "near": "Dubai Mall", "radius_m": 3000}'
-//   JarvisLocation directions '{"to": "Dubai Mall", "from": "...", "mode": "driving|walking|transit",
+//   UltronLocation                         where am I
+//   UltronLocation where '{"here": [lat, lon]}'   any mode: start from here, not this Mac's GPS
+//   UltronLocation search '{"query": "coffee", "near": "Dubai Mall", "radius_m": 3000}'
+//   UltronLocation directions '{"to": "Dubai Mall", "from": "...", "mode": "driving|walking|transit",
 //                               "depart_at": ISO 8601, "arrive_by": ISO 8601}'
 import CoreLocation
 import Foundation

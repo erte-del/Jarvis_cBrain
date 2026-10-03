@@ -1,11 +1,11 @@
 """The user's Android phone, through MacroDroid macros on it. (read: only their phone)
 
-A web page can't touch the phone, so MacroDroid macros do it: Jarvis calls a macro's webhook
+A web page can't touch the phone, so MacroDroid macros do it: Ultron calls a macro's webhook
 (through MacroDroid's server) and the macro acts. Setup is in .env.example (MACRODROID_WEBHOOK).
   phone_volume  jarvis_volume?volume_level=N   sets the media volume to N.
   phone_taxi    jarvis_careem?taxi_to=<place>  copies the place and opens Careem. The user
                 pastes it into "Where to?" and books: Careem has no API, and its deep links
-                aren't documented, so Jarvis never books or pays.
+                aren't documented, so Ultron never books or pays.
 """
 
 import asyncio

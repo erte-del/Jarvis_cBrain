@@ -23,7 +23,7 @@ from storage import image_store
 
 from .image_ops import OPERATIONS, EditError, apply_all
 
-log = logging.getLogger("jarvis.images")
+log = logging.getLogger("ultron.images")
 
 PEXELS_SEARCH = "https://api.pexels.com/v1/search"
 MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024
@@ -32,7 +32,7 @@ MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024
 # ---- Pexels -----------------------------------------------------------------------
 
 def _http_get(url: str, headers: dict[str, str]) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": "Jarvis/0.1", **headers})
+    req = urllib.request.Request(url, headers={"User-Agent": "Ultron/0.1", **headers})
     with urllib.request.urlopen(req, timeout=20, context=config.ssl_context()) as r:
         data = r.read(MAX_DOWNLOAD_BYTES + 1)
     if len(data) > MAX_DOWNLOAD_BYTES:

@@ -42,7 +42,7 @@ class SlidesTest(unittest.TestCase):
         return asyncio.run(slides.make_slides.handler(DECK))["content"][0]["text"]
 
     def test_runs_freely(self):
-        self.assertEqual(registry.classify("mcp__jarvis__make_slides"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__make_slides"), "read")
 
     def test_builds_the_deck(self):
         self.assertIn("(5 slides)", self.make())
@@ -137,7 +137,7 @@ class SlidesTest(unittest.TestCase):
         self.assertIn("--- Slide 3 (3_Custom Layout)", text)
         self.assertIn("A | B | Q", text)
         self.assertIn("Notes: What happens with 1 and 0?", text)
-        self.assertEqual(registry.classify("mcp__jarvis__lectures"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__lectures"), "read")
 
     def test_lectures_pictures_skip_hidden_slides(self):
         self.make()

@@ -13,7 +13,7 @@ import socket
 from typing import Any
 from urllib.parse import urlparse
 
-log = logging.getLogger("jarvis.web")
+log = logging.getLogger("ultron.web")
 
 WEB_TOOLS = ["WebSearch", "WebFetch"]
 
@@ -33,7 +33,7 @@ def _is_public_ip(ip: str) -> bool:
 async def is_public_url(url: str) -> tuple[bool, str]:
     """(ok, reason). Rejects localhost, private/LAN addresses and non-http(s) URLs.
 
-    A web page could otherwise trick Jarvis into fetching http://127.0.0.1:... or
+    A web page could otherwise trick Ultron into fetching http://127.0.0.1:... or
     your router's admin page.
     """
     parsed = urlparse(url)
@@ -64,7 +64,7 @@ async def block_private_urls(hook_input: dict[str, Any], tool_use_id: str | None
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
             "permissionDecision": "deny",
-            "permissionDecisionReason": f"Blocked: {reason}. Jarvis only fetches public web pages.",
+            "permissionDecisionReason": f"Blocked: {reason}. Ultron only fetches public web pages.",
         }
     }
 

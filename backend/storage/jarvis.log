@@ -1,0 +1,1898 @@
+=== Mon Sep 28 19:39:39 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 283 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/static/index-CoxpBSFj.css          13.14 kB │ gzip:   3.33 kB
+dist/static/index-CWtKpT8v.js          392.81 kB │ gzip: 120.69 kB
+dist/static/Model3DViewer-CG9gWlit.js  634.61 kB │ gzip: 159.12 kB
+
+✓ built in 116ms
+INFO:     Started server process [88916]
+INFO:     Waiting for application startup.
+2026-09-28 19:39:41,303 WARNING jarvis.config: Removed ANTHROPIC_BASE_URL from the environment (Jarvis uses the Pro login).
+INFO:     Application startup complete.
+2026-09-28 19:39:41,308 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62383 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62384 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62385 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62386 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62387 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62388 - "GET /static/index-CoxpBSFj.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62387 - "GET /static/index-CWtKpT8v.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62390 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:39:41,911 INFO jarvis: Browser connected
+INFO:     127.0.0.1:62387 - "GET /favicon.svg HTTP/1.1" 200 OK
+2026-09-28 19:39:41,940 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-28 19:39:47,541 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+INFO:     127.0.0.1:62402 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62403 - "GET /static/index-CoxpBSFj.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62402 - "GET /static/index-CWtKpT8v.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62402 - "GET /favicon.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62404 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:39:52,920 INFO jarvis: Browser connected
+2026-09-28 19:39:53,017 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:62406 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62407 - "GET /static/index-CoxpBSFj.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62406 - "GET /static/index-CWtKpT8v.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62408 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:39:55,868 INFO jarvis: Browser connected
+2026-09-28 19:39:55,961 INFO jarvis.agent: Route -> haiku (small talk)
+2026-09-28 19:39:56,026 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     Shutting down
+2026-09-28 19:40:07,883 INFO jarvis: Browser disconnected
+2026-09-28 19:40:07,883 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [88916]
+=== Mon Sep 28 19:40:34 +04 2026 starting Jarvis
+INFO:     Started server process [89099]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-28 19:40:34,921 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62440 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62441 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62442 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62443 - "GET /static/index-CWtKpT8v.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62442 - "GET /static/index-CoxpBSFj.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62444 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:40:35,025 INFO jarvis: Browser connected
+INFO:     127.0.0.1:62452 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:40:35,415 INFO jarvis: Browser connected
+2026-09-28 19:40:35,850 INFO jarvis.brain: Claude Code session started (model=sonnet)
+INFO:     127.0.0.1:62462 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:40:36,405 INFO jarvis: Browser connected
+2026-09-28 19:40:39,742 INFO jarvis: Browser disconnected
+2026-09-28 19:40:39,881 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-28 19:40:42,004 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-28 19:40:42,084 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 19:40:43,652 INFO jarvis.agent: Tool image_search 
+2026-09-28 19:40:45,098 INFO jarvis.images: Found img_004 for 'black Porsche 911 GT3 RS'
+INFO:     127.0.0.1:62469 - "GET /assets/img_004/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62470 - "GET /assets/img_004/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62471 - "GET /assets/img_004/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62472 - "GET /assets/img_004/v1_thumb.jpg HTTP/1.1" 200 OK
+2026-09-28 19:40:46,651 INFO jarvis.agent: Tool image_search 
+2026-09-28 19:41:13,210 INFO jarvis.images: Found img_005 for 'black Porsche 911 GT3 RS parked'
+INFO:     127.0.0.1:62477 - "GET /assets/img_005/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62478 - "GET /assets/img_005/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62480 - "GET /assets/img_005/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62479 - "GET /assets/img_005/v1.jpg HTTP/1.1" 200 OK
+2026-09-28 19:41:47,286 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-28 19:41:47,345 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 19:41:49,859 INFO jarvis.agent: Tool image_search 
+2026-09-28 19:41:50,468 INFO jarvis.images: Found img_006 for 'Porsche 911 GT3 RS side view'
+INFO:     127.0.0.1:62483 - "GET /assets/img_006/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62484 - "GET /assets/img_006/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62486 - "GET /assets/img_006/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62485 - "GET /assets/img_006/v1.jpg HTTP/1.1" 200 OK
+2026-09-28 19:42:22,478 INFO jarvis.agent: Tool preview_3d 
+2026-09-28 19:42:22,702 INFO jarvis.3d: 3D preview mdl_006 v1: 15 parts, 4800 triangles, size [4.535, 1.282, 2.64], floating []
+INFO:     127.0.0.1:62488 - "GET /static/Model3DViewer-CG9gWlit.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62489 - "GET /static/Model3DViewer-CG9gWlit.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62489 - "GET /models/mdl_006/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62488 - "GET /models/mdl_006/v1_preview.glb HTTP/1.1" 200 OK
+2026-09-28 19:43:05,805 INFO jarvis.agent: Tool preview_3d 
+2026-09-28 19:43:06,043 INFO jarvis.3d: 3D preview mdl_006 v2: 15 parts, 4880 triangles, size [4.43, 1.282, 2.64], floating []
+INFO:     127.0.0.1:62494 - "GET /models/mdl_006/v2_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62495 - "GET /models/mdl_006/v2_preview.glb HTTP/1.1" 200 OK
+2026-09-28 19:43:44,254 INFO jarvis.agent: Route -> opus (you asked for deep thinking)
+2026-09-28 19:43:44,320 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 19:46:57,680 INFO jarvis.agent: Tool preview_3d 
+2026-09-28 19:46:58,060 INFO jarvis.3d: 3D preview mdl_006 v3: 24 parts, 8208 triangles, size [4.54, 1.27, 1.94], floating []
+INFO:     127.0.0.1:62549 - "GET /models/mdl_006/v3_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62550 - "GET /models/mdl_006/v3_preview.glb HTTP/1.1" 200 OK
+2026-09-28 19:47:46,234 INFO jarvis.agent: Tool preview_3d 
+2026-09-28 19:47:46,615 INFO jarvis.3d: 3D preview mdl_006 v4: 24 parts, 8368 triangles, size [4.54, 1.28, 1.94], floating []
+INFO:     127.0.0.1:62555 - "GET /models/mdl_006/v4_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62556 - "GET /models/mdl_006/v4_preview.glb HTTP/1.1" 200 OK
+2026-09-28 19:48:29,490 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-28 19:48:29,579 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 19:48:31,531 INFO jarvis.agent: Tool export_3d 
+2026-09-28 19:48:31,539 INFO jarvis.confirm: Asking for confirmation: Build the final 3D file
+2026-09-28 19:48:58,108 INFO jarvis.confirm: Confirmation approved: Build the final 3D file
+2026-09-28 19:48:58,122 INFO jarvis.3d: Exporting mdl_006 v4 as blend
+INFO:     127.0.0.1:62562 - "GET /models/mdl_006/final_v4.blend?download=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63780 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63936 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:54:14,809 INFO jarvis: Browser connected
+2026-09-28 19:54:14,809 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:63937 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 19:54:14,822 INFO jarvis: Browser connected
+2026-09-28 19:54:19,614 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:63964 - "GET /models/mdl_999/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64023 - "GET /models/mdl_999/v2_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64023 - "GET /models/mdl_999/v3_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64289 - "GET /models/mdl_999/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64379 - "GET /models/mdl_999/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64379 - "GET /models/mdl_005/v2_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64379 - "GET /models/mdl_003/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64486 - "GET /health HTTP/1.1" 200 OK
+2026-09-28 19:56:18,067 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-28 19:56:28,449 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [89099]
+=== Mon Sep 28 20:19:42 +04 2026 starting Jarvis
+INFO:     Started server process [91949]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-28 20:19:42,986 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:65107 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65108 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65109 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65110 - "GET /static/index-D1yasEJK.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65109 - "GET /static/index-m4769Q_A.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65112 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 20:19:43,107 INFO jarvis: Browser connected
+2026-09-28 20:19:43,656 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-28 20:19:46,733 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+INFO:     127.0.0.1:65130 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 20:19:47,599 INFO jarvis: Browser connected
+INFO:     127.0.0.1:65132 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 20:19:48,365 INFO jarvis: Browser connected
+2026-09-28 20:21:06,755 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-28 20:21:06,861 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 20:21:08,977 INFO jarvis.agent: Tool ToolSearch 
+2026-09-28 20:21:10,202 INFO jarvis.agent: Tool mcp__claude_ai_Gmail__search_threads 
+2026-09-28 20:21:10,209 INFO jarvis.confirm: Allowed (read): Gmail: Search threads
+2026-09-28 20:21:15,652 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-28 20:21:37,539 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-28 20:21:37,596 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-28 20:21:39,158 INFO jarvis.agent: Tool ToolSearch 
+2026-09-28 20:21:40,998 INFO jarvis.agent: Tool mcp__claude_ai_Gmail__get_thread 
+2026-09-28 20:21:41,004 INFO jarvis.confirm: Allowed (read): Gmail: Get thread
+2026-09-28 20:23:51,619 INFO jarvis.brain: Started a new conversation
+2026-09-28 20:23:51,621 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-28 20:23:52,304 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-28 20:23:54,835 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-28 20:24:06,373 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:65177 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65178 - "GET /static/index-D1yasEJK.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65177 - "GET /static/index-m4769Q_A.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65179 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-28 20:24:09,891 INFO jarvis: Browser connected
+INFO:     Shutting down
+2026-09-28 20:24:14,954 INFO jarvis: Browser disconnected
+2026-09-28 20:24:14,955 INFO jarvis: Browser disconnected
+2026-09-28 20:24:14,955 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [91949]
+=== Tue Sep 29 08:44:09 +04 2026 starting Jarvis
+INFO:     Started server process [10399]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 08:44:10,157 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51107 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51108 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51109 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51110 - "GET /static/index-CH0iQNN-.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51109 - "GET /static/index-DuH9zF5I.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51111 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 08:44:10,653 INFO jarvis: Browser connected
+2026-09-29 08:44:11,297 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-29 08:44:15,913 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 08:44:16,964 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 08:44:17,038 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 08:44:31,173 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 08:44:31,218 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 08:44:46,695 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 08:44:46,735 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 08:45:00,181 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 08:45:00,210 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 08:45:04,343 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 08:45:04,372 INFO jarvis.3d: 3D preview mdl_007 v1: 2 parts, 448 triangles, size [0.133, 0.11, 0.09], floating []
+INFO:     127.0.0.1:51143 - "GET /static/Model3DViewer-D46NfTJy.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51143 - "GET /models/mdl_007/v1_preview.glb HTTP/1.1" 200 OK
+2026-09-29 08:45:19,374 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [10399]
+=== Tue Sep 29 09:08:52 +04 2026 starting Jarvis
+INFO:     Started server process [12141]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 09:08:53,239 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51609 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51610 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51614 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 09:08:53,710 INFO jarvis: Browser connected
+2026-09-29 09:08:54,289 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-29 09:08:57,875 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 09:09:01,082 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 09:09:01,160 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 09:09:20,948 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 09:09:20,990 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 09:09:39,646 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:51648 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 09:10:26,816 INFO jarvis: Browser connected
+INFO:     Shutting down
+2026-09-29 09:10:31,439 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [12141]
+=== Tue Sep 29 09:25:30 +04 2026 starting Jarvis
+INFO:     Started server process [13565]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 09:25:30,944 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51894 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51895 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51899 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 09:25:31,324 INFO jarvis: Browser connected
+2026-09-29 09:25:32,028 INFO jarvis.brain: Claude Code session started (model=sonnet)
+2026-09-29 09:25:36,611 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 09:25:46,137 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [13565]
+=== Tue Sep 29 12:20:18 +04 2026 starting Jarvis
+INFO:     Started server process [20765]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 12:20:19,419 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54585 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54586 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54587 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54587 - "GET /static/index-D_INHqAb.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54588 - "GET /static/index-BRlkEriK.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54589 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:20:19,922 INFO jarvis: Browser connected
+2026-09-29 12:20:20,571 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:54603 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:20:21,954 INFO jarvis: Browser connected
+2026-09-29 12:20:23,140 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 12:20:42,643 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 12:20:42,644 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 12:20:42,903 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 12:20:45,917 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 12:20:49,133 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:54610 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:20:49,637 INFO jarvis: Browser connected
+INFO:     127.0.0.1:54609 - "GET / HTTP/1.1" 304 Not Modified
+2026-09-29 12:20:49,934 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:54612 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:20:49,951 INFO jarvis: Browser connected
+INFO:     127.0.0.1:54609 - "GET /favicon.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54609 - "GET / HTTP/1.1" 304 Not Modified
+2026-09-29 12:20:51,353 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:54613 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:20:51,367 INFO jarvis: Browser connected
+2026-09-29 12:21:07,845 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:54615 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:21:11,965 INFO jarvis: Browser connected
+2026-09-29 12:21:22,063 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-29 12:21:27,307 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [20765]
+=== Tue Sep 29 12:47:38 +04 2026 starting Jarvis
+INFO:     Started server process [24187]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 12:47:38,870 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57831 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57832 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57833 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57834 - "GET /static/index-CK8FTOj_.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57833 - "GET /static/index-D3n8DL4m.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57837 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:47:38,997 INFO jarvis: Browser connected
+INFO:     127.0.0.1:57845 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 12:47:39,463 INFO jarvis: Browser connected
+2026-09-29 12:47:39,778 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 12:47:42,802 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 12:48:08,977 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-29 12:48:14,230 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [24187]
+=== Tue Sep 29 13:49:13 +04 2026 starting Jarvis
+INFO:     Started server process [30565]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 13:49:14,106 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61468 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61469 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61470 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61471 - "GET /static/index-BC6itXra.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61470 - "GET /static/index-BJcOimc2.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61476 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 13:49:14,605 INFO jarvis: Browser connected
+2026-09-29 13:49:15,450 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:61486 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 13:49:16,233 INFO jarvis: Browser connected
+2026-09-29 13:49:18,524 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 13:49:21,036 INFO jarvis.brain: Started a new conversation (provider=omniroute)
+2026-09-29 13:49:21,037 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-29 13:49:21,277 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.1-flash-lite)
+2026-09-29 13:49:24,293 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 13:50:02,785 INFO jarvis.agent: Route -> groq/openai/gpt-oss-120b (OmniRoute)
+2026-09-29 13:50:03,078 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-29 13:50:03,312 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=groq/openai/gpt-oss-120b)
+2026-09-29 13:50:06,328 INFO jarvis.brain: Connectors: connected: jarvis
+[claude-code:unrecognized_model] {"model":"gemini/gemini-3.1-flash-lite","query_source":"generate_session_title"}
+2026-09-29 13:50:06,367 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+[claude-code:unrecognized_model] {"model":"groq/openai/gpt-oss-120b","query_source":"sdk"}
+2026-09-29 13:50:15,724 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:50:42,800 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:50:42,827 INFO jarvis.3d: 3D preview mdl_008 v1: 2 parts, 320 triangles, size [0.133, 0.1, 0.08], floating []
+INFO:     127.0.0.1:61523 - "GET /static/Model3DViewer-2gy7G05w.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61524 - "GET /static/Model3DViewer-mJ04FiGu.js HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61523 - "GET /models/mdl_008/v1_preview.glb HTTP/1.1" 200 OK
+2026-09-29 13:50:43,373 INFO jarvis: Browser disconnected
+2026-09-29 13:50:44,922 WARNING jarvis.brain: Claude error on <synthetic>: unknown
+2026-09-29 13:51:05,544 INFO jarvis.agent: Route -> gemini/gemini-3.8-flash (OmniRoute)
+2026-09-29 13:51:05,966 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-29 13:51:06,219 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.8-flash)
+2026-09-29 13:51:09,243 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 13:51:09,279 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+[claude-code:unrecognized_model] {"model":"gemini/gemini-3.8-flash","query_source":"sdk"}
+2026-09-29 13:53:24,594 WARNING jarvis.brain: Claude error on <synthetic>: rate_limit
+2026-09-29 13:53:46,644 INFO jarvis.agent: Route -> gemini/gemini-3.1-flash-lite (OmniRoute)
+2026-09-29 13:53:47,016 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-29 13:53:47,269 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.1-flash-lite)
+2026-09-29 13:53:50,287 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 13:53:50,320 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+[claude-code:unrecognized_model] {"model":"gemini/gemini-3.1-flash-lite","query_source":"sdk"}
+2026-09-29 13:54:03,619 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:54:03,747 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:54:13,241 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:54:27,989 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:54:28,019 INFO jarvis.3d: 3D preview mdl_009 v1: 4 parts, 280 triangles, size [2.0, 1.25, 1.1], floating [('roof', 0.1)]
+INFO:     127.0.0.1:61646 - "GET /models/mdl_009/v1_preview.glb HTTP/1.1" 200 OK
+2026-09-29 13:55:10,951 INFO jarvis.agent: Tool preview_3d 
+2026-09-29 13:55:10,979 INFO jarvis.3d: 3D preview mdl_009 v2: 4 parts, 280 triangles, size [2.0, 1.15, 1.1], floating []
+INFO:     127.0.0.1:61661 - "GET /models/mdl_009/v2_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61661 - "GET /models/mdl_009/v1_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61661 - "GET /models/mdl_009/v2_preview.glb HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61675 - "GET /models/mdl_009/v2_preview.glb HTTP/1.1" 200 OK
+2026-09-29 13:56:29,878 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:61688 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61689 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61688 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61690 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 13:56:33,361 INFO jarvis: Browser connected
+2026-09-29 13:56:37,701 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 13:56:37,702 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 13:56:38,976 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 13:56:42,018 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 13:56:59,419 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:56:59,497 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:57:11,270 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:57:11,312 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:57:20,633 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:57:20,671 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:58:04,246 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:58:04,304 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:58:09,089 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 13:58:34,109 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:58:34,149 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:58:35,871 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 13:58:37,069 INFO jarvis.agent: Tool mcp__claude_ai_Supabase__list_projects 
+2026-09-29 13:58:37,075 INFO jarvis.confirm: Allowed (read): Supabase: List projects
+2026-09-29 13:58:50,477 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:58:50,512 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:58:53,454 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 13:59:10,919 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:59:10,959 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:59:12,663 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 13:59:14,362 INFO jarvis.agent: Tool mcp__claude_ai_Supabase__list_tables 
+2026-09-29 13:59:14,368 INFO jarvis.confirm: Allowed (read): Supabase: List tables
+2026-09-29 13:59:20,078 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 13:59:27,806 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 13:59:27,845 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 13:59:29,780 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 13:59:31,421 INFO jarvis.agent: Tool mcp__claude_ai_Supabase__execute_sql 
+2026-09-29 13:59:31,426 INFO jarvis.confirm: Asking for confirmation: Supabase: Execute sql
+2026-09-29 13:59:31,913 INFO jarvis.agent: Tool mcp__claude_ai_Supabase__execute_sql 
+2026-09-29 13:59:33,582 INFO jarvis.confirm: Confirmation approved: Supabase: Execute sql
+2026-09-29 13:59:35,916 INFO jarvis.confirm: Asking for confirmation: Supabase: Execute sql
+2026-09-29 13:59:38,040 INFO jarvis.confirm: Confirmation approved: Supabase: Execute sql
+2026-09-29 13:59:42,976 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 14:00:10,300 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:00:10,354 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:00:23,361 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 14:00:23,362 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 14:00:24,468 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:00:27,486 INFO jarvis.brain: Connectors: connected: Claude Docs, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 14:00:29,053 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30565]
+=== Tue Sep 29 14:11:30 +04 2026 starting Jarvis
+INFO:     Started server process [31650]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 14:11:31,385 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62494 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62495 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62496 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62497 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62496 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62498 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 14:11:31,723 INFO jarvis: Browser connected
+2026-09-29 14:11:31,827 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:11:34,844 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 14:11:44,505 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:11:44,554 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     127.0.0.1:62501 - "GET / HTTP/1.1" 304 Not Modified
+2026-09-29 14:12:53,561 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:62503 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 14:12:53,575 INFO jarvis: Browser connected
+INFO:     127.0.0.1:62501 - "GET /favicon.svg HTTP/1.1" 200 OK
+2026-09-29 14:13:01,579 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:13:01,581 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 14:13:01,845 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:13:04,860 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 14:13:04,891 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     127.0.0.1:62551 - "GET / HTTP/1.1" 304 Not Modified
+2026-09-29 14:13:18,939 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:62553 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 14:13:18,955 INFO jarvis: Browser connected
+2026-09-29 14:13:31,809 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:13:31,811 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 14:13:33,258 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:13:37,305 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 14:13:37,406 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:13:39,272 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 14:13:40,191 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__get_currently_playing 
+2026-09-29 14:13:40,196 INFO jarvis.confirm: Allowed (read): Spotify: Get currently playing
+2026-09-29 14:14:31,428 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:14:31,517 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:14:32,912 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__get_currently_playing 
+2026-09-29 14:14:32,917 INFO jarvis.confirm: Allowed (read): Spotify: Get currently playing
+2026-09-29 14:17:36,953 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:17:37,043 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:17:39,017 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__get_currently_playing 
+2026-09-29 14:17:39,021 INFO jarvis.confirm: Allowed (read): Spotify: Get currently playing
+2026-09-29 14:17:59,253 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:17:59,344 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:18:00,866 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__get_currently_playing 
+2026-09-29 14:18:00,872 INFO jarvis.confirm: Allowed (read): Spotify: Get currently playing
+2026-09-29 14:18:17,866 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:18:17,932 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:18:20,332 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 14:18:21,773 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__search 
+2026-09-29 14:18:21,778 INFO jarvis.confirm: Allowed (read): Spotify: Search
+2026-09-29 14:18:24,840 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 14:18:38,374 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:18:38,440 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:18:40,556 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 14:19:04,450 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:19:04,533 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:19:06,277 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__get_currently_playing 
+2026-09-29 14:19:06,282 INFO jarvis.confirm: Allowed (read): Spotify: Get currently playing
+2026-09-29 14:19:22,402 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:19:22,469 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:19:24,141 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__search 
+2026-09-29 14:19:24,144 INFO jarvis.confirm: Allowed (read): Spotify: Search
+2026-09-29 14:19:27,323 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__search 
+2026-09-29 14:19:27,327 INFO jarvis.confirm: Allowed (read): Spotify: Search
+2026-09-29 14:19:41,571 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [31650]
+=== Tue Sep 29 14:47:04 +04 2026 starting Jarvis
+INFO:     Started server process [33837]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 14:47:05,609 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:63742 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63743 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63745 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63745 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63747 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63749 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 14:47:06,012 INFO jarvis: Browser connected
+2026-09-29 14:47:06,894 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:47:11,499 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 14:47:55,298 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:47:55,419 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:48:46,659 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 14:48:46,659 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 14:48:47,592 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 14:48:51,130 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 14:48:56,746 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 14:48:56,864 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 14:49:00,015 INFO jarvis.agent: Tool spotify_playlist_tracks 
+2026-09-29 14:49:10,474 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [33837]
+=== Tue Sep 29 15:04:38 +04 2026 starting Jarvis
+INFO:     Started server process [34450]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 15:04:39,088 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:64595 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64596 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64599 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64599 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64600 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64601 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 15:04:39,501 INFO jarvis: Browser connected
+2026-09-29 15:04:40,269 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 15:04:45,887 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 15:04:59,507 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:04:59,630 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:05:47,834 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:05:47,945 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:06:38,215 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:06:38,303 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:08:24,938 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:08:25,048 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:08:48,644 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [34450]
+=== Tue Sep 29 15:17:08 +04 2026 starting Jarvis
+INFO:     Started server process [34898]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 15:17:08,859 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:64881 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64882 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64883 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64884 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64883 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:64886 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 15:17:09,375 INFO jarvis: Browser connected
+2026-09-29 15:17:09,960 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 15:17:14,560 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 15:18:34,030 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:18:34,162 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:19:34,999 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:19:35,092 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:20:21,640 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [34898]
+=== Tue Sep 29 15:43:37 +04 2026 starting Jarvis
+INFO:     Started server process [35779]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 15:43:38,393 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:65382 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65383 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65386 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65386 - "GET /static/index-BC6itXra.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65387 - "GET /static/index-BJcOimc2.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:65389 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 15:43:38,729 INFO jarvis: Browser connected
+2026-09-29 15:43:39,635 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 15:43:46,774 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 15:43:53,710 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:43:53,833 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:43:55,761 INFO jarvis.agent: Tool spotify_playlist_tracks 
+INFO:     127.0.0.1:65439 - "GET /spotify/callback?code=AQAstvoB3NjZ2GC8kiU5iqt7-sbNaKmcbJJ2iecwcprwYhZozscHIYsWmMv_IPJtpBwsFjvTwikj_OWq5wo2Z8VrwW6MFaiP0lidk7IeBtz9UsXBlVmljSMTpUnhFZVBtQgLD6fmgqmGyNoZRWzMXbWotUZmNz0P7OLAiF8Gp0usgHFcOaoXLZExIUnmHzhlBpEOPOpi5ZNSQ6_ZqUbyWT6eUPzu8VM3t1ktXqZqUITEU_WA9bbKnPmYb63JVxVGYEBXWfNGNGfugwSh1CSRius6e5XYE57dxbRcbkJ8wLDLTOZK5xL1mvdQSiFgNMbNmDq0ktiM5R_KMDiqMoHU5duIgE0ET4VjfRCq501PSpMJkOuVAixUrA&state=Ab2yballHtg5bkfkmTsyEw&ubi=CAIQocmi6I40GiQzOWIxMGYzNS03NDZmLTRmMjktYTMwMC00ZjlkZWU0OGQ4ZTYiJDZjZTY0YmE2LWZlOGQtNGZjYy1iODEzLTA1ZTA5YTA3YTUxZDokNmNlNjRiYTYtZmU4ZC00ZmNjLWI4MTMtMDVlMDlhMDdhNTFkQhB1c2VyX2ludGVyYWN0aW9uSiRkNzFiM2Y4NS1lNGRhLTRmNTUtYmE0MS00ZDliZTI0OWIxMjJQAA%3D%3D HTTP/1.1" 200 OK
+2026-09-29 15:44:27,969 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:44:28,054 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:44:29,581 INFO jarvis.agent: Tool spotify_playlist_tracks 
+2026-09-29 15:44:31,997 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 15:44:50,248 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 15:44:50,320 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 15:44:51,873 INFO jarvis.agent: Tool spotify_playlist_tracks 
+2026-09-29 15:45:44,547 INFO jarvis.brain: Started a new conversation (provider=omniroute)
+2026-09-29 15:45:44,548 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-29 15:45:44,769 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.1-flash-lite)
+2026-09-29 15:45:47,787 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-29 15:46:05,827 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 15:46:05,829 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 15:46:07,067 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 15:46:10,605 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 15:46:37,741 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [35779]
+=== Tue Sep 29 19:34:35 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 292 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/static/index-DVp3o1qj.css          25.94 kB │ gzip:   6.04 kB
+dist/static/index-CvNE_Nwt.js          414.01 kB │ gzip: 127.37 kB
+dist/static/Model3DViewer-Dowb_Q6r.js  638.56 kB │ gzip: 160.07 kB
+
+✓ built in 123ms
+INFO:     Started server process [49023]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 19:34:37,380 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51974 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51975 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51976 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51976 - "GET /static/index-CvNE_Nwt.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51977 - "GET /static/index-DVp3o1qj.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51979 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 19:34:37,692 INFO jarvis: Browser connected
+2026-09-29 19:34:38,101 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 19:34:44,674 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 19:34:55,783 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-29 19:34:55,900 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     127.0.0.1:52009 - "POST /upload?name=Photo%20on%205-12-26%20at%207.53%E2%80%AFpm.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52009 - "GET /assets/img_007/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52010 - "GET /assets/img_007/v1_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 19:35:45,427 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 19:35:45,538 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 19:35:48,441 INFO jarvis.agent: Tool read_upload 
+2026-09-29 19:35:50,038 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 19:36:23,661 INFO jarvis.imagegen: AI-edited img_007 v1 -> v2: 'Remove the background completely, leaving only the person, on a transparent/plain white background'
+INFO:     127.0.0.1:52014 - "GET /assets/img_007/v2.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52015 - "GET /assets/img_007/v2_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 19:36:39,207 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 19:36:39,277 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 19:36:40,953 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 19:37:07,256 INFO jarvis.imagegen: AI-edited img_007 v2 -> v3: "Add stylish black sunglasses on the person's face, fitting naturally over the eyes"
+INFO:     127.0.0.1:52023 - "GET /assets/img_007/v3.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52024 - "GET /assets/img_007/v3_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 19:37:41,323 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 19:37:41,417 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 19:37:43,237 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 19:38:09,037 INFO jarvis.imagegen: AI-edited img_007 v3 -> v4: 'Replace the background with a sunny beach scene: sand, ocean waves, and blue sky, keeping the person unchanged in front'
+INFO:     127.0.0.1:52027 - "GET /assets/img_007/v4.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52028 - "GET /assets/img_007/v4_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 19:39:31,812 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 19:39:31,903 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 19:39:51,990 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-29 19:39:52,061 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 19:39:54,302 INFO jarvis.agent: Tool generate_video 
+2026-09-29 19:39:54,320 INFO jarvis.confirm: Asking for confirmation: Make a video (takes a few minutes)
+2026-09-29 19:39:58,894 INFO jarvis.confirm: Confirmation approved: Make a video (takes a few minutes)
+2026-09-29 19:39:58,915 INFO jarvis.video: Video vid_001 started: 81 frames, 10 steps
+2026-09-29 19:41:24,710 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 19:41:24,726 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 19:41:25,515 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 19:41:31,547 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Shopify
+2026-09-29 19:41:32,168 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49023]
+=== Tue Sep 29 20:11:26 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 292 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/static/index-pkNUm_Eg.css          26.14 kB │ gzip:   6.07 kB
+dist/static/index-DB_oe43I.js          416.93 kB │ gzip: 128.03 kB
+dist/static/Model3DViewer-Br7Ug1iZ.js  638.56 kB │ gzip: 160.07 kB
+
+✓ built in 121ms
+INFO:     Started server process [52538]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 20:11:28,059 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53618 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53619 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53620 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53621 - "GET /static/index-pkNUm_Eg.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53620 - "GET /static/index-DB_oe43I.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53622 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:11:28,642 INFO jarvis: Browser connected
+2026-09-29 20:11:28,752 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:53638 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:11:29,042 INFO jarvis: Browser connected
+2026-09-29 20:11:32,291 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+INFO:     127.0.0.1:53643 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:11:36,074 INFO jarvis: Browser connected
+2026-09-29 20:11:46,553 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:11:46,669 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:11:48,661 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 20:11:50,457 INFO jarvis.agent: Tool mcp__claude_ai_Gmail__search_threads 
+2026-09-29 20:11:50,465 INFO jarvis.confirm: Allowed (read): Gmail: Search threads
+2026-09-29 20:12:22,798 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:12:22,892 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:12:25,804 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 20:12:27,646 INFO jarvis.agent: Tool WebSearch flintt.com Alex Tihenko
+2026-09-29 20:12:27,908 INFO jarvis.agent: Tool WebSearch "flintt.com" company
+2026-09-29 20:12:35,488 INFO jarvis.agent: Tool WebSearch "Aleksandrs Tihenko" Flintt
+2026-09-29 20:14:02,227 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:14:02,343 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:15:00,134 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 20:15:00,136 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 20:15:00,824 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 20:15:05,371 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 20:15:34,526 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:15:34,651 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:15:45,253 INFO jarvis.agent: Tool ask_expert 
+2026-09-29 20:15:45,264 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 20:15:58,695 INFO jarvis.expert: Expert answered in 13.4s
+2026-09-29 20:16:05,218 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 20:17:10,042 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:17:10,157 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:17:19,868 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 20:17:54,067 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-29 20:17:58,092 INFO jarvis: Browser disconnected
+2026-09-29 20:17:58,092 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [52538]
+=== Tue Sep 29 20:21:31 +04 2026 starting Jarvis
+INFO:     Started server process [54239]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-29 20:21:32,424 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54093 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54094 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54095 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54096 - "GET /static/index-pkNUm_Eg.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54095 - "GET /static/index-DB_oe43I.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54097 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:21:33,032 INFO jarvis: Browser connected
+2026-09-29 20:21:33,055 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:54116 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:21:33,766 INFO jarvis: Browser connected
+2026-09-29 20:21:38,132 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+INFO:     127.0.0.1:54120 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-29 20:21:40,258 INFO jarvis: Browser connected
+2026-09-29 20:21:49,016 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:21:49,132 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:21:51,014 INFO jarvis.agent: Tool ToolSearch 
+2026-09-29 20:21:52,302 INFO jarvis.agent: Tool mcp__claude_ai_Gmail__search_threads 
+2026-09-29 20:21:52,308 INFO jarvis.confirm: Allowed (read): Gmail: Search threads
+2026-09-29 20:21:58,302 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-29 20:22:36,561 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:22:36,674 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:22:38,379 INFO jarvis.agent: Tool mcp__claude_ai_Gmail__get_thread 
+2026-09-29 20:22:38,384 INFO jarvis.confirm: Allowed (read): Gmail: Get thread
+2026-09-29 20:24:10,557 INFO jarvis.brain: Started a saved conversation (provider=claude)
+2026-09-29 20:24:10,560 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 20:24:11,241 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 20:24:14,276 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 20:25:52,906 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-29 20:25:52,907 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-29 20:25:53,642 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-29 20:25:57,183 INFO jarvis.brain: Connectors: connected: Claude Docs, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis
+2026-09-29 20:28:54,809 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:28:54,949 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:29:02,024 INFO jarvis.agent: Tool generate_image 
+2026-09-29 20:29:19,144 INFO jarvis.imagegen: Generated img_008: 'A large oil painting on canvas, wide aspect ratio, of an airport runway at golden sunset. Warm orange and pink sky with soft clouds, sun low on the horizon. The runway stretches into the distance with two parallel rows of glowing runway edge lights leading toward the vanishing point, painted with thick impasto brushstrokes, warm golden highlights reflecting on wet tarmac. Along the two lines of runway lights, small ancient Turkic Göktürk runic (Orkhon script) characters are inscribed glowing softly like the lights themselves, spelling out names in a decorative engraved style, integrated naturally into the light fixtures. Distant silhouette of an airplane on the runway. Rich, textured, classical oil painting style, dramatic warm lighting, painterly brushwork, museum quality, nostalgic and emotional atmosphere fitting a retirement gift for an aviation professional.'
+INFO:     127.0.0.1:54377 - "GET /assets/img_008/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54378 - "GET /assets/img_008/v1_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:29:54,537 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:29:54,636 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:29:56,896 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:30:26,392 INFO jarvis.imagegen: AI-edited img_008 v1 -> v2: 'Remove the airplane from the scene entirely. Keep the empty runway stretching toward the sunset with the two parallel rows of glowing runway edge lights and the runic inscriptions, golden sun on the horizon, dramatic oil painting style, unchanged otherwise.'
+INFO:     127.0.0.1:54412 - "GET /assets/img_008/v2.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54413 - "GET /assets/img_008/v2_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54415 - "GET /assets/img_008/v2_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54414 - "GET /assets/img_008/v2.jpg HTTP/1.1" 200 OK
+2026-09-29 20:30:47,005 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:30:47,083 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:30:50,237 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:31:21,999 INFO jarvis.imagegen: AI-edited img_008 v2 -> v3: 'Redesign the runway so it is not perfectly straight: it gently curves and connects to a taxiway branching off to the side, like a real airport layout seen from a low angle. The runway edge lights are embedded flush into the tarmac surface itself (inset runway lights, not standing on poles), still glowing gold and following the curved path with the runic inscriptions along them. Make the sunset sky much more vivid and colorful, with richer oranges, pinks, purples and deep blues blending together, more dramatic clouds. Keep the oil painting style.'
+INFO:     127.0.0.1:54455 - "GET /assets/img_008/v3.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54456 - "GET /assets/img_008/v3_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54457 - "GET /assets/img_008/v3.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54458 - "GET /assets/img_008/v3_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:32:26,459 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:32:26,572 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:32:28,882 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:32:59,553 INFO jarvis.imagegen: AI-edited img_008 v3 -> v4: 'On the left side of the horizon, add a flock of storks flying in formation silhouetted against the colorful sunset sky. On the right side of the scene, add a pomegranate orchard/garden with trees bearing red pomegranate fruits along the edge of the runway area. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54505 - "GET /assets/img_008/v4.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54506 - "GET /assets/img_008/v4_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54507 - "GET /assets/img_008/v4.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54508 - "GET /assets/img_008/v4_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:34:00,987 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:34:01,081 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:34:03,514 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:34:33,393 INFO jarvis.imagegen: AI-edited img_008 v4 -> v5: 'Move the flock of storks on the left further back into the distance, smaller and higher up, weaving among the clouds in the sky rather than near the horizon. Remove the pomegranate orchard on the right side completely, replacing it with the plain open field/grass like the rest of the landscape. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54545 - "GET /assets/img_008/v5.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54546 - "GET /assets/img_008/v5_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54547 - "GET /assets/img_008/v5.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54548 - "GET /assets/img_008/v5_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:35:44,790 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:35:44,912 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:35:47,730 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:36:18,322 INFO jarvis.imagegen: AI-edited img_008 v5 -> v6: 'On the right side of the sky, shape one of the clouds so it subtly resembles a pomegranate silhouette while still clearly looking like a natural cloud, blending into the colorful sunset. In the empty field on the right side of the scene, add one small air traffic control tower in the far distance, with its shadow falling on the grass toward the viewer, warm sunset lighting. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54641 - "GET /assets/img_008/v6.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54642 - "GET /assets/img_008/v6_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54643 - "GET /assets/img_008/v6.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54644 - "GET /assets/img_008/v6_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:36:45,407 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:36:45,506 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:36:48,246 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:37:18,611 INFO jarvis.imagegen: AI-edited img_008 v6 -> v7: 'Make the air traffic control tower on the right significantly taller, a tall slender tower with a small observation cabin on top, keeping it in the same distant position in the field with its shadow still falling on the grass. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54670 - "GET /assets/img_008/v7.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54671 - "GET /assets/img_008/v7_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54672 - "GET /assets/img_008/v7.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54673 - "GET /assets/img_008/v7_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:38:01,786 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:38:01,879 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:38:03,766 INFO jarvis.agent: Tool image_search 
+2026-09-29 20:38:06,820 INFO jarvis.images: Found img_009 for 'Istanbul Airport IGA air traffic control tower'
+INFO:     127.0.0.1:54700 - "GET /assets/img_009/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54701 - "GET /assets/img_009/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54702 - "GET /assets/img_009/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54703 - "GET /assets/img_009/v1_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:38:46,386 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:38:46,480 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:38:49,878 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:39:42,459 INFO jarvis.imagegen: AI-edited img_008 v7 -> v8: 'Replace the current control tower on the right with a tower matching the distinctive Istanbul Airport (IGA) air traffic control tower design: a tall, curved, sculptural white tower with a twisting hourglass-like silhouette and a wide observation cabin at the top. Illuminate it with red lights glowing along its curves and top, standing at dusk against the colorful sunset sky, same distant position in the field with its shadow falling on the grass. Make it a moderate, realistic height, not too tall. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54733 - "GET /assets/img_008/v8.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54734 - "GET /assets/img_008/v8_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54735 - "GET /assets/img_008/v8.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54736 - "GET /assets/img_008/v8_thumb.jpg HTTP/1.1" 200 OK
+2026-09-29 20:39:52,732 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-29 20:39:52,830 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-29 20:39:54,950 INFO jarvis.agent: Tool image_ai_edit 
+2026-09-29 20:40:25,276 INFO jarvis.imagegen: AI-edited img_008 v8 -> v9: 'Make the red-lit IGA-style control tower on the right somewhat smaller and shorter, same distant position in the field, same style and lighting, shadow still falling on the grass. Keep everything else the same, oil painting style.'
+INFO:     127.0.0.1:54749 - "GET /assets/img_008/v9.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54750 - "GET /assets/img_008/v9_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54752 - "GET /assets/img_008/v9_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54751 - "GET /assets/img_008/v9.jpg HTTP/1.1" 200 OK
+2026-09-29 20:40:56,473 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-29 20:41:02,586 INFO jarvis: Browser disconnected
+2026-09-29 20:41:02,587 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [54239]
+=== Wed Sep 30 07:47:37 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 292 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/static/index-BIbB1KUy.css          26.21 kB │ gzip:   6.09 kB
+dist/static/index-CHgr-gBW.js          417.52 kB │ gzip: 128.14 kB
+dist/static/Model3DViewer-Bg36kkgd.js  638.56 kB │ gzip: 160.07 kB
+
+✓ built in 123ms
+INFO:     Started server process [64006]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 07:47:39,912 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57672 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57673 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57674 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57674 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57675 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57676 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 07:47:40,447 INFO jarvis: Browser connected
+2026-09-30 07:47:40,988 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 07:47:48,076 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 07:48:03,487 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 07:48:03,611 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 07:48:06,257 INFO jarvis.agent: Tool find_contact 
+INFO:     Shutting down
+2026-09-30 07:48:30,142 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [64006]
+=== Wed Sep 30 08:42:51 +04 2026 starting Jarvis
+INFO:     Started server process [65249]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 08:42:52,057 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58528 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58529 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58530 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58530 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58531 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58534 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 08:42:52,664 INFO jarvis: Browser connected
+2026-09-30 08:42:53,647 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 08:42:57,701 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 08:43:07,544 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:43:07,666 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:43:10,609 INFO jarvis.agent: Tool find_contact 
+2026-09-30 08:43:15,738 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 08:43:15,808 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:43:18,139 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:43:18,145 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:43:20,004 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 08:43:52,585 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:43:52,734 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:43:57,152 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:43:57,156 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:43:58,834 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 08:44:38,598 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 08:44:38,600 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 08:44:39,822 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 08:44:54,908 INFO jarvis.brain: Connectors: failed: Claude Docs, Supabase; pending: TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Lovable, Canva, Resend, BoardRepo, Gmail; needs-auth: Slack; connected: Replit, jarvis
+2026-09-30 08:44:56,123 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:44:56,166 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:45:01,375 INFO jarvis.agent: Tool find_contact 
+2026-09-30 08:45:05,259 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:45:05,265 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:45:06,855 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 08:45:26,252 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:45:26,317 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:45:52,320 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:45:52,323 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:45:54,734 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+INFO:     Shutting down
+2026-09-30 08:46:38,685 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+ERROR:    Traceback (most recent call last):
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/starlette/routing.py", line 654, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/erselinankul/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/main.py", line 61, in lifespan
+    await brain.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/brain/brain_claudecode.py", line 302, in close
+    await self._client.disconnect()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/client.py", line 615, in disconnect
+    await self._query.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/query.py", line 1182, in close
+    await self._close_impl()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/query.py", line 1207, in _close_impl
+    await self.transport.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/transport/subprocess_cli.py", line 1054, in close
+    if self._process.returncode is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'returncode'
+
+ERROR:    Application shutdown failed. Exiting.
+INFO:     Finished server process [65249]
+=== Wed Sep 30 08:56:05 +04 2026 starting Jarvis
+INFO:     Started server process [66826]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 08:56:06,212 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59791 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59792 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59793 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59794 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59793 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59796 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 08:56:06,733 INFO jarvis: Browser connected
+2026-09-30 08:56:07,242 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 08:56:12,326 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+INFO:     127.0.0.1:59819 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 08:56:12,859 INFO jarvis: Browser connected
+2026-09-30 08:56:57,171 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:56:57,305 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:57:00,623 INFO jarvis.agent: Tool find_contact 
+2026-09-30 08:57:13,966 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:57:14,039 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:57:16,103 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:57:16,111 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:57:18,927 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 08:59:17,129 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 08:59:17,247 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:59:30,166 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 08:59:30,261 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 08:59:33,411 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 08:59:33,419 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 08:59:35,674 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 09:01:51,064 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+2026-09-30 09:02:02,516 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [66826]
+=== Wed Sep 30 09:05:20 +04 2026 starting Jarvis
+INFO:     Started server process [67331]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 09:05:21,283 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60173 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60174 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60175 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60176 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60175 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60177 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 09:05:21,868 INFO jarvis: Browser connected
+2026-09-30 09:05:22,495 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 09:05:37,614 INFO jarvis.brain: Connectors: connected: Claude Docs, Google Drive, Google Calendar, Replit, Canva, Supabase, BoardRepo, Gmail, jarvis; pending: TickTick, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Lovable, Resend; needs-auth: Slack
+2026-09-30 09:06:29,247 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:06:29,366 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:06:36,871 INFO jarvis.agent: Tool find_contact 
+2026-09-30 09:06:48,390 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 09:06:48,469 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:06:53,791 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 09:06:53,797 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 09:06:55,220 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+INFO:     Shutting down
+2026-09-30 09:12:49,871 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [67331]
+=== Wed Sep 30 09:30:53 +04 2026 starting Jarvis
+INFO:     Started server process [67664]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 09:30:54,501 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60366 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60367 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60368 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60368 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60369 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60370 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 09:30:55,093 INFO jarvis: Browser connected
+2026-09-30 09:30:55,581 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 09:30:59,610 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 09:31:14,887 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:31:15,004 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:31:18,563 INFO jarvis.agent: Tool find_contact 
+2026-09-30 09:31:22,355 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 09:31:22,361 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 09:31:25,528 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 09:31:57,216 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:31:57,315 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:31:59,697 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 09:31:59,702 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 09:32:00,642 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+INFO:     Shutting down
+2026-09-30 09:32:32,902 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [67664]
+=== Wed Sep 30 09:33:59 +04 2026 starting Jarvis
+INFO:     Started server process [67878]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 09:34:00,206 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60706 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60707 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60711 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 09:34:00,791 INFO jarvis: Browser connected
+2026-09-30 09:34:01,367 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 09:34:05,425 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 09:34:23,496 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:34:23,617 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:34:26,571 INFO jarvis.agent: Tool find_contact 
+2026-09-30 09:34:40,255 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:34:40,330 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:34:42,317 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 09:34:42,324 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 09:34:45,065 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 09:35:16,273 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:35:16,371 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:35:18,109 INFO jarvis.agent: Tool find_contact 
+2026-09-30 09:35:22,384 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:35:22,456 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:35:24,543 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 09:35:24,548 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 09:35:28,889 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+INFO:     Shutting down
+2026-09-30 09:35:47,203 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [67878]
+=== Wed Sep 30 09:58:30 +04 2026 starting Jarvis
+INFO:     Started server process [70867]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 09:58:31,009 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61042 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61043 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61047 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61047 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61048 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61049 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 09:58:31,354 INFO jarvis: Browser connected
+2026-09-30 09:58:32,280 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 09:58:36,833 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 09:58:50,880 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:58:51,005 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 09:58:53,906 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 09:58:55,966 INFO jarvis.agent: Tool WebSearch Mac mini price amazon.ae
+2026-09-30 09:59:02,684 INFO jarvis.agent: Tool WebFetch amazon.ae
+2026-09-30 09:59:07,562 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 09:59:10,574 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 09:59:53,488 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 09:59:53,584 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:00:06,344 INFO jarvis.agent: Tool ask_expert 
+2026-09-30 10:00:06,353 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:00:44,400 INFO jarvis.expert: Expert answered in 38.0s
+2026-09-30 10:01:41,182 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:01:41,301 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:05:07,963 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:05:08,061 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:05:10,246 INFO jarvis.agent: Tool WebSearch Mac mini M4 Pro 32GB 1TB amazon.ae price
+2026-09-30 10:05:17,175 INFO jarvis.agent: Tool WebSearch Mac mini M4 32GB 1TB amazon.ae
+2026-09-30 10:05:39,406 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:05:39,483 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:05:44,257 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:06:41,465 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:06:41,558 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:06:43,652 INFO jarvis.agent: Tool WebSearch Mac mini M4 32GB 1TB price AED UAE
+2026-09-30 10:06:44,955 INFO jarvis.agent: Tool WebFetch amazon.com
+2026-09-30 10:06:52,420 INFO jarvis.agent: Tool WebFetch nextdevice.ae
+2026-09-30 10:06:59,831 INFO jarvis.agent: Tool WebFetch uae.microless.com
+2026-09-30 10:07:27,804 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 10:07:27,889 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:07:30,032 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:07:37,709 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:07:45,225 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:07:50,447 INFO jarvis.agent: Tool WebSearch Mac mini M6 32GB 1TB price AED Apple UAE
+2026-09-30 10:07:58,933 INFO jarvis.agent: Tool WebFetch themacindex.com
+2026-09-30 10:08:03,395 INFO jarvis.agent: Tool WebSearch "Mac mini" M6 "32GB memory" "1TB" AED price site:apple.com
+2026-09-30 10:08:10,362 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:08:17,237 INFO jarvis.agent: Tool WebFetch mygsm.me
+2026-09-30 10:08:41,585 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:09:57,711 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:09:57,830 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:10:04,384 INFO jarvis.agent: Tool WebSearch Mac mini M5 32GB 1TB price AED
+2026-09-30 10:10:04,899 INFO jarvis.agent: Tool WebSearch "Mac mini" "M6 chip" "32GB memory" "1TB storage" AED price
+2026-09-30 10:10:14,065 INFO jarvis.agent: Tool WebFetch themacindex.com
+2026-09-30 10:10:25,178 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:11:07,587 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:11:07,689 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:11:29,706 INFO jarvis.brain: Started a new conversation (provider=omniroute)
+2026-09-30 10:11:29,708 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-30 10:11:29,933 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.1-flash-lite)
+2026-09-30 10:11:32,952 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-30 10:11:35,926 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 10:11:35,928 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:11:37,052 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 10:11:41,120 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 10:15:28,517 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:15:28,665 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:15:39,809 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:15:39,884 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:15:56,881 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 10:15:56,882 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:15:58,070 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 10:16:04,652 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 10:16:11,101 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:16:11,221 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:16:14,256 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 10:16:16,725 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:16:17,678 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:16:18,529 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:16:24,949 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 10:16:27,032 INFO jarvis.agent: Tool WebSearch Apple Mac mini UAE price M6 32GB 1TB AED apple.com/ae
+2026-09-30 10:16:27,488 INFO jarvis.agent: Tool WebSearch Apple Mac mini UAE price M5 Pro 24GB 512GB AED apple.com/ae
+2026-09-30 10:16:27,848 INFO jarvis.agent: Tool WebSearch Mac mini M6 M5 Pro starting price UAE dirhams Apple Store
+2026-09-30 10:16:38,762 INFO jarvis.agent: Tool WebFetch absolutegeeks.com
+2026-09-30 10:16:39,544 INFO jarvis.agent: Tool WebFetch istyle.ae
+2026-09-30 10:16:46,871 INFO jarvis.agent: Tool WebSearch Mac mini M6 32GB 1TB price AED UAE istyle OR macuae OR sharafdg
+2026-09-30 10:16:55,523 INFO jarvis.agent: Tool WebFetch macuae.com
+2026-09-30 10:16:56,422 INFO jarvis.agent: Tool WebFetch tbreak.com
+2026-09-30 10:17:13,186 INFO jarvis.agent: Tool WebSearch "Mac mini" M6 "32GB" "1TB" AED price site:istyle.ae OR site:sharafdg.com OR site:jumbo.ae OR site:emax.ae
+2026-09-30 10:17:14,151 INFO jarvis.agent: Tool WebFetch apple.com
+2026-09-30 10:17:30,717 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:18:11,556 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:18:11,652 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:18:48,121 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 10:18:48,122 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:18:49,205 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 10:18:53,771 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 10:18:59,264 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:18:59,384 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:19:59,577 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:24:35,957 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:24:36,074 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:25:01,504 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:25:01,577 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:25:07,351 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:26:26,899 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 10:26:26,900 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:26:27,912 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 10:26:31,974 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 10:26:39,407 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:26:39,526 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:26:59,214 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 10:27:46,502 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 10:27:46,503 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 10:27:47,592 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 10:27:52,141 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 10:27:57,378 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:27:57,500 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:28:10,868 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:28:10,941 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:28:19,888 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 10:28:19,959 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 10:28:48,911 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [70867]
+=== Wed Sep 30 11:56:11 +04 2026 starting Jarvis
+INFO:     Started server process [76582]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 11:56:11,896 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50352 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50353 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50354 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50354 - "GET /static/index-BIbB1KUy.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50355 - "GET /static/index-CHgr-gBW.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50356 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 11:56:12,186 INFO jarvis: Browser connected
+2026-09-30 11:56:15,366 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 11:56:18,403 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-30 11:56:19,105 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 11:56:19,149 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 11:57:17,448 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:50887 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 11:58:41,139 INFO jarvis: Browser connected
+INFO:     Shutting down
+2026-09-30 11:58:47,766 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76582]
+=== Wed Sep 30 12:51:34 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 292 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/static/index-yAY65Iqx.css          27.82 kB │ gzip:   6.41 kB
+dist/static/index-hrwUdsFP.js          425.05 kB │ gzip: 129.89 kB
+dist/static/Model3DViewer-Dy78N8Ez.js  638.56 kB │ gzip: 160.07 kB
+
+✓ built in 133ms
+INFO:     Started server process [79810]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 12:51:36,680 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52432 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52434 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52435 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52436 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52435 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52441 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:51:37,044 INFO jarvis: Browser connected
+2026-09-30 12:51:37,984 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:52461 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:51:39,948 INFO jarvis: Browser connected
+2026-09-30 12:51:43,034 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+INFO:     127.0.0.1:52465 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:51:45,159 INFO jarvis: Browser connected
+2026-09-30 12:51:57,014 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:51:57,150 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 12:51:59,385 INFO jarvis.agent: Tool text_me 
+2026-09-30 12:52:19,510 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 12:52:19,513 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 12:52:20,588 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 12:52:24,650 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 12:53:14,366 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:53:14,490 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 12:53:26,969 INFO jarvis.agent: Tool text_me 
+2026-09-30 12:54:00,009 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:54:00,110 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 12:54:02,929 INFO jarvis.agent: Tool find_contact 
+2026-09-30 12:54:21,217 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:54:21,291 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 12:54:57,056 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 12:54:57,061 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 12:55:00,328 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 12:55:03,351 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-30 12:55:59,423 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:55:59,545 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     Shutting down
+2026-09-30 12:56:46,715 INFO jarvis: Browser disconnected
+2026-09-30 12:56:46,715 INFO jarvis: Browser disconnected
+2026-09-30 12:56:46,715 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+ERROR:    Traceback (most recent call last):
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/starlette/routing.py", line 654, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/erselinankul/.local/share/uv/python/cpython-3.13.15-macos-aarch64-none/lib/python3.13/contextlib.py", line 221, in __aexit__
+    await anext(self.gen)
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/main.py", line 65, in lifespan
+    await brain.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/brain/brain_claudecode.py", line 305, in close
+    await self._client.disconnect()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/client.py", line 615, in disconnect
+    await self._query.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/query.py", line 1182, in close
+    await self._close_impl()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/query.py", line 1207, in _close_impl
+    await self.transport.close()
+  File "/Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_internal/transport/subprocess_cli.py", line 1054, in close
+    if self._process.returncode is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'returncode'
+
+ERROR:    Application shutdown failed. Exiting.
+INFO:     Finished server process [79810]
+=== Wed Sep 30 12:57:00 +04 2026 starting Jarvis
+INFO:     Started server process [80150]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 12:57:01,247 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52905 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52906 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52907 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52908 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52907 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52909 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:57:01,698 INFO jarvis: Browser connected
+2026-09-30 12:57:02,412 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:52932 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:57:03,727 INFO jarvis: Browser connected
+2026-09-30 12:57:04,965 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 12:57:06,492 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 12:57:06,587 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     127.0.0.1:52940 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 12:57:09,198 INFO jarvis: Browser connected
+2026-09-30 12:57:15,796 INFO jarvis.agent: Tool ask_expert 
+2026-09-30 12:57:15,800 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 12:57:28,800 INFO jarvis.expert: Expert answered in 13.0s
+2026-09-30 13:21:46,703 INFO jarvis: Browser disconnected
+2026-09-30 13:21:46,707 INFO jarvis: Browser disconnected
+2026-09-30 13:24:11,336 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:24:11,467 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:24:37,685 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,697 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:24:37,702 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,706 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,708 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,710 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,713 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,714 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,715 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,716 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,717 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,717 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,720 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,721 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:37,823 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:38,528 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:39,398 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:40,621 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:41,324 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:42,229 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:43,173 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:43,537 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:24:43,560 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:24:44,126 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:45,039 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:45,944 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:46,936 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:48,314 INFO jarvis.agent: Tool remember 
+2026-09-30 13:24:48,657 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:24:48,673 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:24:54,182 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:24:54,199 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:24:59,174 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:24:59,190 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:05,874 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:05,892 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:25,257 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:25,316 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:32,848 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:32,861 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:36,099 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:36,117 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:41,940 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:41,954 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:45,732 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:45,773 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:49,073 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:49,087 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:25:58,648 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:25:58,705 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:04,806 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:04,821 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:10,940 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:10,956 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:14,647 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:14,663 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:20,390 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:20,434 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:33,314 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:33,374 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:39,574 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:39,590 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:47,623 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:47,637 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:26:54,822 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:26:54,865 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:03,597 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:03,661 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:13,214 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:13,228 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:21,348 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:21,364 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:27,789 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:27,834 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:38,264 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:41,155 INFO jarvis.agent: Tool remember 
+2026-09-30 13:27:41,159 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:41,552 INFO jarvis.agent: Tool remember 
+2026-09-30 13:27:50,280 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:27:50,293 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:27:54,197 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:28:18,228 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:28:18,329 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:28:21,075 INFO jarvis.agent: Tool forget 
+2026-09-30 13:28:21,079 INFO jarvis.confirm: Asking for confirmation: Forget this
+2026-09-30 13:28:36,121 INFO jarvis.confirm: Confirmation denied: Forget this
+2026-09-30 13:28:38,773 INFO jarvis.agent: Tool recall 
+2026-09-30 13:28:40,733 INFO jarvis.agent: Tool forget 
+2026-09-30 13:28:40,737 INFO jarvis.confirm: Asking for confirmation: Forget this
+2026-09-30 13:28:53,559 INFO jarvis.confirm: Confirmation approved: Forget this
+2026-09-30 13:28:56,023 INFO jarvis.agent: Tool remember 
+2026-09-30 13:28:56,027 INFO jarvis.confirm: Asking for confirmation: Remember this
+2026-09-30 13:28:59,718 INFO jarvis.confirm: Confirmation approved: Remember this
+2026-09-30 13:29:23,182 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 13:29:23,183 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 13:29:24,182 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 13:29:29,743 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 13:29:46,455 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:29:46,574 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:29:49,036 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 13:29:50,828 INFO jarvis.agent: Tool mcp__claude_ai_Spotify__search 
+2026-09-30 13:29:50,834 INFO jarvis.confirm: Allowed (read): Spotify: Search
+2026-09-30 13:29:53,647 INFO jarvis.agent: Tool spotify_control 
+2026-09-30 13:39:21,490 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 13:39:21,496 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 13:39:21,748 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 13:39:24,765 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-30 13:39:28,172 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:39:28,217 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:39:47,805 INFO jarvis.agent: Tool find_contact 
+2026-09-30 13:40:24,096 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:40:24,170 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:40:25,610 INFO jarvis.agent: Tool find_contact 
+2026-09-30 13:40:29,721 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 13:40:29,745 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:40:31,377 INFO jarvis.agent: Tool whatsapp_send 
+2026-09-30 13:40:31,384 INFO jarvis.confirm: Asking for confirmation: Send a WhatsApp message
+2026-09-30 13:40:32,988 INFO jarvis.confirm: Confirmation approved: Send a WhatsApp message
+2026-09-30 13:41:32,892 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:41:32,942 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:41:55,398 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:41:55,409 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:42:41,623 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:42:41,672 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:42:43,126 INFO jarvis.agent: Tool find_contact 
+2026-09-30 13:42:58,517 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:42:58,530 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:43:45,047 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:43:45,094 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:43:46,585 INFO jarvis.agent: Tool find_contact 
+INFO:     127.0.0.1:62851 - "POST /upload?name=Photo%20on%205-12-26%20at%207.53%E2%80%AFpm.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62851 - "GET /assets/img_010/v1.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62852 - "GET /assets/img_010/v1_thumb.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62877 - "GET / HTTP/1.1" 304 Not Modified
+2026-09-30 13:44:28,882 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:62878 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62877 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:62880 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 13:44:28,909 INFO jarvis: Browser connected
+INFO:     127.0.0.1:62877 - "GET /favicon.svg HTTP/1.1" 200 OK
+2026-09-30 13:44:40,255 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 13:44:40,274 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 13:44:42,091 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 13:45:08,698 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 13:46:38,220 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:63419 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 13:46:38,756 INFO jarvis: Browser connected
+INFO:     Shutting down
+2026-09-30 13:50:43,011 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [80150]
+=== Wed Sep 30 14:09:02 +04 2026 starting Jarvis
+INFO:     Started server process [85823]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 14:09:03,094 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:53875 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53876 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53878 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53878 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53879 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:53880 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 14:09:03,678 INFO jarvis: Browser connected
+2026-09-30 14:09:04,222 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 14:09:09,308 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 14:09:10,812 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:09:10,942 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:09:12,988 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:09:27,646 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 14:09:54,408 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:09:54,507 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:09:56,406 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 14:09:57,613 INFO jarvis.agent: Tool mcp__claude_ai_Google_Calendar__search_events 
+2026-09-30 14:09:57,621 INFO jarvis.confirm: Allowed (read): Google Calendar: Search events
+2026-09-30 14:10:14,123 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:10:14,197 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:10:16,567 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:11:26,932 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:11:27,056 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:15:10,885 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85823]
+=== Wed Sep 30 14:16:55 +04 2026 starting Jarvis
+INFO:     Started server process [86345]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 14:16:55,758 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54459 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54460 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54461 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54461 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54462 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:54463 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 14:16:56,351 INFO jarvis: Browser connected
+2026-09-30 14:16:56,840 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 14:17:00,881 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 14:17:12,361 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:17:12,463 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:17:54,610 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:04,620 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:04,936 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:05,252 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:19,956 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:20,367 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:20,636 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:47,157 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:18:47,370 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:20:58,842 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 14:20:58,961 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 14:21:27,293 INFO jarvis.agent: Tool check_homework 
+2026-09-30 14:28:32,909 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:56099 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 14:28:34,345 INFO jarvis: Browser connected
+2026-09-30 14:28:40,550 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:56172 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 14:28:41,448 INFO jarvis: Browser connected
+INFO:     Shutting down
+2026-09-30 14:36:46,967 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [86345]
+=== Wed Sep 30 15:09:58 +04 2026 starting Jarvis
+INFO:     Started server process [90464]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 15:09:59,140 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58242 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58243 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58244 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58244 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58245 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58246 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 15:09:59,562 INFO jarvis: Browser connected
+2026-09-30 15:10:00,136 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 15:10:05,730 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 15:10:21,627 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:10:21,749 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:10:23,983 INFO jarvis.agent: Tool check_homework 
+2026-09-30 15:10:28,569 INFO jarvis.agent: Tool check_homework 
+2026-09-30 15:11:01,582 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:11:01,681 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:11:04,374 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 15:11:20,224 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:11:20,300 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:11:24,817 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 15:11:41,598 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:11:41,668 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:11:44,565 INFO jarvis.agent: Tool check_homework 
+2026-09-30 15:13:39,933 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:13:40,052 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:13:42,061 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 15:13:44,784 INFO jarvis.agent: Tool mcp__claude_ai_Google_Calendar__list_events 
+2026-09-30 15:13:44,791 INFO jarvis.confirm: Allowed (read): Google Calendar: List events
+2026-09-30 15:14:11,519 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 15:14:11,521 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 15:14:12,382 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 15:14:17,439 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 15:14:19,281 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:14:19,405 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:14:21,689 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 15:14:23,603 INFO jarvis.agent: Tool mcp__claude_ai_Google_Calendar__list_events 
+2026-09-30 15:14:23,609 INFO jarvis.confirm: Allowed (read): Google Calendar: List events
+2026-09-30 15:14:44,195 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:14:44,272 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:14:46,327 INFO jarvis.agent: Tool mcp__claude_ai_Google_Calendar__list_events 
+2026-09-30 15:14:46,332 INFO jarvis.confirm: Allowed (read): Google Calendar: List events
+2026-09-30 15:14:48,681 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 15:15:03,199 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 15:15:03,273 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 15:15:04,888 INFO jarvis.agent: Tool ToolSearch 
+2026-09-30 15:15:06,776 INFO jarvis.agent: Tool mcp__claude_ai_TickTick__list_undone_tasks_by_date 
+2026-09-30 15:15:06,781 INFO jarvis.confirm: Allowed (read): TickTick: List undone tasks by date
+2026-09-30 15:15:21,081 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [90464]
+=== Wed Sep 30 18:29:33 +04 2026 starting Jarvis
+INFO:     Started server process [96231]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 18:29:34,426 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59829 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59830 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59831 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59831 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59832 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:59834 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 18:29:35,007 INFO jarvis: Browser connected
+2026-09-30 18:29:35,115 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 18:29:39,683 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 18:29:44,516 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:59862 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 18:29:49,932 INFO jarvis: Browser connected
+2026-09-30 18:30:01,270 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 18:30:01,393 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 18:30:03,234 INFO jarvis.agent: Tool check_homework 
+2026-09-30 18:30:11,896 INFO jarvis.agent: Tool check_homework 
+2026-09-30 18:30:12,267 INFO jarvis.agent: Tool check_homework 
+2026-09-30 18:30:12,494 INFO jarvis.agent: Tool check_homework 
+2026-09-30 18:30:55,139 INFO jarvis.agent: Tool show_on_canvas 
+INFO:     Shutting down
+2026-09-30 18:32:57,145 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [96231]
+=== Wed Sep 30 19:02:06 +04 2026 starting Jarvis
+INFO:     Started server process [98840]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 19:02:07,520 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60423 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60424 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60428 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 19:02:08,041 INFO jarvis: Browser connected
+2026-09-30 19:02:08,533 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 19:02:14,638 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 19:02:25,095 INFO jarvis.brain: Started a new conversation (provider=omniroute)
+2026-09-30 19:02:25,098 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+2026-09-30 19:02:25,324 INFO jarvis.brain: Claude Code session started (provider=omniroute, model=gemini/gemini-3.1-flash-lite)
+2026-09-30 19:02:35,377 INFO jarvis.brain: Connectors: connected: jarvis
+2026-09-30 19:03:00,321 INFO jarvis.brain: Started a new conversation (provider=claude)
+2026-09-30 19:03:00,323 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+2026-09-30 19:03:00,988 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+2026-09-30 19:03:04,531 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+2026-09-30 19:03:21,711 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 19:03:21,843 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 19:03:24,261 INFO jarvis.agent: Tool check_homework 
+2026-09-30 19:03:37,754 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 19:03:49,783 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 19:03:49,855 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 19:03:52,958 INFO jarvis.agent: Tool text_me 
+2026-09-30 19:04:53,878 INFO jarvis: Browser disconnected
+INFO:     127.0.0.1:60511 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60512 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60511 - "GET /static/index-hrwUdsFP.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:60513 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 19:04:57,851 INFO jarvis: Browser connected
+2026-09-30 19:05:19,817 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 19:05:19,942 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 19:05:22,313 INFO jarvis.agent: Tool amazon_read 
+2026-09-30 19:06:05,753 INFO jarvis.agent: Tool show_on_canvas 
+2026-09-30 19:06:42,808 INFO jarvis.agent: Route -> sonnet (default)
+2026-09-30 19:06:42,909 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+2026-09-30 19:08:33,171 INFO jarvis: Browser disconnected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [98840]
+=== Wed Sep 30 19:39:43 +04 2026 starting Jarvis
+INFO:     Started server process [1834]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-09-30 19:39:44,385 INFO claude_agent_sdk._internal.transport.subprocess_cli: Using bundled Claude Code CLI: /Users/erselinankul/Desktop/Jarvis_cBrain/backend/.venv/lib/python3.13/site-packages/claude_agent_sdk/_bundled/claude
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61416 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61417 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61422 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 19:39:44,678 INFO jarvis: Browser connected
+2026-09-30 19:39:45,294 INFO jarvis.brain: Claude Code session started (provider=claude, model=sonnet)
+INFO:     127.0.0.1:61482 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 19:39:47,978 INFO jarvis: Browser connected
+2026-09-30 19:39:51,392 INFO jarvis.brain: Connectors: connected: Claude Docs, TickTick, Google Drive, Google Calendar, Vercel, Spotify, Shopify, Zoom for Claude, Figma, Replit, Lovable, Canva, Resend, Supabase, BoardRepo, Gmail, jarvis; needs-auth: Slack
+INFO:     100.79.168.94:0 - "GET / HTTP/1.1" 200 OK
+INFO:     100.79.168.94:0 - "GET /static/index-yAY65Iqx.css HTTP/1.1" 200 OK
+INFO:     100.79.168.94:0 - "GET /static/index-DJSJoT-p.js HTTP/1.1" 200 OK
+INFO:     100.79.168.94:0 - "GET /favicon.svg HTTP/1.1" 200 OK
+INFO:     100.79.168.94:0 - "WebSocket /ws" [accepted]
+INFO:     connection open
+2026-09-30 19:40:36,295 INFO jarvis: Browser connected
+2026-09-30 19:40:46,460 INFO jarvis.agent: Route -> sonnet (small talk: stayed on the same model)
+2026-09-30 19:40:46,617 INFO jarvis.brain: Claude Code auth: apiKeySource=none
+INFO:     Shutting down
+2026-09-30 19:41:06,739 INFO jarvis: Browser disconnected
+2026-09-30 19:41:06,739 INFO jarvis: Browser disconnected
+2026-09-30 19:41:06,739 INFO jarvis: Browser disconnected
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1834]
+=== Thu Oct  1 08:17:13 +04 2026 starting Jarvis
+building the page with node from /Users/erselinankul/.nvm/versions/node/v24.21.0/bin
+
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 297 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.49 kB │ gzip:   0.31 kB
+dist/static/Terminal-BrP-ENHg.css        3.93 kB │ gzip:   1.01 kB
+dist/static/index-CZJom0p-.css          30.31 kB │ gzip:   6.99 kB
+dist/static/Terminal-B9BVR9bG.js       333.60 kB │ gzip:  84.06 kB
+dist/static/index-CnScfYVI.js          430.42 kB │ gzip: 131.76 kB
+dist/static/Model3DViewer-C-rFEcWR.js  638.54 kB │ gzip: 160.06 kB
+
+✓ built in 124ms
+=== Thu Oct  1 14:29:04 +04 2026 starting Jarvis
+=== Thu Oct  1 18:30:51 +04 2026 starting Jarvis
+=== Thu Oct  1 18:48:00 +04 2026 starting Jarvis
+=== Thu Oct  1 18:50:54 +04 2026 starting Jarvis
+=== Thu Oct  1 18:54:43 +04 2026 starting Jarvis
+=== Fri Oct  2 07:54:28 +04 2026 starting Jarvis
+=== Fri Oct  2 07:55:01 +04 2026 starting Jarvis

@@ -22,7 +22,7 @@ from storage import image_store
 
 from .images import _result, _show
 
-log = logging.getLogger("jarvis.imagegen")
+log = logging.getLogger("ultron.imagegen")
 
 STEPS = 4  # Klein 4B is distilled for 4 steps
 MAX_SIDE = 1024

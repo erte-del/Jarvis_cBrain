@@ -1,4 +1,4 @@
-"""Which device you're talking from reaches Jarvis, so "play this" happens on that device.
+"""Which device you're talking from reaches Ultron, so "play this" happens on that device.
 Run from the backend folder:
     .venv/bin/python -m unittest tests.test_device
 """
@@ -9,7 +9,7 @@ from types import SimpleNamespace
 from unittest import mock
 
 import main
-from brain.agent import Jarvis
+from brain.agent import Ultron
 from brain.base import Done
 from tools import mac, phone
 
@@ -37,7 +37,7 @@ class DeviceTest(unittest.IsolatedAsyncioTestCase):
                 sent.append(text)
                 yield Done("claude-sonnet-5")
 
-        async for _ in Jarvis(Brain()).handle_text("play some music", device="the user's Android phone"):
+        async for _ in Ultron(Brain()).handle_text("play some music", device="the user's Android phone"):
             pass
         self.assertTrue(sent[0].startswith("[Device: the user's Android phone]\n[Now: "))
 

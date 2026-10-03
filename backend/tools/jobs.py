@@ -1,4 +1,4 @@
-"""schedule_job / list_jobs / change_job: things Jarvis does on its own, later.
+"""schedule_job / list_jobs / change_job: things Ultron does on its own, later.
 
 The jobs live in storage/job_store.py and are run by scheduler.py. Scheduling, pausing
 and deleting are 'act' (a scheduled job can't schedule more jobs);

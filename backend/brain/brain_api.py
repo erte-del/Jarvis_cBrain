@@ -1,7 +1,7 @@
 """Placeholder: API-key brain. Not used.
 
-Jarvis runs on the Claude Pro subscription (see brain_claudecode.py).
-If Jarvis ever switches to an API key, this class would implement the same
+Ultron runs on the Claude Pro subscription (see brain_claudecode.py).
+If Ultron ever switches to an API key, this class would implement the same
 `Brain` protocol using the `anthropic` Python SDK. See section 1 of
 JARVIS_BUILD_PROMPT.md for notes.
 """
@@ -13,7 +13,7 @@ from .base import BrainEvent
 
 class ApiBrain:
     def __init__(self) -> None:
-        raise NotImplementedError("API brain not used; Jarvis runs on the Pro subscription")
+        raise NotImplementedError("API brain not used; Ultron runs on the Pro subscription")
 
     async def send(
         self,
@@ -21,7 +21,7 @@ class ApiBrain:
         images: list[bytes] | None = None,
         model: str = "sonnet",
     ) -> AsyncIterator[BrainEvent]:
-        raise NotImplementedError("API brain not used; Jarvis runs on the Pro subscription")
+        raise NotImplementedError("API brain not used; Ultron runs on the Pro subscription")
         yield  # pragma: no cover  (makes this an async generator)
 
     async def new_conversation(self, provider: str | None = None, resume: str | None = None) -> None:

@@ -17,7 +17,7 @@ from config import GATEWAY_URL
 async def main() -> None:
     brain = ClaudeCodeBrain()
     model = "sonnet"
-    print("Jarvis terminal chat. /haiku /sonnet /opus to switch model, /quit to exit.\n")
+    print("Ultron terminal chat. /haiku /sonnet /opus to switch model, /quit to exit.\n")
     try:
         while True:
             try:
@@ -33,7 +33,7 @@ async def main() -> None:
                 print(f"(model -> {model})\n")
                 continue
 
-            print("jarvis> ", end="", flush=True)
+            print("ultron> ", end="", flush=True)
             async for ev in brain.send(text, model=model):
                 if isinstance(ev, TextDelta):
                     print(ev.text, end="", flush=True)

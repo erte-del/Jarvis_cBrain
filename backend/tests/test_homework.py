@@ -29,7 +29,7 @@ class HomeworkTest(unittest.TestCase):
             return asyncio.run(homework.check_homework.handler(args))
 
     def test_runs_freely(self):
-        self.assertEqual(registry.classify("mcp__jarvis__check_homework"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__check_homework"), "read")
 
     def test_only_new_lines_are_reported(self):
         first = self.check(config.HOMEWORK_URL, "Maths\nAlgebra sheet\nDue Friday")["content"][0]["text"]
@@ -64,12 +64,12 @@ class HomeworkTest(unittest.TestCase):
 
     def test_chrome_setting_is_explained(self):
         async def refused(url, javascript, opened="tab"):
-            raise RuntimeError("Chrome doesn't let Jarvis read pages yet.")
+            raise RuntimeError("Chrome doesn't let Ultron read pages yet.")
 
         with mock.patch.object(homework, "_run", refused):
             result = asyncio.run(homework.check_homework.handler({}))
         self.assertTrue(result["is_error"])
-        self.assertIn("doesn't let Jarvis", result["content"][0]["text"])
+        self.assertIn("doesn't let Ultron", result["content"][0]["text"])
 
 
 if __name__ == "__main__":

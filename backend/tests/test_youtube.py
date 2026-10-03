@@ -29,7 +29,7 @@ class YoutubeTest(unittest.TestCase):
             return asyncio.run(youtube.youtube.handler(args))
 
     def test_only_reads(self):
-        self.assertEqual(registry.classify("mcp__jarvis__youtube"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__youtube"), "read")
 
     def test_search(self):
         result = self.call(query="rick astley & friends")

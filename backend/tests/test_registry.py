@@ -46,17 +46,17 @@ class ClassifyTest(unittest.TestCase):
         ])
 
     def test_unknown_tools_ask(self):
-        self.assert_kind("act", ["Bash", "Write", "mcp__some_local_server__get_secrets", "mcp__jarvis__unknown"])
+        self.assert_kind("act", ["Bash", "Write", "mcp__some_local_server__get_secrets", "mcp__ultron__unknown"])
 
     def test_builtins_and_own_tools(self):
         self.assert_kind("read", ["WebSearch", "WebFetch", "ToolSearch",
-                                  "mcp__jarvis__ask_expert", "mcp__jarvis__show_on_canvas"])
+                                  "mcp__ultron__ask_expert", "mcp__ultron__show_on_canvas"])
 
     def test_friendly_names(self):
         self.assertEqual(registry.friendly_name("mcp__claude_ai_Gmail__send_message"), "Gmail: Send message")
         self.assertEqual(registry.friendly_name("mcp__claude_ai_Claude_Docs__query"), "Claude Docs: Query")
         self.assertEqual(registry.friendly_name("mcp__claude_ai_Canva__search-designs"), "Canva: Search designs")
-        self.assertEqual(registry.friendly_name("mcp__jarvis__show_on_canvas"), "Show on canvas")
+        self.assertEqual(registry.friendly_name("mcp__ultron__show_on_canvas"), "Show on canvas")
 
     def test_confirmation_details_are_readable(self):
         title, _, details = registry.describe_call(
@@ -84,9 +84,9 @@ class NeedsOkTest(unittest.TestCase):
             ("mcp__claude_ai_Gmail__create_draft", {"to": ["a@b.com"]}),
             ("mcp__claude_ai_Gmail__update_message_labels", {}),
             ("mcp__claude_ai_Canva__generate-design", {"query": "revision slides"}),
-            ("mcp__jarvis__remember", {"text": "x"}),
-            ("mcp__jarvis__write_note", {"path": "Jarvis/Plan.md"}),
-            ("mcp__jarvis__mark_important", {"path": "School"}),
+            ("mcp__ultron__remember", {"text": "x"}),
+            ("mcp__ultron__write_note", {"path": "Ultron/Plan.md"}),
+            ("mcp__ultron__mark_important", {"path": "School"}),
         ]:
             self.assertFalse(registry.needs_ok(name, args), name)
 
@@ -100,8 +100,8 @@ class NeedsOkTest(unittest.TestCase):
             ("mcp__claude_ai_Google_Drive__share_file", {}),
             ("mcp__claude_ai_TickTick__assign_task", {}),
             ("mcp__claude_ai_Canva__publish-brand-template", {}),
-            ("mcp__jarvis__whatsapp_send", {}),
-            ("mcp__jarvis__unmark_important", {"path": "School"}),
+            ("mcp__ultron__whatsapp_send", {}),
+            ("mcp__ultron__unmark_important", {"path": "School"}),
             ("mcp__claude_ai_Supabase__execute_sql", {}),  # not an everyday connector
             ("Bash", {}),
         ]:
@@ -109,9 +109,9 @@ class NeedsOkTest(unittest.TestCase):
 
     def test_important_files_ask(self):
         registry.important._save(["school/chemistry", "coursework"])
-        self.assertTrue(registry.needs_ok("mcp__jarvis__write_note", {"path": "School/Chemistry/Test.md"}))
-        self.assertTrue(registry.needs_ok("mcp__jarvis__write_note", {"path": "school/chemistry.md"}))
-        self.assertFalse(registry.needs_ok("mcp__jarvis__write_note", {"path": "School/Chemistry 2.md"}))
+        self.assertTrue(registry.needs_ok("mcp__ultron__write_note", {"path": "School/Chemistry/Test.md"}))
+        self.assertTrue(registry.needs_ok("mcp__ultron__write_note", {"path": "school/chemistry.md"}))
+        self.assertFalse(registry.needs_ok("mcp__ultron__write_note", {"path": "School/Chemistry 2.md"}))
         # a Drive file by id, named in an earlier result
         registry.connectors.remember_items("mcp__claude_ai_Google_Drive__search_files", {"files": [{"id": "f9", "name": "Coursework"}]})
         self.assertTrue(registry.needs_ok("mcp__claude_ai_Google_Drive__trash_file", {"fileId": "f9"}))

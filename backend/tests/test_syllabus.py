@@ -27,7 +27,7 @@ class SyllabusTest(unittest.TestCase):
         return asyncio.run(syllabus.syllabus.handler(args))["content"][0]["text"]
 
     def test_runs_freely(self):
-        self.assertEqual(registry.classify("mcp__jarvis__syllabus"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__syllabus"), "read")
 
     def test_find(self):
         self.assertEqual(syllabus.find(PAGES, ""), [1, 2])  # overview and the page after

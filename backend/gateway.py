@@ -1,6 +1,6 @@
 """OmniRoute (the optional gateway brain): is it running, start it, explain its errors.
 
-Jarvis only ever runs one fixed command here: `omniroute serve --daemon`, and always
+Ultron only ever runs one fixed command here: `omniroute serve --daemon`, and always
 with OMNIROUTE_SERVER_HOST=127.0.0.1. OmniRoute's own default listens on every network
 with no key, so anyone on the same Wi-Fi could use it (and your providers).
 """
@@ -17,7 +17,7 @@ from pathlib import Path
 
 import config
 
-log = logging.getLogger("jarvis.gateway")
+log = logging.getLogger("ultron.gateway")
 
 START_WAIT_S = 40
 
@@ -39,7 +39,7 @@ def _is_local() -> bool:
 
 
 def _find_omniroute() -> str | None:
-    """The omniroute command. Jarvis.app starts without your shell's PATH, so also
+    """The omniroute command. Ultron.app starts without your shell's PATH, so also
     look where nvm installs global npm packages."""
     found = shutil.which("omniroute")
     if found:
@@ -52,7 +52,7 @@ def start() -> str | None:
     """Start OmniRoute in the background (on this Mac only). Returns None when it's up,
     else why not."""
     if not _is_local():
-        return f"OmniRoute at {config.GATEWAY_URL} isn't reachable (Jarvis only starts a local one)."
+        return f"OmniRoute at {config.GATEWAY_URL} isn't reachable (Ultron only starts a local one)."
     exe = _find_omniroute()
     if not exe:
         return "OmniRoute isn't installed. Install it with: npm i -g omniroute"

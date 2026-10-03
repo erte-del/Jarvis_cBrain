@@ -25,4 +25,4 @@ if [ ! -d "$MODEL" ]; then
   rm -rf "$FLUX/hf"
 fi
 
-echo "== Image generation is ready. Restart Jarvis to use it."
+echo "== Image generation is ready. Restart Ultron to use it."

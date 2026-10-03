@@ -2,8 +2,8 @@
 
 There's no claude.ai connector for Google Contacts. The user's phone is Android, so their
 contacts live in their Google account; macOS Contacts syncs them once that account is
-added under System Settings → Internet Accounts with Contacts on. Jarvis reads them with
-JavaScript for Automation. The first lookup makes macOS ask to let Jarvis use Contacts.
+added under System Settings → Internet Accounts with Contacts on. Ultron reads them with
+JavaScript for Automation. The first lookup makes macOS ask to let Ultron use Contacts.
 
 "mom", "my boss", ... are looked up in the related names on the user's own card
 ("My Card" in Contacts), then searched by that name. Without one, the word is searched as
@@ -109,7 +109,7 @@ async def _run(mode: str, query: str) -> Any:
     if proc.returncode:
         msg = err.decode().strip()
         if "-1743" in msg or "not allowed" in msg.lower() or "not authorized" in msg.lower():
-            msg = ("macOS didn't allow Jarvis to use Contacts. Allow it in System Settings → "
+            msg = ("macOS didn't allow Ultron to use Contacts. Allow it in System Settings → "
                    "Privacy & Security → Automation (and Contacts).")
         raise RuntimeError(msg or "osascript failed")
     return json.loads(out.decode() or "null")

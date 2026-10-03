@@ -1,5 +1,5 @@
 // The reactor core in the middle of the HUD. It is also the voice orb: its rings
-// show what Jarvis is doing (idle / listening / thinking / speaking). (Phase 5)
+// show what Ultron is doing (idle / listening / thinking / speaking). (Phase 5)
 
 import type { CSSProperties } from 'react'
 
@@ -25,7 +25,7 @@ const GRID = [-1, 0, 1].flatMap((y) => [-1, 0, 1].map((x) => ({ x, y })))
 
 interface VoiceOrbProps {
   state: VoiceState
-  level?: number // 0..1, how loud you are (listening) or Jarvis is (speaking)
+  level?: number // 0..1, how loud you are (listening) or Ultron is (speaking)
   onClick?: () => void
   label: string
 }

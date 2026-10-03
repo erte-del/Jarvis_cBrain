@@ -1,6 +1,6 @@
 """show_on_canvas -> UI events. (Phase 4a)
 
-The canvas is the panel next to the chat where Jarvis *shows* things. Cards are
+The canvas is the panel next to the chat where Ultron *shows* things. Cards are
 pushed to every open tab through the hub. Later steps add images and 3D objects.
 """
 
@@ -150,14 +150,14 @@ def map_data(args: dict[str, Any]) -> dict[str, str]:
 
 
 async def show_text(title: str, content: str) -> str:
-    """Put a markdown card on the canvas from Jarvis's own code. Returns the card id."""
+    """Put a markdown card on the canvas from Ultron's own code. Returns the card id."""
     card_id = _new_card_id()
     await hub.emit(events.canvas_card(card_id, "text", title, {"content": content}))
     return card_id
 
 
 async def show_table(title: str, columns: list[str], rows: list[list[str]]) -> str:
-    """Put a table card on the canvas from Jarvis's own code. Returns the card id."""
+    """Put a table card on the canvas from Ultron's own code. Returns the card id."""
     card_id = _new_card_id()
     await hub.emit(events.canvas_card(card_id, "table", title, {"columns": columns, "rows": rows}))
     return card_id

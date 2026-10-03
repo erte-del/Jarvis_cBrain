@@ -21,7 +21,7 @@ import gateway
 import hub
 import scheduler
 import terminal
-from brain.agent import Jarvis
+from brain.agent import Ultron
 from brain.base import ModelAlias
 from brain.brain_claudecode import ClaudeCodeBrain
 from brain.confirm import ConfirmationGate
@@ -30,26 +30,26 @@ from PIL import UnidentifiedImageError
 from storage import chat_store, image_store, job_store, memory_store, model_store, upload_store, video_store
 from tools import canvas, mac, spotify
 
-log = logging.getLogger("jarvis")
+log = logging.getLogger("ultron")
 
-# Only Jarvis's own frontend may connect. Without this check, any website open
-# in your browser could talk to ws://127.0.0.1:8000 and use Jarvis.
-# Dev server (npm run dev, :5173) and the built page served by this backend (Jarvis.app, :8000).
+# Only Ultron's own frontend may connect. Without this check, any website open
+# in your browser could talk to ws://127.0.0.1:8000 and use Ultron.
+# Dev server (npm run dev, :5173) and the built page served by this backend (Ultron.app, :8000).
 ALLOWED_ORIGINS = set(terminal.LOCAL_ORIGINS)
 if config.REMOTE_ORIGIN:  # the same page, opened on your phone through Tailscale
     ALLOWED_ORIGINS.add(config.REMOTE_ORIGIN)
 
 # The built frontend (npm run build). When it exists, this backend serves the page too,
-# so Jarvis runs as one server: http://127.0.0.1:8000
+# so Ultron runs as one server: http://127.0.0.1:8000
 FRONTEND_DIST = config.ROOT_DIR / "frontend" / "dist"
 
 MODELS: set[str] = {"haiku", "sonnet", "opus"}
 
-# One brain for the whole app: Jarvis has one user and one ongoing conversation,
+# One brain for the whole app: Ultron has one user and one ongoing conversation,
 # shared by every open tab (and later by voice).
 gate = ConfirmationGate()
 brain = ClaudeCodeBrain(can_use_tool=gate.can_use_tool)
-jarvis = Jarvis(brain)
+ultron = Ultron(brain)
 
 
 @asynccontextmanager
@@ -64,10 +64,10 @@ async def lifespan(app: FastAPI):
     await brain.close()
 
 
-app = FastAPI(title="Jarvis", lifespan=lifespan)
+app = FastAPI(title="Ultron", lifespan=lifespan)
 
 # The 3D viewer downloads preview files with fetch(), and the chat uploads files,
-# which browsers only allow across ports if the server says so. Only Jarvis's own page.
+# which browsers only allow across ports if the server says so. Only Ultron's own page.
 app.add_middleware(
     CORSMiddleware, allow_origins=sorted(ALLOWED_ORIGINS), allow_methods=["GET", "POST"], allow_headers=["Content-Type"]
 )
@@ -75,7 +75,7 @@ app.add_middleware(
 
 @app.middleware("http")
 async def fresh_page(request: Request, call_next):
-    """The page itself must never come from the browser's cache, or a rebuilt Jarvis keeps
+    """The page itself must never come from the browser's cache, or a rebuilt Ultron keeps
     running the old code. Its files under /static/ have new names on every build."""
     response = await call_next(request)
     if request.url.path == "/" or request.url.path.endswith(".html"):
@@ -103,7 +103,7 @@ async def asset(image_id: str, filename: str, download: bool = False) -> FileRes
 @app.post("/upload")
 async def upload(request: Request, name: str) -> dict:
     """A file from your computer (the raw bytes as the body). Images go on the canvas;
-    other files wait in storage/uploads until Jarvis opens them with read_upload."""
+    other files wait in storage/uploads until Ultron opens them with read_upload."""
     # CORS alone doesn't stop other websites from sending a simple POST here.
     if request.headers.get("origin") not in ALLOWED_ORIGINS:
         raise HTTPException(403)
@@ -158,7 +158,7 @@ async def video_file(video_id: str, filename: str, download: bool = False) -> Fi
 
 @app.get("/spotify/callback", response_class=PlainTextResponse)
 async def spotify_callback(state: str = "", code: str = "", error: str = "") -> str:
-    """Spotify sends you back here after the login link Jarvis showed you."""
+    """Spotify sends you back here after the login link Ultron showed you."""
     try:
         return await asyncio.to_thread(spotify.finish_login, state, code, error)
     except OSError as e:
@@ -166,7 +166,7 @@ async def spotify_callback(state: str = "", code: str = "", error: str = "") -> 
 
 
 def device_of(ws: WebSocket) -> str:
-    """Which device a tab is on, for Jarvis's per-message [Device: ...] note. Local origins
+    """Which device a tab is on, for Ultron's per-message [Device: ...] note. Local origins
     are this Mac; the Tailscale address is the user's phone (or another computer)."""
     if ws.headers.get("origin") in terminal.LOCAL_ORIGINS:
         return "this Mac"
@@ -219,7 +219,7 @@ async def run_turn(
     mac.phone_here, mac.phone_status = here, status
     try:
         # aclosing: if sending fails (browser gone), end the brain turn right away.
-        async with aclosing(jarvis.handle_text(text, model_override, selected_image=selected_image, files=files, device=device)) as stream:
+        async with aclosing(ultron.handle_text(text, model_override, selected_image=selected_image, files=files, device=device)) as stream:
             async for ev in stream:
                 await send(ev)
     finally:
@@ -249,7 +249,7 @@ def chats_event() -> events.Event:
 
 async def save_chat(messages: list, cards: list) -> None:
     if not brain.session_id:
-        await hub.emit(events.error("Nothing to save yet: send Jarvis a message first."))
+        await hub.emit(events.error("Nothing to save yet: send Ultron a message first."))
         return
     try:
         await asyncio.to_thread(chat_store.save, brain.session_id, brain.provider, messages, cards)
@@ -302,7 +302,7 @@ def change_job(job_id: str, action: str) -> None:
 
 def restore_card(card: dict) -> events.Event | None:
     """A saved canvas card as it is now. Image, 3D and video cards come fresh from their
-    stores (None if the files were deleted since). Jarvis doesn't get them in its
+    stores (None if the files were deleted since). Ultron doesn't get them in its
     context: it opens them with its tools only when a question needs them."""
     stores = {"image": image_store, "model3d": model_store, "video": video_store}
     data = card.get("data", {})
@@ -329,7 +329,7 @@ async def load_chat(chat_id: str) -> None:
     canvas.restored([c["id"] for c in cards])
     await brain.new_conversation(resume=chat_id)
     await hub.emit(events.conversation_loaded(chat["messages"], cards))
-    await hub.emit(jarvis.usage_event())
+    await hub.emit(ultron.usage_event())
     await brain.start()
 
 
@@ -345,7 +345,7 @@ async def switch_provider(provider: str) -> None:
     await brain.new_conversation(provider)
     await hub.emit(events.conversation_new("provider"))
     await hub.emit(settings_event())
-    await hub.emit(jarvis.usage_event())
+    await hub.emit(ultron.usage_event())
     await brain.start()
 
 
@@ -362,7 +362,7 @@ async def websocket_endpoint(ws: WebSocket) -> None:
     send = make_sender(ws)
     hub.connect(send)
     await send(settings_event())
-    await send(jarvis.usage_event())
+    await send(ultron.usage_event())
     await send(chats_event())
     await send(memory_event())
     await send(jobs_event())

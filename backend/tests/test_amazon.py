@@ -21,8 +21,8 @@ class AmazonTest(unittest.TestCase):
             return asyncio.run(handler.handler(args))
 
     def test_reading_runs_freely_and_changing_asks(self):
-        self.assertEqual(registry.classify("mcp__jarvis__amazon_read"), "read")
-        self.assertEqual(registry.classify("mcp__jarvis__amazon_change"), "act")
+        self.assertEqual(registry.classify("mcp__ultron__amazon_read"), "read")
+        self.assertEqual(registry.classify("mcp__ultron__amazon_change"), "act")
 
     def test_pages(self):
         self.call(amazon.amazon_read, search="usb c cable & hub")

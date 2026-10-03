@@ -1,4 +1,4 @@
-"""Draw the Jarvis icon (the glowing blue orb from the page header) as a macOS iconset.
+"""Draw the Ultron icon (the glowing blue orb from the page header) as a macOS iconset.
 
     python scripts/make_icon.py <folder.iconset>
 

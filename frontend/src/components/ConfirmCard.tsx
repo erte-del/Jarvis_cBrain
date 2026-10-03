@@ -1,5 +1,5 @@
 // Confirmation card for 'act' tools. (Phase 4a)
-// Jarvis wants to send / delete / create / change something: nothing happens until you approve.
+// Ultron wants to send / delete / create / change something: nothing happens until you approve.
 
 import type { Confirmation, ConfirmStatus } from '../ws'
 
